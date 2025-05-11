@@ -6,7 +6,6 @@ package com.paradise_seeker.game.entity;
 public interface Interactable {
 
     /**
-     * Phương thức xử lý khi người chơi tương tác với đối tượng này.
      *
      * @param player đối tượng người chơi đang tương tác
      */

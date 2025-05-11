@@ -28,7 +28,6 @@ public class Player extends Character {
 
     @Override
     public void castSkill(int atkPower, int x, int y) {
-        // logic bắn đến vị trí
     }
 
     @Override

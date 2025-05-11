@@ -38,7 +38,6 @@ public class NPC implements Renderable, Collidable, Interactable {
 
     @Override
     public void onCollision(Collidable other) {
-        // Optional
     }
 
     @Override

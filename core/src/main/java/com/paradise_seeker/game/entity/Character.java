@@ -75,5 +75,4 @@ public abstract class Character {
         // xử lý va chạm mặc định (vd: đạn bắn trúng)
     }
     
-    //hello
 }

@@ -15,8 +15,6 @@ public interface Collidable {
         return null; // subclass override trả về this nếu muốn
     }
 
-    /**
-     * Được gọi khi xảy ra va chạm với đối tượng khác
-     */
     void onCollision(Collidable other);
+    
 }

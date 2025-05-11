@@ -8,5 +8,5 @@ public interface Renderable {
      * @param batch SpriteBatch được sử dụng để vẽ.
      */
     void render(SpriteBatch batch);
-    //hello
+ 
 }

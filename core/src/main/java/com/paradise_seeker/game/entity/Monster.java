@@ -39,5 +39,4 @@ public class Monster extends Character {
     public void update(float deltaTime) {
         // AI di chuyển, tấn công, tuần tra
     }
-    //hello
 }

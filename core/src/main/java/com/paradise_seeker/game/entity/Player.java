@@ -23,7 +23,6 @@ public class Player extends Character {
 
     @Override
     public void castSkill(int atkPower, Character target) {
-        // logic đánh đòn
     }
 
     @Override

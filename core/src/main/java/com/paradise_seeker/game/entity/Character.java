@@ -57,13 +57,9 @@ public abstract class Character {
 
     // Chiêu tấn công mục tiêu
     public abstract void castSkill(int atkPower, Character target);
-    // Chiêu tấn công theo tọa độ
     public abstract void castSkill(int atkPower, int x, int y);
-
-    // Xử lý logic khi chết
     protected abstract void onDeath();
-
-    // Render
+  
     public abstract void render(SpriteBatch batch);
 
     // Collidable

@@ -4,5 +4,4 @@ public interface Weapon {
     String getName();
     int    getAttackBonus();
     float  getSpeedBonus();
-    //hello
 }

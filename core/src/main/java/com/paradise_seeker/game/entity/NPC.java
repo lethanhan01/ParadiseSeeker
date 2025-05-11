@@ -27,7 +27,6 @@ public class NPC implements Renderable, Collidable, Interactable {
 
     @Override
     public void render(SpriteBatch batch) {
-        // Vẽ texture đơn giản theo bounding box (thay vì polygon nếu không cần custom shape)
         batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
     }
 

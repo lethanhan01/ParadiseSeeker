@@ -74,4 +74,6 @@ public abstract class Character {
     public void onCollision(Collidable other) {
         // xử lý va chạm mặc định (vd: đạn bắn trúng)
     }
+    
+    //hello
 }

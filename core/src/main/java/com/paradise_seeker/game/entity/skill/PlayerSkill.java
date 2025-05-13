@@ -1,14 +1,11 @@
 package com.paradise_seeker.game.entity.skill;
 import com.paradise_seeker.game.entity.Character;
 
-public class PlayerSkill1 implements Skill {
+public class PlayerSkill implements Skill {
 	private int manaCost;
 	private long cooldown;
 	private long lastUsedTime;
-	public PlayerSkill1(int manaCost, long cooldown) {
-		this.manaCost = manaCost;
-		this.cooldown = cooldown;
-		this.lastUsedTime = 0;
+	public PlayerSkill() {
 	}
 
 	@Override

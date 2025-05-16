@@ -1,18 +1,16 @@
-// ✅ Player.java
 package com.paradise_seeker.game.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.paradise_seeker.game.entity.skill.*;
+import com.paradise_seeker.game.entity.skill.PlayerSkill1;
 
 public class Player extends Character {
-    public PlayerSkill playerSkill1;
-    public PlayerSkill playerSkill2;
+    public PlayerSkill1 playerSkill1;  // Chỉ giữ PlayerSkill1 vì project không có PlayerSkill2
     public Weapon weapon;
 
     private Animation<TextureRegion> runUp, runDown, runLeft, runRight;
@@ -33,8 +31,7 @@ public class Player extends Character {
     public Player(Rectangle bounds) {
         super(bounds, 100, 50, 10, 5f);
         loadAnimations();
-        this.playerSkill1 = new PlayerSkill();
-        this.playerSkill2 = new PlayerSkill();
+        this.playerSkill1 = new PlayerSkill1(20, 1000); // mana cost 20, cooldown 1s
     }
 
     private void loadAnimations() {
@@ -67,6 +64,9 @@ public class Player extends Character {
         handleInput(deltaTime);
         regenMana(deltaTime);
         dashTimer -= deltaTime;
+
+        playerSkill1.update(deltaTime);
+
         if (isMoving || isAttacking) {
             stateTime += deltaTime;
         } else {
@@ -117,6 +117,12 @@ public class Player extends Character {
             isAttacking = true;
             stateTime = 0;
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            float mouseX = Gdx.input.getX();
+            float mouseY = Gdx.input.getY();
+            castSkill1((int) mouseX, (int) mouseY);
+        }
     }
 
     private Animation<TextureRegion> getAttackAnimationByDirection() {
@@ -147,6 +153,8 @@ public class Player extends Character {
             }
             batch.draw(currentFrame, bounds.x, bounds.y, bounds.width, bounds.height);
         }
+
+        playerSkill1.render(batch);
     }
 
     @Override public void move() {}
@@ -155,15 +163,17 @@ public class Player extends Character {
 
     public void castSkill1(int x, int y) {
         if (mp >= playerSkill1.getManaCost()) {
-            mp -= playerSkill1.getManaCost();
-            playerSkill1.castSkill(atk, x, y);
-        }
-    }
+            float centerX = bounds.x + bounds.width / 2f;
+            float centerY = bounds.y + bounds.height / 2f;
 
-    public void castSkill2(Character target) {
-        if (mp >= playerSkill2.getManaCost()) {
-            mp -= playerSkill2.getManaCost();
-            playerSkill2.castSkill(atk, target);
+            float dx = x - centerX;
+            float dy = y - centerY;
+            float length = (float) Math.sqrt(dx * dx + dy * dy);
+            float dirX = dx / length;
+            float dirY = dy / length;
+
+            mp -= playerSkill1.getManaCost();
+            playerSkill1.castSkill(atk, centerX, centerY, dirX, dirY);
         }
     }
 

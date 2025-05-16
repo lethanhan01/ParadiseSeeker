@@ -58,10 +58,4 @@ public class Monster extends Character  implements Renderable, Collidable {
         // AI di chuyển, tấn công, tuần tra
     }
 
-	@Override
-	public void move() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

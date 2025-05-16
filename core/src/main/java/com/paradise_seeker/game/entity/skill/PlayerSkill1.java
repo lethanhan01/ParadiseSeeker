@@ -13,14 +13,14 @@ public class PlayerSkill1 implements Skill {
     private Texture texture;
     private Vector2 position;
     private Vector2 direction;
-    private float speed = 300f; // pixels per second
+    private float speed = 300f; // tốc độ di chuyển của kỹ năng (px/s)
     private boolean active = false;
 
     public PlayerSkill1(int manaCost, long cooldown) {
         this.manaCost = manaCost;
         this.cooldown = cooldown;
         this.lastUsedTime = 0;
-        this.texture = new Texture("projectile.png"); // phải có trong assets/
+        this.texture = new Texture("projectile.png"); // hình ảnh đạn bay, phải nằm trong assets/
         this.position = new Vector2();
         this.direction = new Vector2();
     }
@@ -32,17 +32,14 @@ public class PlayerSkill1 implements Skill {
 
     @Override
     public void execute(Character target) {
-        if (canUse(System.currentTimeMillis())) {
-            // Logic thực hiện skill không định hướng
-            lastUsedTime = System.currentTimeMillis();
-        }
+        // Skill không định hướng nên không làm gì ở đây
     }
 
     public void castSkill(int atk, float x, float y, float dirX, float dirY) {
         if (!active && canUse(System.currentTimeMillis())) {
             lastUsedTime = System.currentTimeMillis();
             position.set(x, y);
-            direction.set(dirX, dirY).nor();
+            direction.set(dirX, dirY).nor(); // chuẩn hóa hướng
             active = true;
 
             System.out.println("Skill casted at direction (" + dirX + ", " + dirY + ")");
@@ -52,10 +49,11 @@ public class PlayerSkill1 implements Skill {
     @Override
     public void update(float deltaTime) {
         if (active) {
+            // Di chuyển kỹ năng
             position.x += direction.x * speed * deltaTime;
             position.y += direction.y * speed * deltaTime;
 
-            // Tắt skill khi ra khỏi màn hình (ví dụ 1920x1080)
+            // Vô hiệu hóa nếu ra khỏi màn hình (giả sử kích thước màn hình 1920x1080)
             if (position.x < 0 || position.x > 1920 || position.y < 0 || position.y > 1080) {
                 active = false;
             }
@@ -69,7 +67,11 @@ public class PlayerSkill1 implements Skill {
 
     public void render(SpriteBatch batch) {
         if (active) {
-            batch.draw(texture, position.x, position.y, 16, 16);
+            batch.draw(texture, position.x, position.y, 16, 16); // vẽ đạn
         }
+    }
+
+    public boolean isActive() {
+        return active;
     }
 }

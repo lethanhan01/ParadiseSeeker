@@ -1,106 +1,182 @@
 package com.paradise_seeker.game.entity;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.paradise_seeker.game.entity.skill.PlayerSkill1;
 
 public class Player extends Character {
-    private Texture texture;
-    public PlayerSkill1 playerSkill1;
+    public PlayerSkill1 playerSkill1;  // Chỉ giữ PlayerSkill1 vì project không có PlayerSkill2
     public Weapon weapon;
 
-    public Player(Rectangle bounds, int hp, int mp, int atk, float speed) {
-        this(bounds, hp, mp, atk, speed, new Texture("player.png"));
-    }
+    private Animation<TextureRegion> runUp, runDown, runLeft, runRight;
+    private Animation<TextureRegion> attackUp, attackDown, attackLeft, attackRight;
+    private TextureRegion currentFrame;
+    private float stateTime = 0f;
+    private String direction = "down";
+    private boolean isMoving = false;
+    private boolean isAttacking = false;
 
-    public Player(Rectangle bounds, int hp, int mp, int atk, float speed, Texture texture) {
-        super(bounds, hp, mp, atk, speed);
-        this.texture = texture;
-        this.playerSkill1 = new PlayerSkill1(20, 1000); // 20 mana, 1s cooldown
-    }
+    private boolean isDashing = false;
+    private float dashCooldown = 1.0f;
+    private float dashTimer = 0f;
+    private float dashDistance = 50f;
+    private boolean menuOpen = false;
+    private boolean isPaused = false;
 
     public Player(Rectangle bounds) {
-        this(bounds, 100, 50, 10, 5f, new Texture("player.png"));
+        super(bounds, 100, 50, 10, 5f);
+        loadAnimations();
+        this.playerSkill1 = new PlayerSkill1(20, 1000); // mana cost 20, cooldown 1s
     }
 
-    public void pickWeapon(Weapon w) {
-        weapon = w;
-        atk += (weapon != null ? weapon.getAttackBonus() : 0);
-        speed += (weapon != null ? weapon.getSpeedBonus() : 0);
+    private void loadAnimations() {
+        runDown = loadAnimation("images/Entity/characters/player/char_run_down_anim_strip_6.png");
+        runUp = loadAnimation("images/Entity/characters/player/char_run_up_anim_strip_6.png");
+        runLeft = loadAnimation("images/Entity/characters/player/char_run_left_anim_strip_6.png");
+        runRight = loadAnimation("images/Entity/characters/player/char_run_right_anim_strip_6.png");
+
+        attackDown = loadAnimation("images/Entity/characters/player/char_attack_down_anim_strip_6.png");
+        attackUp = loadAnimation("images/Entity/characters/player/char_attack_up_anim_strip_6.png");
+        attackLeft = loadAnimation("images/Entity/characters/player/char_attack_left_anim_strip_6.png");
+        attackRight = loadAnimation("images/Entity/characters/player/char_attack_right_anim_strip_6.png");
+
+        currentFrame = runDown.getKeyFrame(0);
     }
 
-    public void attack(Character target) {
-        if (target.isAlive()) {
-            target.receiveDamage(atk);
+    private Animation<TextureRegion> loadAnimation(String filePath) {
+        Texture sheet = new Texture(Gdx.files.internal(filePath));
+        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth() / 6, sheet.getHeight());
+        return new Animation<>(0.1f, tmp[0]);
+    }
+
+    public void regenMana(float deltaTime) {
+        if (mp < 100) {
+            mp += 5 * deltaTime;
         }
     }
 
-    public void castSkill(int mouseX, int mouseY) {
-        if (mp >= playerSkill1.getManaCost()) {
-            float centerX = bounds.x + bounds.width / 2f;
-            float centerY = bounds.y + bounds.height / 2f;
+    public void update(float deltaTime) {
+        handleInput(deltaTime);
+        regenMana(deltaTime);
+        dashTimer -= deltaTime;
 
-            float dx = mouseX - centerX;
-            float dy = mouseY - centerY;
-            float length = (float) Math.sqrt(dx * dx + dy * dy);
-            float dirX = dx / length;
-            float dirY = dy / length;
+        playerSkill1.update(deltaTime);
 
-            playerSkill1.castSkill(atk, centerX, centerY, dirX, dirY);
-            mp -= playerSkill1.getManaCost();
+        if (isMoving || isAttacking) {
+            stateTime += deltaTime;
         } else {
-            System.out.println("Not enough mana");
+            stateTime = 0;
+        }
+
+        if (isAttacking) {
+            Animation<TextureRegion> currentAttack = getAttackAnimationByDirection();
+            if (currentAttack.isAnimationFinished(stateTime)) {
+                isAttacking = false;
+                stateTime = 0;
+            }
         }
     }
 
-    @Override
-    public void move() {
-        int dx = 0;
-        int dy = 0;
+    private void handleInput(float deltaTime) {
+        if (isPaused || isAttacking) return;
+
+        float dx = 0, dy = 0;
 
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) dy += 1;
         if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) dy -= 1;
         if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) dx -= 1;
         if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) dx += 1;
 
-        float length = (float) Math.sqrt(dx * dx + dy * dy);
-        if (length > 0) {
-            dx /= length;
-            dy /= length;
-            bounds.x += dx * speed;
-            bounds.y += dy * speed;
-        }
-    }
+        float len = (float) Math.sqrt(dx * dx + dy * dy);
+        isMoving = len > 0;
 
-    public void update(float deltaTime) {
-        move();
+        if (isMoving) {
+            bounds.x += (dx / len) * speed * deltaTime;
+            bounds.y += (dy / len) * speed * deltaTime;
+            if (Math.abs(dx) > Math.abs(dy)) {
+                direction = dx > 0 ? "right" : "left";
+            } else {
+                direction = dy > 0 ? "up" : "down";
+            }
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT) && dashTimer <= 0) {
+            if (isMoving) {
+                bounds.x += (dx / len) * dashDistance;
+                bounds.y += (dy / len) * dashDistance;
+                dashTimer = dashCooldown;
+            }
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            isAttacking = true;
+            stateTime = 0;
+        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(mouse);
-            castSkill((int) mouse.x, (int) mouse.y);
+            float mouseX = Gdx.input.getX();
+            float mouseY = Gdx.input.getY();
+            castSkill1((int) mouseX, (int) mouseY);
         }
-
-        playerSkill1.update(deltaTime);
     }
 
-    @Override
-    public void onDeath() {
-        System.out.println("Player died");
-    }
-
-    @Override
-    public void onCollision(Collidable other) {
-        // va chạm với item, enemy, ...
+    private Animation<TextureRegion> getAttackAnimationByDirection() {
+        switch (direction) {
+            case "up": return attackUp;
+            case "down": return attackDown;
+            case "left": return attackLeft;
+            case "right": return attackRight;
+        }
+        return attackDown;
     }
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
+        if (isAttacking) {
+            currentFrame = getAttackAnimationByDirection().getKeyFrame(stateTime, false);
+            float scaledWidth = bounds.width * 2f;
+            float scaledHeight = bounds.height * 2f;
+            float drawX = bounds.x - (scaledWidth - bounds.width) / 2f;
+            float drawY = bounds.y - (scaledHeight - bounds.height) / 2f;
+            batch.draw(currentFrame, drawX, drawY, scaledWidth, scaledHeight);
+        } else {
+            switch (direction) {
+                case "up": currentFrame = runUp.getKeyFrame(stateTime, true); break;
+                case "down": currentFrame = runDown.getKeyFrame(stateTime, true); break;
+                case "left": currentFrame = runLeft.getKeyFrame(stateTime, true); break;
+                case "right": currentFrame = runRight.getKeyFrame(stateTime, true); break;
+            }
+            batch.draw(currentFrame, bounds.x, bounds.y, bounds.width, bounds.height);
+        }
+
         playerSkill1.render(batch);
     }
+
+    @Override public void move() {}
+    @Override public void onDeath() { System.out.println("Player đã chết!"); }
+    @Override public void onCollision(Collidable other) {}
+
+    public void castSkill1(int x, int y) {
+        if (mp >= playerSkill1.getManaCost()) {
+            float centerX = bounds.x + bounds.width / 2f;
+            float centerY = bounds.y + bounds.height / 2f;
+
+            float dx = x - centerX;
+            float dy = y - centerY;
+            float length = (float) Math.sqrt(dx * dx + dy * dy);
+            float dirX = dx / length;
+            float dirY = dy / length;
+
+            mp -= playerSkill1.getManaCost();
+            playerSkill1.castSkill(atk, centerX, centerY, dirX, dirY);
+        }
+    }
+
+    public boolean isPaused() { return isPaused; }
+    public boolean isMenuOpen() { return menuOpen; }
 }

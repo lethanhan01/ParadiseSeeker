@@ -31,14 +31,12 @@ public abstract class Character {
     }
 
     public abstract void onDeath();
-
+    public abstract void move();
     // Kiểm tra còn sống
     public boolean isAlive() {
         return hp > 0;
     }
-
-    
-    public abstract void move();
+    ///////////////////////////////////// BỔ SUNG SAU ////////////////////////////////////
   
     public abstract void render(SpriteBatch batch);
 

@@ -34,13 +34,14 @@ public class Monster extends Character  implements Renderable, Collidable {
 	}
     
     // Di chuyển ngẫu nhiên
-    void Move() {
-		// Di chuyển ngẫu nhiên trong một khoảng cách nhất định
-		float randomX = (float) (Math.random() * 2 - 1); // Giá trị ngẫu nhiên từ -1 đến 1
-		float randomY = (float) (Math.random() * 2 - 1);
-		bounds.x += randomX * speed;
-		bounds.y += randomY * speed;
-	}
+    @Override
+    public void move() {
+        // Di chuyển ngẫu nhiên trong một khoảng cách nhất định
+        float randomX = (float) (Math.random() * 2 - 1); // Giá trị ngẫu nhiên từ -1 đến 1
+        float randomY = (float) (Math.random() * 2 - 1);
+        bounds.x += randomX * speed;
+        bounds.y += randomY * speed;
+    }
     
     //////////////////////////////////// BỔ SUNG SAU ////////////////////////////////////
     

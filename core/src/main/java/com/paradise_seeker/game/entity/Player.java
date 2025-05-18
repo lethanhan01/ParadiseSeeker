@@ -338,8 +338,8 @@ public class Player extends Character {
     private void renderIdle(SpriteBatch batch) {
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = getIdleAnimationByDirection().getKeyFrame(stateTime, true);
-        float scaledWidth = bounds.width * 2.5f;
-        float scaledHeight = bounds.height * 2.5f;
+        float scaledWidth = bounds.width * 1.0f;
+        float scaledHeight = bounds.height * 1.0f;
         float drawX = bounds.x - (scaledWidth - bounds.width) / 2f;
         float drawY = bounds.y - (scaledHeight - bounds.height) / 2f;
         batch.draw(currentFrame, drawX, drawY, scaledWidth, scaledHeight);
@@ -451,8 +451,12 @@ public class Player extends Character {
             playerSkill2.castSkill(atk, target);
         }
     }
+    
+    public float getCenterX() { return bounds.x + bounds.width / 2; }
+    public float getCenterY() { return bounds.y + bounds.height / 2; }
 
     // Trả về trạng thái pause và menu
     public boolean isPaused() { return isPaused; }
     public boolean isMenuOpen() { return menuOpen; }
+    
 }

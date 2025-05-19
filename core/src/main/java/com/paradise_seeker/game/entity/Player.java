@@ -338,11 +338,7 @@ public class Player extends Character {
     private void renderIdle(SpriteBatch batch) {
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = getIdleAnimationByDirection().getKeyFrame(stateTime, true);
-        float scaledWidth = bounds.width * 2.5f;
-        float scaledHeight = bounds.height * 2.5f;
-        float drawX = bounds.x - (scaledWidth - bounds.width) / 2f;
-        float drawY = bounds.y - (scaledHeight - bounds.height) / 2f;
-        batch.draw(currentFrame, drawX, drawY, scaledWidth, scaledHeight);
+        batch.draw(currentFrame, bounds.x, bounds.y, bounds.width, bounds.height);
     }
 
     // Thêm hàm renderClimbing
@@ -385,12 +381,8 @@ public class Player extends Character {
             case "left": currentFrame = hitLeft.getKeyFrame(stateTime, false); break;
             case "right": currentFrame = hitRight.getKeyFrame(stateTime, false); break;
         }
-        float scaledWidth = bounds.width * 2.5f;
-        float scaledHeight = bounds.height * 2.5f;
-        float drawX = bounds.x - (scaledWidth - bounds.width) / 2f;
-        float drawY = bounds.y - (scaledHeight - bounds.height) / 2f;
-        batch.draw(currentFrame, drawX, drawY, scaledWidth, scaledHeight);
-        // Reset isHit khi animation kết thúc
+        batch.draw(currentFrame, bounds.x, bounds.y, bounds.width, bounds.height);
+        // Đặt lại isHit khi animation kết thúc
         if (hitUp.isAnimationFinished(stateTime) || hitDown.isAnimationFinished(stateTime) ||
             hitLeft.isAnimationFinished(stateTime) || hitRight.isAnimationFinished(stateTime)) {
             isHit = false;
@@ -407,12 +399,8 @@ public class Player extends Character {
             case "left": currentFrame = shieldedHitLeft.getKeyFrame(stateTime, false); break;
             case "right": currentFrame = shieldedHitRight.getKeyFrame(stateTime, false); break;
         }
-        float scaledWidth = bounds.width * 2.5f;
-        float scaledHeight = bounds.height * 2.5f;
-        float drawX = bounds.x - (scaledWidth - bounds.width) / 2f;
-        float drawY = bounds.y - (scaledHeight - bounds.height) / 2f;
-        batch.draw(currentFrame, drawX, drawY, scaledWidth, scaledHeight);
-        // Reset isShieldedHit khi animation kết thúc
+        batch.draw(currentFrame, bounds.x, bounds.y, bounds.width, bounds.height);
+        // Đặt lại isShieldedHit khi animation kết thúc
         if (shieldedHitUp.isAnimationFinished(stateTime) || shieldedHitDown.isAnimationFinished(stateTime) ||
             shieldedHitLeft.isAnimationFinished(stateTime) || shieldedHitRight.isAnimationFinished(stateTime)) {
             isShieldedHit = false;

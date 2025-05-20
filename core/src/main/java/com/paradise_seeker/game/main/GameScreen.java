@@ -51,10 +51,13 @@ public class GameScreen implements Screen {
         music.play();
     }
 
+    
     @Override
     public void render(float delta) {
-        player.update(delta);
+        player.update(delta);             // ✅ 1. Di chuyển nhân vật
+        gameMap.checkCollisions(player);  // ✅ 2. Kiểm tra va chạm và rollback nếu cần
 
+        // Cập nhật đạn
         for (int i = activeProjectiles.size() - 1; i >= 0; i--) {
             LaserBeam projectile = activeProjectiles.get(i);
             projectile.update();
@@ -63,6 +66,7 @@ public class GameScreen implements Screen {
             }
         }
 
+        // Cập nhật camera
         Vector2 playerCenter = new Vector2(
             player.bounds.x + player.bounds.width / 2,
             player.bounds.y + player.bounds.height / 2
@@ -77,11 +81,11 @@ public class GameScreen implements Screen {
         gameCamera.position.set(newCameraPos.x, newCameraPos.y, 0);
         gameCamera.update();
 
+        // Render
         ScreenUtils.clear(Color.BLACK);
-
         game.batch.setProjectionMatrix(gameCamera.combined);
         game.batch.begin();
-        gameMap.render(game.batch); // Vẽ map nền từ ảnh
+        gameMap.render(game.batch);
         player.render(game.batch);
         for (LaserBeam projectile : activeProjectiles) {
             projectile.render(game.batch);
@@ -92,6 +96,7 @@ public class GameScreen implements Screen {
         hud.shapeRenderer.setProjectionMatrix(hudCamera.combined);
         hud.render();
     }
+
 
     @Override
     public void resize(int width, int height) {

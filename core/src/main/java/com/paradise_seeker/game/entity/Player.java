@@ -8,11 +8,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 // Import các kỹ năng người chơi
 import com.paradise_seeker.game.entity.skill.*;
 
 // Lớp Player đại diện cho nhân vật điều khiển được, kế thừa từ lớp Character
 public class Player extends Character {
+	private float speedMultiplier = 1f;         // Hệ số tốc độ khi đi qua object
+	private Vector2 lastPosition = new Vector2(); // Ghi nhớ vị trí trước khi di chuyển
+
 	public static final int MAX_HP = 100; // Máu tối đa
 	public static final int MAX_MP = 100;  // Mana tối đa
     public PlayerSkill playerSkill1; // Kỹ năng 1 của người chơi
@@ -35,7 +39,7 @@ public class Player extends Character {
     private boolean isDashing = false;  // Trạng thái đang dash
     private float dashCooldown = 1.0f;  // Thời gian hồi chiêu dash
     private float dashTimer = 0f;       // Thời gian còn lại cho dash
-    private float dashDistance = 50f;   // Khoảng cách dash
+    private float dashDistance = 5f;   // Khoảng cách dash
 
     private boolean isShielding = false; // Trạng thái đang giơ khiên
     private boolean menuOpen = false;    // Menu đang mở
@@ -144,25 +148,31 @@ public class Player extends Character {
 
     // Hồi phục mana mỗi giây
     public void regenMana(float deltaTime) {
-        if (mp < 100) {
+        if (mp < MAX_MP) {
             mp += 20 * deltaTime; // Hồi 5 mana mỗi giây
         }
+        if(mp > MAX_MP) {
+			mp = MAX_MP; // Giới hạn mana không vượt quá MAX_MP
+		}
     }
 
     // Cập nhật logic nhân vật mỗi frame
+ // Trong update()
     public void update(float deltaTime) {
-        handleInput(deltaTime);  // Xử lý input
-        regenMana(deltaTime);    // Hồi mana
-        dashTimer -= deltaTime;  // Giảm thời gian hồi dash
+        if (isDead) return; // ✅ Không update nếu đã chết
 
-        // Cập nhật thời gian animation nếu đang di chuyển hoặc tấn công
+        lastPosition.set(bounds.x, bounds.y);
+        handleInput(deltaTime);
+        regenMana(deltaTime);
+        dashTimer -= deltaTime;
+        speedMultiplier = 1f;
+
         if (isMoving || isAttacking) {
             stateTime += deltaTime;
         } else {
             stateTime = 0;
         }
 
-        // Kiểm tra nếu animation tấn công kết thúc
         if (isAttacking) {
             Animation<TextureRegion> currentAttack = getAttackAnimationByDirection();
             if (currentAttack.isAnimationFinished(stateTime)) {
@@ -170,11 +180,15 @@ public class Player extends Character {
                 stateTime = 0;
             }
         }
+
+        isClimbing = false;
     }
+
+
 
     // Xử lý tất cả hành vi người chơi dựa trên phím bấm
     private void handleInput(float deltaTime) {
-        if (isPaused || isAttacking) return; // Nếu đang pause hoặc tấn công thì bỏ qua
+        if (isPaused || isAttacking|| isDead) return; // Nếu đang pause hoặc tấn công thì bỏ qua
 
         handleMovement(deltaTime); // Xử lý di chuyển
         handleDash();              // Xử lý dash
@@ -183,24 +197,22 @@ public class Player extends Character {
     }
 
     // Xử lý di chuyển nhân vật bằng phím WASD hoặc phím mũi tên
+ // Trong handleMovement()
     private void handleMovement(float deltaTime) {
         float dx = 0, dy = 0; // Hướng di chuyển
 
-        // Xác định hướng dựa trên phím bấm
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) dy += 1;
         if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) dy -= 1;
         if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) dx -= 1;
         if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) dx += 1;
 
-        float len = (float) Math.sqrt(dx * dx + dy * dy); // Chuẩn hóa hướng di chuyển
+        float len = (float) Math.sqrt(dx * dx + dy * dy);
         isMoving = len > 0;
 
         if (isMoving) {
-            // Cập nhật tọa độ
-            bounds.x += (dx / len) * speed * deltaTime;
-            bounds.y += (dy / len) * speed * deltaTime;
+            bounds.x += (dx / len) * speed * speedMultiplier * deltaTime;
+            bounds.y += (dy / len) * speed * speedMultiplier * deltaTime;
 
-            // Cập nhật hướng nhân vật
             if (Math.abs(dx) > Math.abs(dy)) {
                 direction = dx > 0 ? "right" : "left";
             } else {
@@ -208,6 +220,7 @@ public class Player extends Character {
             }
         }
     }
+
 
     // Xử lý dash khi nhấn Shift và hết cooldown
     private void handleDash() {
@@ -447,6 +460,23 @@ public class Player extends Character {
     public boolean isMenuOpen() { return menuOpen; }
 
     public void takeDamage(int damage) {
-        hp = Math.max(0, hp - damage); // Đảm bảo HP không âm
+        hp = Math.max(0, hp - damage);
+        if (hp == 0 && !isDead) {
+            onDeath(); // Gọi khi chết
+        }
     }
+
+    public void setSpeedMultiplier(float multiplier) {
+        this.speedMultiplier = multiplier;
+    }
+
+    public void blockMovement() {
+        bounds.x = lastPosition.x;
+        bounds.y = lastPosition.y;
+    }
+    public void setClimbing(boolean climbing) {
+        this.isClimbing = climbing;
+    }
+
+
 }

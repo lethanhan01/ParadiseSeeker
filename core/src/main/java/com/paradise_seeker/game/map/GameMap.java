@@ -1,93 +1,89 @@
 package com.paradise_seeker.game.map;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.paradise_seeker.game.entity.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class GameMap {
-    private Rectangle border;
-    private List<Rectangle> squares;
-    private List<Circle> circles;
-    private List<Polygon> triangles;
-    private ShapeRenderer shapeRenderer;
+    private static final int MAP_WIDTH = 10;
+    private static final int MAP_HEIGHT = 10;
+    private static final float CIRCLE_RADIUS = 0.5f;
+
+    private Texture backgroundTexture;
+    private List<Circle> obstacles;
     private Random random;
 
     public GameMap() {
-        // Đường biên map
-        border = new Rectangle(0, 0, 200, 150);
-
-        // Danh sách vật thể
-        squares = new ArrayList<>();
-        circles = new ArrayList<>();
-        triangles = new ArrayList<>();
+        backgroundTexture = new Texture("images/map/grassland.png"); // Đảm bảo file nằm đúng path
+        obstacles = new ArrayList<>();
         random = new Random();
-
-        // Tạo ngẫu nhiên 1000 vật thể
-        for (int i = 0; i < 1000; i++) {
-            int shapeType = random.nextInt(3) + 1;
-
-            float x = 5 + random.nextFloat() * (border.width - 10);
-            float y = 5 + random.nextFloat() * (border.height - 10);
-
-            switch (shapeType) {
-                case 1: // Vuông
-                    float size = 0.5f + random.nextFloat() * 19.5f; // 0.5 -> 20
-                    squares.add(new Rectangle(x, y, size, size));
-                    break;
-
-                case 2: // Tròn
-                    float radius = 0.3f + random.nextFloat() * 14.7f; // 0.3 -> 15
-                    circles.add(new Circle(x, y, radius));
-                    break;
-
-                case 3: // Tam giác
-                    float triangleSize = 1f + random.nextFloat() * 24f; // 1 -> 25
-                    float[] vertices = {
-                        x, y,
-                        x + triangleSize, y,
-                        x + triangleSize / 2f, y + triangleSize
-                    };
-                    triangles.add(new Polygon(vertices));
-                    break;
-            }
-        }
-
-        shapeRenderer = new ShapeRenderer();
+        generateMap();
     }
 
-    public void render(Camera camera) {
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(border.x, border.y, border.width, border.height);
-
-        shapeRenderer.setColor(Color.GREEN);
-        for (Rectangle square : squares) {
-            shapeRenderer.rect(square.x, square.y, square.width, square.height);
+    private void generateMap() {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            for (int y = 0; y < MAP_HEIGHT; y++) {
+                if (random.nextFloat() < 0.7f) {
+                    float centerX = x * 2 + 1;
+                    float centerY = y * 2 + 1;
+                    obstacles.add(new Circle(centerX, centerY, CIRCLE_RADIUS));
+                }
+            }
         }
+    }
 
-        shapeRenderer.setColor(Color.BLUE);
-        for (Circle circle : circles) {
+    public void render(SpriteBatch batch) {
+        batch.draw(backgroundTexture, 0, 0); // Vẽ ảnh nền tại vị trí (0,0)
+    }
+
+    public void renderObstacles(ShapeRenderer shapeRenderer) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i = 0; i < obstacles.size(); i++) {
+            Circle circle = obstacles.get(i);
+            if (isDangerous(i)) {
+                shapeRenderer.setColor(1, 0, 0, 1);
+            } else {
+                shapeRenderer.setColor(1, 1, 1, 1);
+            }
             shapeRenderer.circle(circle.x, circle.y, circle.radius);
         }
-
-        shapeRenderer.setColor(Color.YELLOW);
-        for (Polygon triangle : triangles) {
-            float[] v = triangle.getVertices();
-            shapeRenderer.triangle(v[0], v[1], v[2], v[3], v[4], v[5]);
-        }
-
         shapeRenderer.end();
     }
 
+    public void checkCollisions(Player player) {
+        Rectangle playerBounds = player.getBounds();
+        for (int i = 0; i < obstacles.size(); i++) {
+            Circle circle = obstacles.get(i);
+            if (intersects(playerBounds, circle)) {
+                if (isDangerous(i)) {
+                    player.takeDamage(10);
+                }
+            }
+        }
+    }
+
+    private boolean isDangerous(int index) {
+        return index % 3 == 0;
+    }
+
+    private boolean intersects(Rectangle rect, Circle circle) {
+        float closestX = Math.max(rect.x, Math.min(circle.x, rect.x + rect.width));
+        float closestY = Math.max(rect.y, Math.min(circle.y, rect.y + rect.height));
+
+        float distanceX = circle.x - closestX;
+        float distanceY = circle.y - closestY;
+
+        return (distanceX * distanceX + distanceY * distanceY) <= (circle.radius * circle.radius);
+    }
+
     public void dispose() {
-        shapeRenderer.dispose();
+        backgroundTexture.dispose();
     }
 }

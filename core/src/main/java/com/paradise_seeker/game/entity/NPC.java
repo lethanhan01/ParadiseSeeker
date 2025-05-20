@@ -10,9 +10,13 @@ public class NPC implements Renderable, Collidable, Interactable {
     private Polygon shape;
     private Rectangle bounds;
     private Texture texture;
+    private String name;
+    private String dialogue;
 
-    public NPC(float x, float y, float size, Texture texture) {
+    public NPC(float x, float y, float size, Texture texture, String name, String dialogue) {
         this.texture = texture;
+        this.name = name;
+        this.dialogue = dialogue;
 
         float half = size / 2f;
         float[] vertices = new float[] {
@@ -35,12 +39,16 @@ public class NPC implements Renderable, Collidable, Interactable {
         return bounds;
     }
 
-    @Override
     public void onCollision(Collidable other) {
+        //
     }
 
     @Override
+    public void onCollision(Player player) {
+        // NPC không gây sát thương cho người chơi
+    }
+
     public void interact(Player player) {
-        System.out.println("Xin chào! Tôi là NPC.");
+        System.out.println("Xin chào! Tôi là " + name + ". " + dialogue);
     }
 }

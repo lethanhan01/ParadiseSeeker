@@ -13,6 +13,8 @@ import com.paradise_seeker.game.entity.skill.*;
 
 // Lớp Player đại diện cho nhân vật điều khiển được, kế thừa từ lớp Character
 public class Player extends Character {
+	public static final int MAX_HP = 100; // Máu tối đa
+	public static final int MAX_MP = 100;  // Mana tối đa
     public PlayerSkill playerSkill1; // Kỹ năng 1 của người chơi
     public PlayerSkill playerSkill2; // Kỹ năng 2 của người chơi
     public Weapon weapon;            // Vũ khí đang dùng
@@ -143,7 +145,7 @@ public class Player extends Character {
     // Hồi phục mana mỗi giây
     public void regenMana(float deltaTime) {
         if (mp < 100) {
-            mp += 5 * deltaTime; // Hồi 5 mana mỗi giây
+            mp += 20 * deltaTime; // Hồi 5 mana mỗi giây
         }
     }
 
@@ -443,4 +445,8 @@ public class Player extends Character {
     // Trả về trạng thái pause và menu
     public boolean isPaused() { return isPaused; }
     public boolean isMenuOpen() { return menuOpen; }
+
+    public void takeDamage(int damage) {
+        hp = Math.max(0, hp - damage); // Đảm bảo HP không âm
+    }
 }

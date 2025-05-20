@@ -59,4 +59,10 @@ public class Monster extends Character  implements Renderable, Collidable {
         // AI di chuyển, tấn công, tuần tra
     }
 
+    @Override
+    public void onCollision(Player player) {
+        // Xử lý va chạm với người chơi
+        player.takeDamage(5); // Gây 5 sát thương cho người chơi
+    }
+
 }

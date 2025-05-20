@@ -1,18 +1,19 @@
 package com.paradise_seeker.game.entity.elite;
 
-public class GreatDragon extends Elite {
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.paradise_seeker.game.entity.Renderable;
+
+public class GreatDragon extends Elite implements Renderable {
 	// Great Dragon specific attributes and methods
 	public GreatDragon() {
 		super();
 		// Initialize attributes specific to Great Dragon
 	}
 
-	@Override
 	public void onDeath() {
 		// Handle Great Dragon's death
 	}
 
-	@Override
 	public void move() {
 		// Implement movement logic for Great Dragon
 	}

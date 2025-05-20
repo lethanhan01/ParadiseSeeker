@@ -15,8 +15,6 @@ public abstract class Character {
     public Character(Rectangle bounds, int hp, int mp, int atk, float speed) {
         this.bounds = bounds;
         this.hp = hp;
-        this.hp = hp;
-        this.mp = mp;
         this.mp = mp;
         this.atk = atk;
         this.speed = speed;

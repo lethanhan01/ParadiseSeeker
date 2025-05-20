@@ -4,27 +4,43 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
+import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Player;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.paradise_seeker.game.map.GameMap;
+import com.paradise_seeker.game.ui.HUD;
 import com.paradise_seeker.game.entity.skill.LaserBeam;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameScreen implements Screen {
     final Main game;
     Player player;
     Music music;
-
-    // Danh sách tia laser đang hoạt động
-    public static Array<LaserBeam> activeProjectiles = new Array<>();
+    private float cameraLerp = 0.1f;
+    private GameMap gameMap;
+    private HUD hud;
+    private OrthographicCamera gameCamera;
+    private OrthographicCamera hudCamera;
+    private ShapeRenderer shapeRenderer;
+    public static List<LaserBeam> activeProjectiles = new ArrayList<>();
 
     public GameScreen(final Main game) {
         this.game = game;
         this.player = new Player(new Rectangle(5, 5, 1, 1));
+        this.gameMap = new GameMap();
+        this.hud = new HUD(player);
+        this.shapeRenderer = new ShapeRenderer();
 
-        // Nhạc nền
+        this.gameCamera = new OrthographicCamera();
+        this.gameCamera.setToOrtho(false, 16, 10);
+        this.hudCamera = new OrthographicCamera();
+        this.hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
         music = Gdx.audio.newMusic(Gdx.files.internal("music/music.mp3"));
         music.setLooping(true);
         music.setVolume(0.5f);
@@ -37,39 +53,50 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Cập nhật logic người chơi
         player.update(delta);
 
-        // Cập nhật các laser và loại bỏ nếu đã hết hiệu lực
-        for (int i = 0; i < activeProjectiles.size; i++) {
-            LaserBeam laser = activeProjectiles.get(i);
-            laser.update();
-            if (!laser.isActive()) {
-                activeProjectiles.removeIndex(i);
-                i--;
+        for (int i = activeProjectiles.size() - 1; i >= 0; i--) {
+            LaserBeam projectile = activeProjectiles.get(i);
+            projectile.update();
+            if (!projectile.isActive()) {
+                activeProjectiles.remove(i);
             }
         }
 
-        // Xóa màn hình và vẽ
+        Vector2 playerCenter = new Vector2(
+            player.bounds.x + player.bounds.width / 2,
+            player.bounds.y + player.bounds.height / 2
+        );
+
+        Vector2 currentCameraPos = new Vector2(gameCamera.position.x, gameCamera.position.y);
+        Vector2 newCameraPos = new Vector2(
+            currentCameraPos.x + (playerCenter.x - currentCameraPos.x) * cameraLerp,
+            currentCameraPos.y + (playerCenter.y - currentCameraPos.y) * cameraLerp
+        );
+
+        gameCamera.position.set(newCameraPos.x, newCameraPos.y, 0);
+        gameCamera.update();
+
         ScreenUtils.clear(Color.BLACK);
-        game.viewport.apply();
-        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
+
+        game.batch.setProjectionMatrix(gameCamera.combined);
         game.batch.begin();
-
-        // Vẽ người chơi
+        gameMap.render(game.batch); // Vẽ map nền từ ảnh
         player.render(game.batch);
-
-        // Vẽ laser
-        for (LaserBeam laser : activeProjectiles) {
-            laser.render(game.batch);
+        for (LaserBeam projectile : activeProjectiles) {
+            projectile.render(game.batch);
         }
-
         game.batch.end();
+
+        hudCamera.update();
+        hud.shapeRenderer.setProjectionMatrix(hudCamera.combined);
+        hud.render();
     }
 
     @Override
     public void resize(int width, int height) {
         game.viewport.update(width, height, true);
+        hudCamera.setToOrtho(false, width, height);
     }
 
     @Override public void pause() {}
@@ -79,5 +106,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         music.dispose();
+        hud.dispose();
+        gameMap.dispose();
     }
 }

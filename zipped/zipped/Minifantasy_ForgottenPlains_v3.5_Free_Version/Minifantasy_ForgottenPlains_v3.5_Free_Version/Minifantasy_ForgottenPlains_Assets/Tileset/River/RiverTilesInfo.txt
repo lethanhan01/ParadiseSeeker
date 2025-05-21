@@ -1,1 +1,0 @@
-All river sprite sheets are divided into 4 frames. Use these frames to create the water flow animations.

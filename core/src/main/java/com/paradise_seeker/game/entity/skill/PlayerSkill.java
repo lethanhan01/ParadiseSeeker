@@ -146,7 +146,7 @@ public class PlayerSkill implements Skill {
                 case "right": startX += offset; break;
             }
             // Clamp tọa độ trong biên map
-            float MIN_X = 0f, MAX_X = 64f, MIN_Y = 0f, MAX_Y = 36f;
+            float MIN_X = 0f, MAX_X = 100f, MIN_Y = 0f, MAX_Y = 100f;
             startX = Math.max(MIN_X, Math.min(MAX_X, startX));
             startY = Math.max(MIN_Y, Math.min(MAX_Y, startY));
             Animation<TextureRegion> anim = skillAnimations.get(direction);

@@ -165,4 +165,8 @@ public class GameMap {
         float dy = centerY - y;
         return dx * dx + dy * dy <= radius * radius;
     }
+
+    public List<TestCreep> getCreeps() { return creeps; }
+    public List<TestElite> getElites() { return elites; }
+    public List<TestBoss> getBosses() { return bosses; }
 }

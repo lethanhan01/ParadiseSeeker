@@ -499,12 +499,16 @@ public class Player extends Character {
     // Xử lý kỹ năng khi nhấn phím U và I
     private void handleSkills() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
-            // Sử dụng kỹ năng 1
-            playerSkill1.castSkill(atk, bounds, direction);
+            if (mp >= 2) {
+                mp -= 2;
+                playerSkill1.castSkill(atk, bounds, direction);
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            // Sử dụng kỹ năng 2
-            playerSkill2.castSkill(atk, bounds, direction);
+            if (mp >= 2) {
+                mp -= 2;
+                playerSkill2.castSkill(atk, bounds, direction);
+            }
         }
     }
     public void pushBackFrom(Rectangle source) {

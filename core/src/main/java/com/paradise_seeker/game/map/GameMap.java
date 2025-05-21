@@ -10,7 +10,8 @@ import com.paradise_seeker.game.entity.object.*;
 import com.paradise_seeker.game.entity.monster.boss.TitanKing;
 import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
-
+import com.paradise_seeker.game.entity.object.HPitem;
+import com.paradise_seeker.game.entity.object.MPitem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,11 @@ public class GameMap {
     private List<Rectangle> occupiedAreas; // ✅ để kiểm tra trùng
     private List<TitanKing> bosses;
     private List<com.paradise_seeker.game.entity.Monster> elites;
-    private List<com.paradise_seeker.game.entity.Monster> creeps; 
+    private List<com.paradise_seeker.game.entity.Monster> creeps;
+    private List<HPitem> hpItems = new ArrayList<>();
+    private List<MPitem> mpItems = new ArrayList<>();
+    private float itemSpawnTimer = 0f;
+    private static final float ITEM_SPAWN_INTERVAL = 120f; // 2 phút
 
     public GameMap(Player player) {
         backgroundTexture = new Texture("images/map/grassland.png");
@@ -44,6 +49,7 @@ public class GameMap {
 
         generateObjects();
         generateMonsters(player);
+        generateRandomItems(5, 5); // 5 bình máu, 5 bình MP
     }
 
     private void generateObjects() {
@@ -133,6 +139,8 @@ public class GameMap {
             object.render(batch);
         }
 
+        for (HPitem item : hpItems) item.render(batch);
+        for (MPitem item : mpItems) item.render(batch);
         for (TitanKing b : bosses) b.render(batch);
         for (com.paradise_seeker.game.entity.Monster e : elites) e.render(batch);
         for (com.paradise_seeker.game.entity.Monster c : creeps) c.render(batch);
@@ -142,10 +150,30 @@ public class GameMap {
     	for (TitanKing b : bosses) b.update(deltaTime);
         for (com.paradise_seeker.game.entity.Monster e : elites) e.update(deltaTime);
         for (com.paradise_seeker.game.entity.Monster c : creeps) c.update(deltaTime);
+        // Xóa item đã nhặt
+        hpItems.removeIf(item -> !item.isActive());
+        mpItems.removeIf(item -> !item.isActive());
+        // Tăng timer và random spawn item mới
+        itemSpawnTimer += deltaTime;
+        if (itemSpawnTimer >= ITEM_SPAWN_INTERVAL) {
+            spawnRandomItem();
+            itemSpawnTimer = 0f;
+        }
     }
 
     public void checkCollisions(Player player) {
         CollisionSystem.checkCollisions(player, collidables);
+        // Kiểm tra va chạm với item
+        for (HPitem item : hpItems) {
+            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                item.onCollision(player);
+            }
+        }
+        for (MPitem item : mpItems) {
+            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                item.onCollision(player);
+            }
+        }
     }
 
     public void dispose() {
@@ -187,4 +215,52 @@ public class GameMap {
         return elites;
     }
     public List<TitanKing> getBosses() { return bosses; }
+
+    private void generateRandomItems(int hpCount, int mpCount) {
+        Random rand = new Random();
+        String[] hpTextures = {
+            "assets/items/potion3.png",
+            "assets/items/potion4.png",
+            "assets/items/potion5.png"
+        };
+        int[] hpValues = {20, 40, 60};
+        String[] mpTextures = {
+            "assets/items/potion9.png",
+            "assets/items/potion10.png",
+            "assets/items/potion11.png"
+        };
+        int[] mpValues = {15, 30, 50};
+        for (int i = 0; i < hpCount; i++) {
+            int idx = rand.nextInt(hpTextures.length);
+            float x = rand.nextFloat() * (MAP_WIDTH - 1);
+            float y = rand.nextFloat() * (MAP_HEIGHT - 1);
+            hpItems.add(new HPitem(x, y, 1, hpTextures[idx], hpValues[idx]));
+        }
+        for (int i = 0; i < mpCount; i++) {
+            int idx = rand.nextInt(mpTextures.length);
+            float x = rand.nextFloat() * (MAP_WIDTH - 1);
+            float y = rand.nextFloat() * (MAP_HEIGHT - 1);
+            mpItems.add(new MPitem(x, y, 1, mpTextures[idx], mpValues[idx]));
+        }
+    }
+
+    private void spawnRandomItem() {
+        Random rand = new Random();
+        boolean spawnHP = rand.nextBoolean();
+        if (spawnHP) {
+            String[] hpTextures = {"assets/items/potion3.png", "assets/items/potion4.png", "assets/items/potion5.png"};
+            int[] hpValues = {20, 40, 60};
+            int idx = rand.nextInt(hpTextures.length);
+            float x = rand.nextFloat() * (MAP_WIDTH - 1);
+            float y = rand.nextFloat() * (MAP_HEIGHT - 1);
+            hpItems.add(new HPitem(x, y, 1, hpTextures[idx], hpValues[idx]));
+        } else {
+            String[] mpTextures = {"assets/items/potion9.png", "assets/items/potion10.png", "assets/items/potion11.png"};
+            int[] mpValues = {15, 30, 50};
+            int idx = rand.nextInt(mpTextures.length);
+            float x = rand.nextFloat() * (MAP_WIDTH - 1);
+            float y = rand.nextFloat() * (MAP_HEIGHT - 1);
+            mpItems.add(new MPitem(x, y, 1, mpTextures[idx], mpValues[idx]));
+        }
+    }
 }

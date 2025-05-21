@@ -9,10 +9,10 @@ public class TestBoss extends Monster {
     private int mp;
 
     public TestBoss(float x, float y) {
-        super(new Rectangle(x, y, 9f, 9f),
-              new Texture(Gdx.files.internal("images/Entity/characters/monsters/test/testboss.png")));
+        super(new Rectangle(x, y, 2f, 1f), // bounds va chạm nhỏ
+              new Texture(Gdx.files.internal("images/Entity/characters/monsters/test/testboss.png")),
+              9f, 9f); // sprite hiển thị to
         this.hp = 150;
-        this.mp = 100;
         this.atk = 15;
         this.speed = 1.5f;
     }

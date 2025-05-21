@@ -1,6 +1,7 @@
 package com.paradise_seeker.game.main;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -29,16 +30,20 @@ public class GameScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     public static List<LaserBeam> activeProjectiles = new ArrayList<>();
 
+    private final float BASE_VIRTUAL_WIDTH = 16f;
+    private final float BASE_VIRTUAL_HEIGHT = 10f;
+    private float zoom = 1.0f;
+
     public GameScreen(final Main game) {
         this.game = game;
         this.player = new Player(new Rectangle(5, 5, 1, 1));
-        this.gameMap = new GameMap(player); // ✅ Sửa chỗ này
-        this.player.setGameMap(gameMap); // ✅ Liên kết ngược
+        this.gameMap = new GameMap(player);
+        this.player.setGameMap(gameMap);
         this.hud = new HUD(player);
         this.shapeRenderer = new ShapeRenderer();
 
         this.gameCamera = new OrthographicCamera();
-        this.gameCamera.setToOrtho(false, 16, 10);
+        this.gameCamera.setToOrtho(false, BASE_VIRTUAL_WIDTH, BASE_VIRTUAL_HEIGHT);
         this.hudCamera = new OrthographicCamera();
         this.hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -52,14 +57,14 @@ public class GameScreen implements Screen {
         music.play();
     }
 
-    
     @Override
     public void render(float delta) {
-        player.update(delta);             // ✅ 1. Di chuyển nhân vật
-        gameMap.update(delta); // ✅ Gọi để cập nhật hành vi monster mỗi frame
-        gameMap.checkCollisions(player);  // ✅ 2. Kiểm tra va chạm và rollback nếu cần
+        handleZoomInput();
 
-        // Cập nhật đạn
+        player.update(delta);
+        gameMap.update(delta);
+        gameMap.checkCollisions(player);
+
         for (int i = activeProjectiles.size() - 1; i >= 0; i--) {
             LaserBeam projectile = activeProjectiles.get(i);
             projectile.update();
@@ -68,7 +73,6 @@ public class GameScreen implements Screen {
             }
         }
 
-        // Cập nhật camera
         Vector2 playerCenter = new Vector2(
             player.bounds.x + player.bounds.width / 2,
             player.bounds.y + player.bounds.height / 2
@@ -81,19 +85,17 @@ public class GameScreen implements Screen {
         );
 
         gameCamera.position.set(newCameraPos.x, newCameraPos.y, 0);
+        gameCamera.viewportWidth = BASE_VIRTUAL_WIDTH * zoom;
+        gameCamera.viewportHeight = BASE_VIRTUAL_HEIGHT * zoom;
         gameCamera.update();
 
-        // Render
         ScreenUtils.clear(Color.BLACK);
         game.batch.setProjectionMatrix(gameCamera.combined);
         game.batch.begin();
         gameMap.render(game.batch);
         player.render(game.batch);
-        
-        // Render skills
         player.playerSkill1.render(game.batch);
         player.playerSkill2.render(game.batch);
-        
         for (LaserBeam projectile : activeProjectiles) {
             projectile.render(game.batch);
         }
@@ -104,6 +106,13 @@ public class GameScreen implements Screen {
         hud.render();
     }
 
+    private void handleZoomInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+            zoom = Math.min(3.0f, zoom + 0.1f);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.EQUALS) || Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
+            zoom = Math.max(0.5f, zoom - 0.1f);
+        }
+    }
 
     @Override
     public void resize(int width, int height) {

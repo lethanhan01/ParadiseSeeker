@@ -7,10 +7,12 @@ import com.paradise_seeker.game.entity.Monster;
 
 public class TestCreep extends Monster {
     public TestCreep(float x, float y) {
-        super(new Rectangle(x, y, 1f, 1f),
-              new Texture(Gdx.files.internal("images/Entity/characters/monsters/test/testcreep.png")));
+        super(new Rectangle(x, y, 2f, 1f),
+              new Texture(Gdx.files.internal("images/Entity/characters/monsters/test/testcreep.png")),
+              4f, 4f);
         this.hp = 20;
         this.atk = 4;
         this.speed = 3f;
     }
 }
+

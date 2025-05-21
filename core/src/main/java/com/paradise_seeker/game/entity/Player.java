@@ -507,5 +507,19 @@ public class Player extends Character {
             playerSkill2.castSkill(atk, bounds, direction);
         }
     }
+    public void pushBackFrom(Rectangle source) {
+        float dx = bounds.x - source.x;
+        float dy = bounds.y - source.y;
+        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
+        if (distance == 0) return;
+
+        // Đẩy nhẹ ra xa khỏi quái
+        float pushAmount = 0.1f;
+        bounds.x += (dx / distance) * pushAmount;
+        bounds.y += (dy / distance) * pushAmount;
+    }
+
+
 
 }

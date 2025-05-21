@@ -219,15 +219,15 @@ public class GameMap {
     private void generateRandomItems(int hpCount, int mpCount) {
         Random rand = new Random();
         String[] hpTextures = {
-            "assets/items/potion3.png",
-            "assets/items/potion4.png",
-            "assets/items/potion5.png"
+            "items/potion/potion3.png",
+            "items/potion/potion4.png",
+            "items/potion/potion5.png"
         };
         int[] hpValues = {20, 40, 60};
         String[] mpTextures = {
-            "assets/items/potion9.png",
-            "assets/items/potion10.png",
-            "assets/items/potion11.png"
+            "items/potion/potion9.png",
+            "items/potion/potion10.png",
+            "items/potion/potion11.png"
         };
         int[] mpValues = {15, 30, 50};
         for (int i = 0; i < hpCount; i++) {
@@ -248,14 +248,14 @@ public class GameMap {
         Random rand = new Random();
         boolean spawnHP = rand.nextBoolean();
         if (spawnHP) {
-            String[] hpTextures = {"assets/items/potion3.png", "assets/items/potion4.png", "assets/items/potion5.png"};
+            String[] hpTextures = {"items/potion/potion3.png", "items/potion/potion4.png", "items/potion/potion5.png"};
             int[] hpValues = {20, 40, 60};
             int idx = rand.nextInt(hpTextures.length);
             float x = rand.nextFloat() * (MAP_WIDTH - 1);
             float y = rand.nextFloat() * (MAP_HEIGHT - 1);
             hpItems.add(new HPitem(x, y, 1, hpTextures[idx], hpValues[idx]));
         } else {
-            String[] mpTextures = {"assets/items/potion9.png", "assets/items/potion10.png", "assets/items/potion11.png"};
+            String[] mpTextures = {"items/potion/potion9.png", "items/potion/potion10.png", "items/potion/potion11.png"};
             int[] mpValues = {15, 30, 50};
             int idx = rand.nextInt(mpTextures.length);
             float x = rand.nextFloat() * (MAP_WIDTH - 1);

@@ -87,6 +87,11 @@ public class GameScreen implements Screen {
         game.batch.begin();
         gameMap.render(game.batch);
         player.render(game.batch);
+        
+        // Render skills
+        player.playerSkill1.render(game.batch);
+        player.playerSkill2.render(game.batch);
+        
         for (LaserBeam projectile : activeProjectiles) {
             projectile.render(game.batch);
         }

@@ -72,8 +72,8 @@ public class Player extends Character {
     public Player(Rectangle bounds) {
         super(bounds, 100, 50, 10, 5f); // Gọi constructor của Character: (bounds, hp, mp, atk, speed)
         loadAnimations();               // Load các animation cho nhân vật
-        this.playerSkill1 = new PlayerSkill(); // Khởi tạo kỹ năng 1
-        this.playerSkill2 = new PlayerSkill(); // Khởi tạo kỹ năng 2
+        this.playerSkill1 = new PlayerSkill(true);  // Khởi tạo kỹ năng 1
+        this.playerSkill2 = new PlayerSkill(false); // Khởi tạo kỹ năng 2
     }
 
     // Load tất cả animation và texture của nhân vật
@@ -194,6 +194,7 @@ public class Player extends Character {
         handleDash();              // Xử lý dash
         handleAttack();           // Xử lý tấn công
         handleShield();           // Xử lý giơ khiên
+        handleSkills();           // Xử lý kỹ năng
     }
 
     // Xử lý di chuyển nhân vật bằng phím WASD hoặc phím mũi tên
@@ -478,5 +479,16 @@ public class Player extends Character {
         this.isClimbing = climbing;
     }
 
+    // Xử lý kỹ năng khi nhấn phím U và I
+    private void handleSkills() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
+            // Sử dụng kỹ năng 1
+            playerSkill1.castSkill(atk, bounds, direction);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+            // Sử dụng kỹ năng 2
+            playerSkill2.castSkill(atk, bounds, direction);
+        }
+    }
 
 }

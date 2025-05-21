@@ -1,3 +1,0 @@
-***These sprite sheets are outdated.***
-
-They are still being included here because some devs might be still using this version of the graphics. 

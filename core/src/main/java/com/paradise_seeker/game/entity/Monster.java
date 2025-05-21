@@ -1,18 +1,20 @@
 package com.paradise_seeker.game.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 public class Monster extends Character implements Renderable, Collidable {
+    private float spawnX;
+    private float spawnY;
 
     private Texture texture;
     public Player player;
 
     private float attackCooldown = 1f;
     private float attackTimer = 0f;
-    private boolean isDead = false;
+    public boolean isDead = false;
 
     private boolean isAggressive = false;
     private float aggroTimer = 0f;
@@ -20,13 +22,20 @@ public class Monster extends Character implements Renderable, Collidable {
     protected float spriteWidth;
     protected float spriteHeight;
 
+    // Lang thang quanh spawn
+    private float wanderTimer = 0f;
+    private float wanderCooldown = 0.5f;
+    private float wanderTargetX;
+    private float wanderTargetY;
+
     public Monster(Rectangle bounds, Texture texture, float spriteWidth, float spriteHeight) {
         super(bounds, 50, 20, 8, 3f); // hp, atk, speed, mana...
         this.texture = texture;
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
+        this.spawnX = bounds.x;
+        this.spawnY = bounds.y;
     }
-
 
     public void update(float deltaTime) {
         if (isDead || player == null || player.isDead) return;
@@ -36,20 +45,20 @@ public class Monster extends Character implements Renderable, Collidable {
         if (isAggressive) {
             aggroTimer -= deltaTime;
 
-            // Vẫn tiếp tục đuổi nếu còn thời gian hoặc còn gần người chơi
             if (aggroTimer <= 0f && !isNearPlayer()) {
                 isAggressive = false;
+            } else {
+                approachPlayer(deltaTime);
+
+                if (isNearPlayer() && attackTimer <= 0) {
+                    attackPlayer();
+                    attackTimer = attackCooldown;
+                }
                 return;
-            }
-
-            approachPlayer(deltaTime);
-
-            if (isNearPlayer() && attackTimer <= 0) {
-                attackPlayer();
-                attackTimer = attackCooldown;
             }
         }
 
+        wander(deltaTime); // Nếu không aggro thì đi lang thang
     }
 
     private void approachPlayer(float deltaTime) {
@@ -63,10 +72,55 @@ public class Monster extends Character implements Renderable, Collidable {
             bounds.x += moveX;
             bounds.y += moveY;
 
-            System.out.println("Monster is moving to: (" + bounds.x + ", " + bounds.y + ")");
         }
     }
 
+    private void wander(float deltaTime) {
+        // Nếu đi quá xa vùng bán kính 5 ô, quay lại
+        float maxDistance = 2f * bounds.width;
+        float distFromSpawn = Vector2.dst(bounds.x, bounds.y, spawnX, spawnY);
+
+        if (distFromSpawn > maxDistance) {
+            returnToSpawn(deltaTime);
+            return;
+        }
+
+        wanderTimer -= deltaTime;
+
+        if (wanderTimer <= 0f) {
+            wanderTimer = wanderCooldown;
+
+            float angle = (float)(Math.random() * Math.PI * 2);
+            wanderTargetX = spawnX + (float)Math.cos(angle) * maxDistance;
+            wanderTargetY = spawnY + (float)Math.sin(angle) * maxDistance;
+        }
+
+        float dx = wanderTargetX - bounds.x;
+        float dy = wanderTargetY - bounds.y;
+        float distance = (float)Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 0.1f) {
+            float moveX = (dx / distance) * speed * deltaTime;
+            float moveY = (dy / distance) * speed * deltaTime;
+            bounds.x += moveX;
+            bounds.y += moveY;
+
+        }
+    }
+
+    private void returnToSpawn(float deltaTime) {
+        float dx = spawnX - bounds.x;
+        float dy = spawnY - bounds.y;
+        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 0.1f) {
+            float moveX = (dx / distance) * speed * deltaTime;
+            float moveY = (dy / distance) * speed * deltaTime;
+            bounds.x += moveX;
+            bounds.y += moveY;
+
+        }
+    }
 
     private boolean isNearPlayer() {
         float thisCenterX = bounds.x + bounds.width / 2;
@@ -79,26 +133,19 @@ public class Monster extends Character implements Renderable, Collidable {
         float dy = thisCenterY - playerCenterY;
 
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
+        float effectiveRange = Math.max(bounds.width, bounds.height);
 
-        float effectiveRange = Math.max(bounds.width, bounds.height); // hoặc bạn có thể nhân thêm 0.8f để không nhạy quá
         boolean near = distance < effectiveRange;
 
-        if (near) {
-            System.out.println("Monster is near player → ATTACK!");
-        }
 
         return near;
     }
 
-
     private void attackPlayer() {
         if (!player.isDead) {
-            System.out.println("Monster is ATTACKING!");
             player.takeDamage(atk);
-
-            // Kích hoạt hoặc duy trì trạng thái aggressive
             isAggressive = true;
-            aggroTimer = AGGRO_DURATION; // Reset lại thời gian đuổi đánh
+            aggroTimer = AGGRO_DURATION;
         }
     }
 
@@ -108,12 +155,8 @@ public class Monster extends Character implements Renderable, Collidable {
             isAggressive = true;
             aggroTimer = AGGRO_DURATION;
         }
-        player.pushBackFrom(bounds); // bạn có thể định nghĩa hàm pushBackFrom
-
-        // optional: đẩy lùi player
+        player.pushBackFrom(bounds);
     }
-
-
 
     @Override
     public void move() {
@@ -123,17 +166,14 @@ public class Monster extends Character implements Renderable, Collidable {
         bounds.y += randomY * speed;
     }
 
-    
     @Override
     public void render(SpriteBatch batch) {
         if (!isDead) {
             float drawX = bounds.x - (spriteWidth - bounds.width) / 2f;
             float drawY = bounds.y - (spriteHeight - bounds.height) / 2f;
-
             batch.draw(texture, drawX, drawY, spriteWidth, spriteHeight);
         }
     }
-
 
     @Override
     public void onDeath() {
@@ -145,7 +185,6 @@ public class Monster extends Character implements Renderable, Collidable {
         if (damage > 0) {
             isAggressive = true;
             aggroTimer = AGGRO_DURATION;
-            System.out.println("Monster took damage, started chasing.");
         }
 
         hp = Math.max(0, hp - damage);

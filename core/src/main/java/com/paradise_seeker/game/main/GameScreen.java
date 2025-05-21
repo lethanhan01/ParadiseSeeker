@@ -32,7 +32,8 @@ public class GameScreen implements Screen {
     public GameScreen(final Main game) {
         this.game = game;
         this.player = new Player(new Rectangle(5, 5, 1, 1));
-        this.gameMap = new GameMap();
+        this.gameMap = new GameMap(player); // ✅ Sửa chỗ này
+        this.player.setGameMap(gameMap); // ✅ Liên kết ngược
         this.hud = new HUD(player);
         this.shapeRenderer = new ShapeRenderer();
 
@@ -55,6 +56,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         player.update(delta);             // ✅ 1. Di chuyển nhân vật
+        gameMap.update(delta); // ✅ Gọi để cập nhật hành vi monster mỗi frame
         gameMap.checkCollisions(player);  // ✅ 2. Kiểm tra va chạm và rollback nếu cần
 
         // Cập nhật đạn

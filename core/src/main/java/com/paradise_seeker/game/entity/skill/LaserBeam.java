@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class LaserBeam {
     private float x, y;
-    private float speed = 12f; // Tăng tốc cho mượt
+    private float speed = 10f; // Tăng tốc độ cho đạn bay nhanh hơn
     private int damage;
     private boolean active = true;
     private Rectangle hitbox;
@@ -62,17 +62,29 @@ public class LaserBeam {
         }
         if (animToDraw != null) {
             TextureRegion frame = animToDraw.getKeyFrame(stateTime, false);
-            float width = 1.5f, height = 1.5f;
+
+            float regionWidth = frame.getRegionWidth();
+            float regionHeight = frame.getRegionHeight();
+
+            float width, height, scale;
+            float targetBase = 0.75f; // Tăng kích thước mong muốn lên (ví dụ 0.75f)
+
+            if (directionRaw.equals("left") || directionRaw.equals("right")) {
+                // Scale theo chiều cao
+                scale = targetBase / regionHeight;
+            } else {
+                // Scale theo chiều ngang
+                scale = targetBase / regionWidth;
+            }
+            width = regionWidth * scale;
+            height = regionHeight * scale;
+
             float drawX = x - width / 2f;
             float drawY = y - height / 2f;
-            float originX = width / 2f, originY = height / 2f;
+            float originX = width / 2f;
+            float originY = height / 2f;
             float rotation = 0f;
-            switch (directionRaw) {
-                case "down": rotation = 0f; break;
-                case "up": rotation = 180f; break;
-                case "left": rotation = 90f; break;
-                case "right": rotation = -90f; break;
-            }
+
             batch.draw(frame, drawX, drawY, originX, originY, width, height, 1f, 1f, rotation);
         }
     }

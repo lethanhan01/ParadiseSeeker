@@ -63,6 +63,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+    	if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+	        pause();
+
+	    }
         handleZoomInput();
 
         player.update(delta);
@@ -148,7 +152,10 @@ public class GameScreen implements Screen {
         hudCamera.setToOrtho(false, width, height);
     }
 
-    @Override public void pause() {}
+    @Override public void pause() {
+    	game.setScreen(new PauseScreen(game));
+    	music.pause();
+    }
     @Override public void resume() {}
     @Override public void hide() {}
 

@@ -15,12 +15,12 @@ public class MainMenuScreen implements Screen {
     Vector2 touchPos;
     Texture characterIcon;
     int selectedIndex = 0;
-    String[] menuItems = {"NEW GAME", "LOAD GAME", "EXIT"};
+    String[] menuItems = {"NEW GAME", "LOAD GAME", "SETTINGS", "EXIT"};
 
     public MainMenuScreen(final Main game) {
         this.game = game;
         touchPos = new Vector2();
-        characterIcon = new Texture(Gdx.files.internal("images/Entity/characters/s2.png"));
+        characterIcon = new Texture(Gdx.files.internal("images/Entity/characters/player/char_shielded_static_up.png"));
     }
 
     @Override
@@ -40,12 +40,13 @@ public class MainMenuScreen implements Screen {
         game.batch.begin();
 
         // Tiêu đề
+        game.font.setColor(Color.RED);
         GlyphLayout layout = new GlyphLayout();
-        String title = "Paradise_Seeker";
+        String title = "PARADISE SEEKER";
         layout.setText(game.font, title);
         float xTitle = (viewportWidth - layout.width) / 2f;
         float yTitle = viewportHeight - 1f;
-        game.font.setColor(Color.RED);
+        
         game.font.draw(game.batch, layout, xTitle, yTitle);
 
         // Icon nhân vật
@@ -62,7 +63,7 @@ public class MainMenuScreen implements Screen {
             String item = menuItems[i];
             layout.setText(game.font, item);
             float xItem = (viewportWidth - layout.width) / 2f;
-            float yItem = yIcon - 1f - i * 1.5f;
+            float yItem = yIcon - 1f - i * 1f;
             game.font.draw(game.batch, item, xItem, yItem);
 
             // Con trỏ >
@@ -115,13 +116,26 @@ public class MainMenuScreen implements Screen {
     private void selectMenuItem() {
         switch (selectedIndex) {
             case 0:
-                game.setScreen(new GameScreen(game));
-                dispose();
+            	if (game.newGame == null) {
+					game.newGame = new GameScreen(game);
+				}else {
+					game.currentGame = null;
+					game.newGame = new GameScreen(game);
+				}
+            	game.setScreen(game.newGame);
+                game.currentGame = game.newGame;
                 break;
             case 1:
-                // Load game logic
+            	if (game.currentGame == null) {
+            		game.setScreen(new MainMenuScreen(game));
+            	}else {
+                game.setScreen(game.currentGame);
+            	}
                 break;
             case 2:
+                game.setScreen(new SettingScreen(game));
+                break;
+            case 3:
                 Gdx.app.exit();
                 break;
         }

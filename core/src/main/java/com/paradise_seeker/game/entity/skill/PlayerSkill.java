@@ -34,16 +34,28 @@ public class PlayerSkill implements Skill {
     private void loadSkillAnimations() {
         String[] directions = {"up", "down", "left", "right"};
         int FRAME_ROWS = 5; // số frame dọc
+        int FRAME_COLS = 5; // số frame ngang (giả sử số frame ngang bằng số frame dọc)
         if (isSkill1) {
             for (String dir : directions) {
                 String path = "images/Entity/skills/PlayerSkills/Skill1/Skill1_" + dir + ".png";
                 try {
                     System.out.println("Loading: " + path);
                     Texture sheet = new Texture(Gdx.files.internal(path));
-                    TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth(), sheet.getHeight() / FRAME_ROWS);
-                    TextureRegion[] frames = new TextureRegion[FRAME_ROWS];
-                    for (int i = 0; i < FRAME_ROWS; i++) {
-                        frames[i] = tmp[i][0];
+                    TextureRegion[] frames;
+                    if (dir.equals("left") || dir.equals("right")) {
+                        // Sprite sheet ngang (nhiều cột, 1 dòng)
+                        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth() / FRAME_COLS, sheet.getHeight());
+                        frames = new TextureRegion[FRAME_COLS];
+                        for (int i = 0; i < FRAME_COLS; i++) {
+                            frames[i] = tmp[0][i];
+                        }
+                    } else {
+                        // Sprite sheet dọc (1 cột, nhiều dòng)
+                        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth(), sheet.getHeight() / FRAME_ROWS);
+                        frames = new TextureRegion[FRAME_ROWS];
+                        for (int i = 0; i < FRAME_ROWS; i++) {
+                            frames[i] = tmp[i][0];
+                        }
                     }
                     skillAnimations.put(dir, new Animation<>(0.1f, frames));
                 } catch (Exception e) {
@@ -56,10 +68,19 @@ public class PlayerSkill implements Skill {
                 try {
                     System.out.println("Loading: " + path);
                     Texture sheet = new Texture(Gdx.files.internal(path));
-                    TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth(), sheet.getHeight() / FRAME_ROWS);
-                    TextureRegion[] frames = new TextureRegion[FRAME_ROWS];
-                    for (int i = 0; i < FRAME_ROWS; i++) {
-                        frames[i] = tmp[i][0];
+                    TextureRegion[] frames;
+                    if (dir.equals("left") || dir.equals("right")) {
+                        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth() / FRAME_COLS, sheet.getHeight());
+                        frames = new TextureRegion[FRAME_COLS];
+                        for (int i = 0; i < FRAME_COLS; i++) {
+                            frames[i] = tmp[0][i];
+                        }
+                    } else {
+                        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth(), sheet.getHeight() / FRAME_ROWS);
+                        frames = new TextureRegion[FRAME_ROWS];
+                        for (int i = 0; i < FRAME_ROWS; i++) {
+                            frames[i] = tmp[i][0];
+                        }
                     }
                     skillAnimations.put(dir, new Animation<>(0.1f, frames));
                 } catch (Exception e) {

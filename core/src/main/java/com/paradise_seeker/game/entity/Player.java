@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 // Import các kỹ năng người chơi
 import com.paradise_seeker.game.entity.skill.*;
+import com.paradise_seeker.game.map.GameMap;
 
 // Lớp Player đại diện cho nhân vật điều khiển được, kế thừa từ lớp Character
 public class Player extends Character {
@@ -53,7 +54,7 @@ public class Player extends Character {
     private Animation<TextureRegion> climbUp, climbDown, climbUpAfter, climbDownBefore;
 
     // Thêm biến death
-    private boolean isDead = false;
+    public boolean isDead = false;
     private Animation<TextureRegion> deathAnimation;
 
     // Thêm biến pushing
@@ -67,6 +68,12 @@ public class Player extends Character {
     // Thêm biến hit
     private boolean isHit = false;
     private Animation<TextureRegion> hitUp, hitDown, hitLeft, hitRight;
+    
+    private GameMap gameMap;
+
+    public void setGameMap(GameMap map) {
+        this.gameMap = map;
+    }
 
     // Hàm khởi tạo nhân vật với tọa độ khởi đầu
     public Player(Rectangle bounds) {
@@ -248,15 +255,21 @@ public class Player extends Character {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             isAttacking = true;
             stateTime = 0;
+
+            if (gameMap != null) {
+                float centerX = bounds.x + bounds.width / 2;
+                float centerY = bounds.y + bounds.height / 2;
+                gameMap.damageMonstersInRange(centerX, centerY, 5f, atk); // ✅ Tấn công quái trong phạm vi 5
+            }
         }
     }
+
 
     // Giơ khiên khi nhấn phím K, đồng thời hồi máu
     private void handleShield() {
         if (Gdx.input.isKeyPressed(Input.Keys.K)) {
             if (!isShielding) {
                 isShielding = true;
-                hp = Math.min(hp + 10, 100); // Hồi máu khi giơ khiên
             }
         } else {
             isShielding = false; // Ngưng giơ khiên nếu thả phím
@@ -461,11 +474,15 @@ public class Player extends Character {
     public boolean isMenuOpen() { return menuOpen; }
 
     public void takeDamage(int damage) {
+        if (isShielding) {
+            damage /= 2; // ✅ Giảm 50% sát thương khi giơ khiên
+        }
         hp = Math.max(0, hp - damage);
         if (hp == 0 && !isDead) {
             onDeath(); // Gọi khi chết
         }
     }
+
 
     public void setSpeedMultiplier(float multiplier) {
         this.speedMultiplier = multiplier;
@@ -490,5 +507,19 @@ public class Player extends Character {
             playerSkill2.castSkill(atk, bounds, direction);
         }
     }
+    public void pushBackFrom(Rectangle source) {
+        float dx = bounds.x - source.x;
+        float dy = bounds.y - source.y;
+        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
+        if (distance == 0) return;
+
+        // Đẩy nhẹ ra xa khỏi quái
+        float pushAmount = 0.1f;
+        bounds.x += (dx / distance) * pushAmount;
+        bounds.y += (dy / distance) * pushAmount;
+    }
+
+
 
 }

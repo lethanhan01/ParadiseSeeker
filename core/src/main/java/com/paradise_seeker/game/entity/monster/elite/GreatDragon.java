@@ -1,4 +1,4 @@
-package com.paradise_seeker.game.entity.elite;
+package com.paradise_seeker.game.entity.monster.elite;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.paradise_seeker.game.entity.Renderable;

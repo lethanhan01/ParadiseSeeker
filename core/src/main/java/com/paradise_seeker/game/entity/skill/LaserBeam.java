@@ -15,9 +15,9 @@ public class LaserBeam {
     private String direction;
     // Biên map (có thể chỉnh lại cho đúng map bạn)
     private static final float MIN_X = 0f;
-    private static final float MAX_X = 64f;
+    private static final float MAX_X = 100f;
     private static final float MIN_Y = 0f;
-    private static final float MAX_Y = 36f;
+    private static final float MAX_Y = 100f;
 
     private Animation<TextureRegion> animation;
     private float stateTime = 0f;
@@ -87,5 +87,9 @@ public class LaserBeam {
 
     public int getDamage() {
         return damage;
+    }
+
+    public void setInactive() {
+        this.active = false;
     }
 } 

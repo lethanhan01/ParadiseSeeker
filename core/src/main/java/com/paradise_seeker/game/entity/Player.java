@@ -202,6 +202,11 @@ public class Player extends Character {
         handleAttack();           // Xử lý tấn công
         handleShield();           // Xử lý giơ khiên
         handleSkills();           // Xử lý kỹ năng
+     // ✅ Hồi đầy máu và mana khi nhấn phím R
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            this.hp = MAX_HP;
+            this.mp = MAX_MP;
+        }
     }
 
     // Xử lý di chuyển nhân vật bằng phím WASD hoặc phím mũi tên
@@ -499,12 +504,16 @@ public class Player extends Character {
     // Xử lý kỹ năng khi nhấn phím U và I
     private void handleSkills() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
-            // Sử dụng kỹ năng 1
-            playerSkill1.castSkill(atk, bounds, direction);
+            if (mp >= 2) {
+                mp -= 2;
+                playerSkill1.castSkill(atk, bounds, direction);
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            // Sử dụng kỹ năng 2
-            playerSkill2.castSkill(atk, bounds, direction);
+            if (mp >= 2) {
+                mp -= 2;
+                playerSkill2.castSkill(atk, bounds, direction);
+            }
         }
     }
     public void pushBackFrom(Rectangle source) {

@@ -72,7 +72,6 @@ public class Monster extends Character implements Renderable, Collidable {
             bounds.x += moveX;
             bounds.y += moveY;
 
-            System.out.println("Monster is moving to: (" + bounds.x + ", " + bounds.y + ")");
         }
     }
 
@@ -106,7 +105,6 @@ public class Monster extends Character implements Renderable, Collidable {
             bounds.x += moveX;
             bounds.y += moveY;
 
-            System.out.println("Monster wandering to: (" + wanderTargetX + ", " + wanderTargetY + ")");
         }
     }
 
@@ -121,7 +119,6 @@ public class Monster extends Character implements Renderable, Collidable {
             bounds.x += moveX;
             bounds.y += moveY;
 
-            System.out.println("Monster returning to spawn: (" + bounds.x + ", " + bounds.y + ")");
         }
     }
 
@@ -140,16 +137,12 @@ public class Monster extends Character implements Renderable, Collidable {
 
         boolean near = distance < effectiveRange;
 
-        if (near) {
-            System.out.println("Monster is near player → ATTACK!");
-        }
 
         return near;
     }
 
     private void attackPlayer() {
         if (!player.isDead) {
-            System.out.println("Monster is ATTACKING!");
             player.takeDamage(atk);
             isAggressive = true;
             aggroTimer = AGGRO_DURATION;
@@ -192,7 +185,6 @@ public class Monster extends Character implements Renderable, Collidable {
         if (damage > 0) {
             isAggressive = true;
             aggroTimer = AGGRO_DURATION;
-            System.out.println("Monster took damage, started chasing.");
         }
 
         hp = Math.max(0, hp - damage);

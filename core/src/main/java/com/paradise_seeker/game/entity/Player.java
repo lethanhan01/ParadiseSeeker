@@ -202,6 +202,11 @@ public class Player extends Character {
         handleAttack();           // Xử lý tấn công
         handleShield();           // Xử lý giơ khiên
         handleSkills();           // Xử lý kỹ năng
+     // ✅ Hồi đầy máu và mana khi nhấn phím R
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            this.hp = MAX_HP;
+            this.mp = MAX_MP;
+        }
     }
 
     // Xử lý di chuyển nhân vật bằng phím WASD hoặc phím mũi tên

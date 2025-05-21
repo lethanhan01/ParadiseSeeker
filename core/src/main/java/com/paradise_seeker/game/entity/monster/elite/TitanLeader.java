@@ -1,26 +1,17 @@
 package com.paradise_seeker.game.entity.monster.elite;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.paradise_seeker.game.entity.Renderable;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+import com.paradise_seeker.game.entity.Monster;
 
-public class TitanLeader extends Elite implements Renderable {
-	// Titan Leader specific attributes and methods
-	public TitanLeader() {
-		super();
-		// Initialize attributes specific to Titan Leader
-	}
-
-	public void onDeath() {
-		// Handle Titan Leader's death
-	}
-
-	public void move() {
-		// Implement movement logic for Titan Leader
-	}
-
-	@Override
-	public void render(SpriteBatch batch) {
-		// Render the Titan Leader
-	}
-
+public class TitanLeader extends Monster {
+    public TitanLeader(float x, float y) {
+        super(new Rectangle(x, y, 2f, 1f),
+              new Texture(Gdx.files.internal("images/Entity/characters/monsters/elite/Titan_Leader/Titan_Leader.png")),
+              6f, 6f);
+        this.hp = 90;
+        this.atk = 14;
+        this.speed = 2.0f;
+    }
 }

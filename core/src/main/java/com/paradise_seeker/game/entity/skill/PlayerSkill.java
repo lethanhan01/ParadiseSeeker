@@ -4,16 +4,69 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Character;
 import com.paradise_seeker.game.main.GameScreen;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.Gdx;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerSkill implements Skill {
     private int manaCost;
     private long cooldown;
     private long lastUsedTime;
+    private Map<String, Animation<TextureRegion>> skillAnimations; // up, down, left, right
+    private float stateTime = 0f;
+    private boolean isActive = false;
+    private float x, y;
+    private String direction;
+    private boolean isSkill1; // true: skill1, false: skill2
 
-    public PlayerSkill() {
+    public PlayerSkill(boolean isSkill1) {
         this.manaCost = 10;
         this.cooldown = 1500;
         this.lastUsedTime = 0;
+        this.isSkill1 = isSkill1;
+        this.skillAnimations = new HashMap<>();
+        loadSkillAnimations();
+    }
+
+    private void loadSkillAnimations() {
+        String[] directions = {"up", "down", "left", "right"};
+        int FRAME_ROWS = 5; // số frame dọc
+        if (isSkill1) {
+            for (String dir : directions) {
+                String path = "images/Entity/skills/PlayerSkills/Skill1/Skill1_" + dir + ".png";
+                try {
+                    System.out.println("Loading: " + path);
+                    Texture sheet = new Texture(Gdx.files.internal(path));
+                    TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth(), sheet.getHeight() / FRAME_ROWS);
+                    TextureRegion[] frames = new TextureRegion[FRAME_ROWS];
+                    for (int i = 0; i < FRAME_ROWS; i++) {
+                        frames[i] = tmp[i][0];
+                    }
+                    skillAnimations.put(dir, new Animation<>(0.1f, frames));
+                } catch (Exception e) {
+                    System.out.println("Error loading: " + path);
+                }
+            }
+        } else {
+            for (String dir : directions) {
+                String path = "images/Entity/skills/PlayerSkills/Skill2/Skill2_" + dir + ".png";
+                try {
+                    System.out.println("Loading: " + path);
+                    Texture sheet = new Texture(Gdx.files.internal(path));
+                    TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth(), sheet.getHeight() / FRAME_ROWS);
+                    TextureRegion[] frames = new TextureRegion[FRAME_ROWS];
+                    for (int i = 0; i < FRAME_ROWS; i++) {
+                        frames[i] = tmp[i][0];
+                    }
+                    skillAnimations.put(dir, new Animation<>(0.1f, frames));
+                } catch (Exception e) {
+                    System.out.println("Error loading: " + path);
+                }
+            }
+        }
     }
 
     @Override
@@ -31,7 +84,14 @@ public class PlayerSkill implements Skill {
 
     @Override
     public void update(long now) {
-        // Có thể cập nhật hiệu ứng hoặc thời gian còn lại nếu cần
+        if (isActive) {
+            stateTime += Gdx.graphics.getDeltaTime();
+            Animation<TextureRegion> currentAnimation = skillAnimations.get(direction);
+            if (currentAnimation.isAnimationFinished(stateTime)) {
+                isActive = false;
+                stateTime = 0f;
+            }
+        }
     }
 
     @Override
@@ -43,14 +103,65 @@ public class PlayerSkill implements Skill {
         }
     }
 
-    // Phương thức mới hỗ trợ hướng
     public void castSkill(int atk, int x, int y, String direction) {
         if (canUse(System.currentTimeMillis())) {
-            LaserBeam laser = new LaserBeam(x, y, atk, direction);
+            this.x = x;
+            this.y = y;
+            this.direction = direction;
+            isActive = true;
+            stateTime = 0f;
+            // Căn chỉnh vị trí xuất phát của đạn
+            float offset = 0.5f; // hoặc 0.75f nếu muốn đạn xuất phát xa hơn một chút
+            float startX = x, startY = y;
+            switch (direction) {
+                case "up":    startY += offset; break;
+                case "down":  startY -= offset; break;
+                case "left":  startX -= offset; break;
+                case "right": startX += offset; break;
+            }
+            Animation<TextureRegion> anim = skillAnimations.get(direction);
+            Animation<TextureRegion> animDown = skillAnimations.get("down");
+            LaserBeam laser = new LaserBeam(startX, startY, atk, direction, anim);
+            if (anim == null && animDown != null) {
+                laser.setAnimDown(animDown);
+            }
             GameScreen.activeProjectiles.add(laser);
             lastUsedTime = System.currentTimeMillis();
-            System.out.println("Người chơi đã tung kỹ năng LaserBeam về hướng: " + direction);
         }
+    }
+
+    public void castSkill(int atk, Rectangle playerBounds, String direction) {
+        if (canUse(System.currentTimeMillis())) {
+            float centerX = playerBounds.x + playerBounds.width / 2f;
+            float centerY = playerBounds.y + playerBounds.height / 2f;
+            this.direction = direction;
+            isActive = true;
+            stateTime = 0f;
+            float offset = 0.5f;
+            float startX = centerX, startY = centerY;
+            switch (direction) {
+                case "up":    startY += offset; break;
+                case "down":  startY -= offset; break;
+                case "left":  startX -= offset; break;
+                case "right": startX += offset; break;
+            }
+            // Clamp tọa độ trong biên map
+            float MIN_X = 0f, MAX_X = 64f, MIN_Y = 0f, MAX_Y = 36f;
+            startX = Math.max(MIN_X, Math.min(MAX_X, startX));
+            startY = Math.max(MIN_Y, Math.min(MAX_Y, startY));
+            Animation<TextureRegion> anim = skillAnimations.get(direction);
+            Animation<TextureRegion> animDown = skillAnimations.get("down");
+            LaserBeam laser = new LaserBeam(startX, startY, atk, direction, anim);
+            if (anim == null && animDown != null) {
+                laser.setAnimDown(animDown);
+            }
+            GameScreen.activeProjectiles.add(laser);
+            lastUsedTime = System.currentTimeMillis();
+        }
+    }
+
+    public void render(SpriteBatch batch) {
+        // Không làm gì ở đây
     }
 
     @Override

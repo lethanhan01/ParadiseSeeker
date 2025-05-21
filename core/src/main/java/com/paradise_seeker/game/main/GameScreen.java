@@ -14,6 +14,9 @@ import com.paradise_seeker.game.map.GameMap;
 import com.paradise_seeker.game.ui.HUD;
 import com.paradise_seeker.game.entity.skill.LaserBeam;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.paradise_seeker.game.entity.monster.test.TestCreep;
+import com.paradise_seeker.game.entity.monster.test.TestElite;
+import com.paradise_seeker.game.entity.monster.test.TestBoss;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +71,29 @@ public class GameScreen implements Screen {
         for (int i = activeProjectiles.size() - 1; i >= 0; i--) {
             LaserBeam projectile = activeProjectiles.get(i);
             projectile.update();
+
+            // Va chạm với quái thường
+            for (TestCreep creep : gameMap.getCreeps()) {
+                if (projectile.isActive() && !creep.isDead() && creep.getBounds().overlaps(projectile.getHitbox())) {
+                    creep.takeDamage(projectile.getDamage());
+                    projectile.setInactive();
+                }
+            }
+            // Va chạm với elite
+            for (TestElite elite : gameMap.getElites()) {
+                if (projectile.isActive() && !elite.isDead() && elite.getBounds().overlaps(projectile.getHitbox())) {
+                    elite.takeDamage(projectile.getDamage());
+                    projectile.setInactive();
+                }
+            }
+            // Va chạm với boss
+            for (TestBoss boss : gameMap.getBosses()) {
+                if (projectile.isActive() && !boss.isDead() && boss.getBounds().overlaps(projectile.getHitbox())) {
+                    boss.takeDamage(projectile.getDamage());
+                    projectile.setInactive();
+                }
+            }
+
             if (!projectile.isActive()) {
                 activeProjectiles.remove(i);
             }

@@ -14,7 +14,7 @@ public class Monster extends Character implements Renderable, Collidable {
 
     private float attackCooldown = 1f;
     private float attackTimer = 0f;
-    private boolean isDead = false;
+    public boolean isDead = false;
 
     private boolean isAggressive = false;
     private float aggroTimer = 0f;

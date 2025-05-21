@@ -7,7 +7,7 @@ import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.CollisionSystem;
 import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.entity.object.*;
-import com.paradise_seeker.game.entity.monster.test.TestBoss;   // (tạm giữ nguyên boss nếu bạn chưa có boss thật)
+import com.paradise_seeker.game.entity.monster.boss.TitanKing;
 import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
 
@@ -24,7 +24,7 @@ public class GameMap {
     private Texture backgroundTexture;
     private List<GameObject> gameObjects;
     private List<Rectangle> occupiedAreas; // ✅ để kiểm tra trùng
-    private List<TestBoss> bosses;
+    private List<TitanKing> bosses;
     private List<com.paradise_seeker.game.entity.Monster> elites;
     private List<com.paradise_seeker.game.entity.Monster> creeps; 
 
@@ -88,12 +88,13 @@ public class GameMap {
     	}
 
 
-        for (int i = 0; i < 5; i++) {
-            Rectangle bounds = generateNonOverlappingBounds(4, 4);
-            if (bounds != null) {
-                spawnMonsterSafely(new TestBoss(bounds.x, bounds.y), bosses, player);
-            }
-        }
+    	for (int i = 0; i < 3; i++) {
+    	    Rectangle bounds = generateNonOverlappingBounds(4, 4);
+    	    if (bounds != null) {
+    	        spawnMonsterSafely(new TitanKing(bounds.x, bounds.y), bosses, player);
+    	    }
+    	}
+
     }
 
     private Rectangle generateNonOverlappingBounds(float width, float height) {
@@ -132,13 +133,13 @@ public class GameMap {
             object.render(batch);
         }
 
-        for (TestBoss b : bosses) b.render(batch);
+        for (TitanKing b : bosses) b.render(batch);
         for (com.paradise_seeker.game.entity.Monster e : elites) e.render(batch);
         for (com.paradise_seeker.game.entity.Monster c : creeps) c.render(batch);
     }
 
     public void update(float deltaTime) {
-        for (TestBoss b : bosses) b.update(deltaTime);
+    	for (TitanKing b : bosses) b.update(deltaTime);
         for (com.paradise_seeker.game.entity.Monster e : elites) e.update(deltaTime);
         for (com.paradise_seeker.game.entity.Monster c : creeps) c.update(deltaTime);
     }
@@ -153,11 +154,12 @@ public class GameMap {
     }
 
     public void damageMonstersInRange(float x, float y, float radius, int damage) {
-        for (TestBoss b : bosses) {
-            if (!b.isDead() && isInRange(x, y, b.getBounds(), radius)) {
-                b.takeDamage(damage);
-            }
-        }
+    	for (TitanKing b : bosses) {
+    	    if (!b.isDead() && isInRange(x, y, b.getBounds(), radius)) {
+    	        b.takeDamage(damage);
+    	    }
+    	}
+
         for (com.paradise_seeker.game.entity.Monster e : elites) {
             if (!e.isDead() && isInRange(x, y, e.getBounds(), radius)) {
                 e.takeDamage(damage);
@@ -184,5 +186,5 @@ public class GameMap {
     public List<com.paradise_seeker.game.entity.Monster> getElites() {
         return elites;
     }
-    public List<TestBoss> getBosses() { return bosses; }
+    public List<TitanKing> getBosses() { return bosses; }
 }

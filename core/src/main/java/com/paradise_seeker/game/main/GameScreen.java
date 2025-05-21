@@ -17,7 +17,7 @@ import com.paradise_seeker.game.entity.skill.LaserBeam;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.paradise_seeker.game.entity.monster.test.TestCreep;
 import com.paradise_seeker.game.entity.monster.test.TestElite;
-import com.paradise_seeker.game.entity.monster.test.TestBoss;
+import com.paradise_seeker.game.entity.monster.boss.TitanKing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,12 +88,13 @@ public class GameScreen implements Screen {
             }
 
             // Va chạm với boss
-            for (TestBoss boss : gameMap.getBosses()) {
+            for (TitanKing boss : gameMap.getBosses()) {
                 if (projectile.isActive() && !boss.isDead() && boss.getBounds().overlaps(projectile.getHitbox())) {
                     boss.takeDamage(projectile.getDamage());
                     projectile.setInactive();
                 }
             }
+
 
             if (!projectile.isActive()) {
                 activeProjectiles.remove(i);

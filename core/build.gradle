@@ -13,7 +13,8 @@ dependencies {
   api "com.github.tommyettinger:gdcrux:$gdcruxVersion"
   api "com.github.tommyettinger:libgdx-utils-box2d:$utilsBox2dVersion"
   api "com.github.tommyettinger:libgdx-utils:$utilsVersion"
-
+  api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+  
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }

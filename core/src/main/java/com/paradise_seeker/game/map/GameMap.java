@@ -34,7 +34,7 @@ public class GameMap {
     private static final float ITEM_SPAWN_INTERVAL = 120f; // 2 phút
 
     public GameMap(Player player) {
-        backgroundTexture = new Texture("images/map/test.png"); // ** Thay đổi path đến ảnh nền test (10h tối 22/5)
+        backgroundTexture = new Texture("images/map/test.png"); // ** Thay đổi path đến ảnh nền test
         gameObjects = new ArrayList<>();						// ảnh hiện đang là 50x50 tile, mỗi tile 32x32
         occupiedAreas = new ArrayList<>();
         bosses = new ArrayList<>();
@@ -62,8 +62,8 @@ public class GameMap {
                     case 0: obj = new Tree(bounds.x, bounds.y); break;
                     case 1: obj = new Forest(bounds.x, bounds.y); break;
                     case 2: obj = new WaterLake(bounds.x, bounds.y); break;
-                    case 3: obj = new LavaLake(bounds.x, bounds.y + 10); break; // Thay đổi y, add +10 để tránh chết khi spawn
-                    default: obj = new RockMountain(bounds.x, bounds.y); break; // cũng 22/5
+                    case 3: obj = new LavaLake(bounds.x, bounds.y); break; 
+                    default: obj = new RockMountain(bounds.x, bounds.y); break; 
                 }
                 gameObjects.add(obj);
                 occupiedAreas.add(obj.getBounds());

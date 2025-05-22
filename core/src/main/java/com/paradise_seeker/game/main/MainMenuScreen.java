@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class MainMenuScreen implements Screen {
 
@@ -15,14 +17,13 @@ public class MainMenuScreen implements Screen {
     Vector2 touchPos;
     Texture characterIcon;
     int selectedIndex = 0;
-    String[] menuItems = {"NEW GAME", "LOAD GAME", "SETTINGS", "EXIT"};
+    String[] menuItems = {"New Game", "Load Game", "Settings", "Exit"};
 
     public MainMenuScreen(final Main game) {
         this.game = game;
         touchPos = new Vector2();
         characterIcon = new Texture(Gdx.files.internal("images/Entity/characters/player/char_shielded_static_up.png"));
-    }
-
+}
     @Override
     public void show() {
     }
@@ -42,7 +43,7 @@ public class MainMenuScreen implements Screen {
         // Tiêu đề
         game.font.setColor(Color.RED);
         GlyphLayout layout = new GlyphLayout();
-        String title = "PARADISE SEEKER";
+        String title = "Paradise Seeker";
         layout.setText(game.font, title);
         float xTitle = (viewportWidth - layout.width) / 2f;
         float yTitle = viewportHeight - 1f;

@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.paradise_seeker.game.entity.Player;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class HUD {
     public ShapeRenderer shapeRenderer;
@@ -22,7 +24,14 @@ public class HUD {
         this.player = player;
         this.shapeRenderer = new ShapeRenderer();
         this.spriteBatch = new SpriteBatch();
-        this.font = new BitmapFont(); // font mặc định
+        //this.font = new BitmapFont(); // font mặc định
+        
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/MinecraftStandard.otf"));
+        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+        parameter.size = 10; // Set your desired font size
+        this.font = generator.generateFont(parameter);
+        generator.dispose();
+        
         font.setColor(Color.WHITE);
     }
 

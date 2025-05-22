@@ -14,7 +14,7 @@ public class TitanKing extends Monster {
 	private boolean isCleaving = false;
 	private float cleaveDuration = 1.2f; // 15 frame * 0.08s
 	private float cleaveTimer = 0f;
-	private int cleaveDamage = 50;
+	private int cleaveDamage = 20;
 	private float cleaveRange = 3f;
 
 	private Animation<TextureRegion> deathLeft, deathRight;
@@ -36,8 +36,8 @@ public class TitanKing extends Monster {
 
     public TitanKing(float x, float y) {
         super(new Rectangle(x, y, 3f, 2f), null, 10f, 10f);
-        this.hp = 800;
-        this.atk = 60;
+        this.hp = 80;
+        this.atk = 10;
         this.speed = 1.5f;
 
         walkRight = loadAnimation("images/Entity/characters/monsters/boss/boss_1/walk/phai/", "demon_walk_", 12);

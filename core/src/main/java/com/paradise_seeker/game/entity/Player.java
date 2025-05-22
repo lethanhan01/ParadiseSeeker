@@ -40,7 +40,7 @@ public class Player extends Character {
     private boolean isDashing = false;  // Trạng thái đang dash
     private float dashCooldown = 1.0f;  // Thời gian hồi chiêu dash
     private float dashTimer = 0f;       // Thời gian còn lại cho dash
-    private float dashDistance = 5f;   // Khoảng cách dash
+    private float dashDistance = 2f;   // Khoảng cách dash
 
     private boolean isShielding = false; // Trạng thái đang giơ khiên
     private boolean menuOpen = false;    // Menu đang mở
@@ -98,10 +98,10 @@ public class Player extends Character {
         idleRight = loadAnimation("images/Entity/characters/player/char_idle_right_anim_strip_6.png");
 
         // Load animation tấn công
-        attackDown = loadAnimation("images/Entity/characters/player/char_attack_down_anim_strip_6.png");
-        attackUp = loadAnimation("images/Entity/characters/player/char_attack_up_anim_strip_6.png");
-        attackLeft = loadAnimation("images/Entity/characters/player/char_attack_left_anim_strip_6.png");
-        attackRight = loadAnimation("images/Entity/characters/player/char_attack_right_anim_strip_6.png");
+        attackDown = loadAnimation("images/Entity/characters/player/attack_down_new.png");
+        attackUp = loadAnimation("images/Entity/characters/player/attack_up_new.png");
+        attackLeft = loadAnimation("images/Entity/characters/player/attack_left_new.png");
+        attackRight = loadAnimation("images/Entity/characters/player/attack_right_new.png");
 
         // Load texture khi giơ khiên theo từng hướng
         shieldDown = new Texture(Gdx.files.internal("images/Entity/characters/player/char_shielded_static_down.png"));
@@ -350,8 +350,8 @@ public class Player extends Character {
     // Vẽ animation tấn công với hiệu ứng phóng to
     private void renderAttack(SpriteBatch batch) {
         currentFrame = getAttackAnimationByDirection().getKeyFrame(stateTime, false);
-        float scaledWidth = bounds.width * 2.5f;
-        float scaledHeight = bounds.height * 2.5f;
+        float scaledWidth = bounds.width * 2.9f;
+        float scaledHeight = bounds.height * 2.9f;
         float drawX = bounds.x - (scaledWidth - bounds.width) / 2f;
         float drawY = bounds.y - (scaledHeight - bounds.height) / 2f;
         batch.draw(currentFrame, drawX, drawY, scaledWidth, scaledHeight);

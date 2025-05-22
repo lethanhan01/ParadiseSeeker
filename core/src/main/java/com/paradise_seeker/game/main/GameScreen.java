@@ -51,7 +51,7 @@ public class GameScreen implements Screen {
         this.hudCamera = new OrthographicCamera();
         this.hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/music.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/map2.mp3"));
         music.setLooping(true);
         music.setVolume(0.5f);
     }

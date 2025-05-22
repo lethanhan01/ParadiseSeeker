@@ -68,7 +68,7 @@ public class Player extends Character {
     // Thêm biến hit
     private boolean isHit = false;
     private Animation<TextureRegion> hitUp, hitDown, hitLeft, hitRight;
-    
+
     private GameMap gameMap;
 
     public void setGameMap(GameMap map) {
@@ -350,8 +350,8 @@ public class Player extends Character {
     // Vẽ animation tấn công với hiệu ứng phóng to
     private void renderAttack(SpriteBatch batch) {
         currentFrame = getAttackAnimationByDirection().getKeyFrame(stateTime, false);
-        float scaledWidth = bounds.width * 2.9f;
-        float scaledHeight = bounds.height * 2.9f;
+        float scaledWidth = bounds.width * 3.f;
+        float scaledHeight = bounds.height * 3.f;
         float drawX = bounds.x - (scaledWidth - bounds.width) / 2f;
         float drawY = bounds.y - (scaledHeight - bounds.height) / 2f;
         batch.draw(currentFrame, drawX, drawY, scaledWidth, scaledHeight);

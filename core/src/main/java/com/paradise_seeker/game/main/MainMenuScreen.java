@@ -117,14 +117,13 @@ public class MainMenuScreen implements Screen {
     private void selectMenuItem() {
         switch (selectedIndex) {
             case 0:
-            	if (game.newGame == null) {
-					game.newGame = new GameScreen(game);
+            	if (game.currentGame == null) {
+					game.currentGame = new GameScreen(game);
 				}else {
 					game.currentGame = null;
-					game.newGame = new GameScreen(game);
+					game.currentGame = new GameScreen(game);
 				}
-            	game.setScreen(game.newGame);
-                game.currentGame = game.newGame;
+            	game.setScreen(game.currentGame);
                 break;
             case 1:
             	if (game.currentGame == null) {
@@ -134,7 +133,7 @@ public class MainMenuScreen implements Screen {
             	}
                 break;
             case 2:
-                game.setScreen(new SettingScreen(game));
+                game.setScreen(game.settingMenu);
                 break;
             case 3:
                 Gdx.app.exit();

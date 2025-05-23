@@ -38,7 +38,7 @@ public class Player extends Character {
     private boolean isAttacking = false; // Trạng thái đang tấn công
 
     private boolean isDashing = false;  // Trạng thái đang dash
-    private float dashCooldown = 1.0f;  // Thời gian hồi chiêu dash
+    private float dashCooldown = 0f;  // Thời gian hồi chiêu dash
     private float dashTimer = 0f;       // Thời gian còn lại cho dash
     private float dashDistance = 2f;   // Khoảng cách dash
 
@@ -445,8 +445,10 @@ public class Player extends Character {
     // Override nhưng chưa dùng
     @Override public void move() {}
     @Override public void onDeath() {
-        isDead = true;
-        stateTime = 0;
+//        isDead = true;
+//        stateTime = 0;
+    	hp=MAX_HP;
+    	mp=MAX_MP;
     }
     @Override public void onCollision(Collidable other) {
         // Khi nhân vật bị đánh, set isShieldedHit=true nếu đang giơ khiên, ngược lại set isHit=true

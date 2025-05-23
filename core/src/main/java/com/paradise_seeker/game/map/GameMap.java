@@ -73,28 +73,28 @@ public class GameMap {
     }
 
     private void generateMonsters(Player player) {
-    	for (int i = 0; i < 5; i++) {
-    	    Rectangle bounds1 = generateNonOverlappingBounds(2, 1);
-    	    Rectangle bounds2 = generateNonOverlappingBounds(2, 1);
-    	    Rectangle bounds3 = generateNonOverlappingBounds(2, 1);
+//    	for (int i = 0; i < 5; i++) {
+//    	    Rectangle bounds1 = generateNonOverlappingBounds(2, 1);
+//    	    Rectangle bounds2 = generateNonOverlappingBounds(2, 1);
+//    	    Rectangle bounds3 = generateNonOverlappingBounds(2, 1);
+//
+//    	    if (bounds1 != null) spawnMonsterSafely(new DemonSoldier(bounds1), creeps, player);
+//    	    if (bounds2 != null) spawnMonsterSafely(new LittleDragon(bounds2), creeps, player);
+//    	    if (bounds3 != null) spawnMonsterSafely(new TitanSoldier(bounds3), creeps, player);
+//    	}
+//
+//    	for (int i = 0; i < 3; i++) {
+//    	    Rectangle b1 = generateNonOverlappingBounds(3, 3);
+//    	    Rectangle b2 = generateNonOverlappingBounds(3, 3);
+//    	    Rectangle b3 = generateNonOverlappingBounds(3, 3);
+//
+//    	    if (b1 != null) spawnMonsterSafely(new DemonKing(b1.x, b1.y), elites, player);
+//    	    if (b2 != null) spawnMonsterSafely(new GreatDragon(b2.x, b2.y), elites, player);
+//    	    if (b3 != null) spawnMonsterSafely(new TitanLeader(b3.x, b3.y), elites, player);
+//    	}
 
-    	    if (bounds1 != null) spawnMonsterSafely(new DemonSoldier(bounds1), creeps, player);
-    	    if (bounds2 != null) spawnMonsterSafely(new LittleDragon(bounds2), creeps, player);
-    	    if (bounds3 != null) spawnMonsterSafely(new TitanSoldier(bounds3), creeps, player);
-    	}
 
-    	for (int i = 0; i < 3; i++) {
-    	    Rectangle b1 = generateNonOverlappingBounds(3, 3);
-    	    Rectangle b2 = generateNonOverlappingBounds(3, 3);
-    	    Rectangle b3 = generateNonOverlappingBounds(3, 3);
-
-    	    if (b1 != null) spawnMonsterSafely(new DemonKing(b1.x, b1.y), elites, player);
-    	    if (b2 != null) spawnMonsterSafely(new GreatDragon(b2.x, b2.y), elites, player);
-    	    if (b3 != null) spawnMonsterSafely(new TitanLeader(b3.x, b3.y), elites, player);
-    	}
-
-
-    	for (int i = 0; i < 3; i++) {
+    	for (int i = 0; i < 1; i++) {
     	    Rectangle bounds = generateNonOverlappingBounds(4, 4);
     	    if (bounds != null) {
     	        spawnMonsterSafely(new TitanKing(bounds.x, bounds.y), bosses, player);

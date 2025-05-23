@@ -445,10 +445,10 @@ public class Player extends Character {
     // Override nhưng chưa dùng
     @Override public void move() {}
     @Override public void onDeath() {
-//        isDead = true;
-//        stateTime = 0;
-    	hp=MAX_HP;
-    	mp=MAX_MP;
+      isDead = true;
+       stateTime = 0;
+    //	hp=MAX_HP;
+   // 	mp=MAX_MP;
     }
     @Override public void onCollision(Collidable other) {
         // Khi nhân vật bị đánh, set isShieldedHit=true nếu đang giơ khiên, ngược lại set isHit=true

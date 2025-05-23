@@ -1,6 +1,8 @@
 package com.paradise_seeker.game.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +15,8 @@ public class HUD {
     public SpriteBatch spriteBatch;
     private BitmapFont font;
     private Player player;
+    private Texture[] hpBarFrames;
+    private Texture[] mpBarFrames;
     private static final float BAR_WIDTH = 200f;
     private static final float BAR_HEIGHT = 20f;
     private static final float PADDING = 10f;
@@ -32,46 +36,40 @@ public class HUD {
         generator.dispose();
 
         font.setColor(Color.WHITE);
+        hpBarFrames = new Texture[74];
+        for (int i = 0; i < 74; i++) {
+            String filename = String.format("ui/HUD/hp_bar_fg/hpbar/hp_bar%02d.png", i);
+            hpBarFrames[i] = new Texture(Gdx.files.internal(filename));
+        }
+        
+        mpBarFrames = new Texture[74];
+        for (int i = 0; i < 74; i++) {
+			String filename = String.format("ui/HUD/mp_bar_fg/mpbar/mp_bar%02d.png", i);
+			mpBarFrames[i] = new Texture(Gdx.files.internal(filename));
+	}
     }
 
     public void render(float screenHeight) {
-        float hpPercent = Math.max(0, Math.min(player.hp / (float) Player.MAX_HP, 1f));
+    	float hpPercent = Math.max(0, Math.min(player.hp / (float) Player.MAX_HP, 1f));
         float mpPercent = Math.max(0, Math.min(player.mp / (float) Player.MAX_MP, 1f));
 
-        // Draw HP Bar
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.DARK_GRAY);
-        shapeRenderer.rect(PADDING, screenHeight - PADDING - BAR_HEIGHT, BAR_WIDTH, BAR_HEIGHT);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(PADDING, screenHeight - PADDING - BAR_HEIGHT, BAR_WIDTH * hpPercent, BAR_HEIGHT);
-        shapeRenderer.end();
+        int frameIndexhp = Math.round((1 - hpPercent) * 73);
+        int frameIndexmp = Math.round((1 - mpPercent) * 73);
 
-        // Draw MP Bar
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.DARK_GRAY);
-        shapeRenderer.rect(PADDING, screenHeight - PADDING - BAR_HEIGHT * 2 - SPACING, BAR_WIDTH, BAR_HEIGHT);
-        shapeRenderer.setColor(Color.BLUE);
-        shapeRenderer.rect(PADDING, screenHeight - PADDING - BAR_HEIGHT * 2 - SPACING, BAR_WIDTH * mpPercent, BAR_HEIGHT);
-        shapeRenderer.end();
-
-        // Draw borders
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.rect(PADDING, screenHeight - PADDING - BAR_HEIGHT, BAR_WIDTH, BAR_HEIGHT); // HP border
-        shapeRenderer.rect(PADDING, screenHeight - PADDING - BAR_HEIGHT * 2 - SPACING, BAR_WIDTH, BAR_HEIGHT); // MP border
-        shapeRenderer.end();
-
-        // Draw text
         spriteBatch.begin();
-        font.draw(spriteBatch, "HP: " + player.hp + " / " + Player.MAX_HP,
-                  PADDING + 5, screenHeight - PADDING - 5);
-        font.draw(spriteBatch, "MP: " + player.mp + " / " + Player.MAX_MP,
-                  PADDING + 5, screenHeight - PADDING - BAR_HEIGHT - SPACING - 5);
+        spriteBatch.draw(hpBarFrames[frameIndexhp], PADDING, screenHeight - PADDING - BAR_HEIGHT);
+        spriteBatch.draw(mpBarFrames[frameIndexmp], PADDING, screenHeight - PADDING - BAR_HEIGHT*2);
         spriteBatch.end();
     }
 
     public void dispose() {
-        shapeRenderer.dispose();
+    	shapeRenderer.dispose();
+        for (Texture texture : hpBarFrames) {
+            texture.dispose();
+        }
+        for (Texture texture : mpBarFrames) {
+            texture.dispose();
+        }
         spriteBatch.dispose();
         font.dispose();
     }

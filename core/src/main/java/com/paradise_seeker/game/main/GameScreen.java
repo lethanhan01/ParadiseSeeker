@@ -65,6 +65,7 @@ public class GameScreen implements Screen {
         }
         if (player.hp == 0) {
             game.setScreen(new DeadScreen(game));
+            music.stop();
             game.currentGame = null;
         }
         handleZoomInput();

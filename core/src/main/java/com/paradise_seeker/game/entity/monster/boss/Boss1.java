@@ -43,8 +43,8 @@ public class Boss1 extends Monster {
 
         takeHitRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/take_hit/phai/spritesheet.png", 5);
         takeHitLeft  = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/take_hit/trai/spritesheet.png", 5);
-        idleRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/walk/phai/spritesheet.png", 12);
-        idleLeft  = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/walk/trai/spritesheet_left.png", 12);
+        idleRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/idle/phai/spritesheet.png", 6);
+        idleLeft  = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/idle/trai/spritesheet.png", 6);
         deathLeft = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/death/trai/spritesheet.png", 20);
         deathRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/death/trai/spritesheet.png", 20);
         cleaveRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/cleave/phai/spritesheet.png", 15);

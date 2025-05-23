@@ -5,12 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.CollisionSystem;
-import com.paradise_seeker.game.entity.Monster;
 import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.entity.object.*;
 import com.paradise_seeker.game.entity.monster.boss.TitanKing;
-import com.paradise_seeker.game.entity.monster.creep.*;
-import com.paradise_seeker.game.entity.monster.elite.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +23,10 @@ public class GameMap {
     private List<Rectangle> occupiedAreas;
 
     private List<TitanKing> bosses;
-    private List<com.paradise_seeker.game.entity.Monster> elites;
-    private List<com.paradise_seeker.game.entity.Monster> creeps;
 
     private List<HPitem> hpItems = new ArrayList<>();
     private List<MPitem> mpItems = new ArrayList<>();
-    private List<ATKitem> atkItems = new ArrayList<>(); // ✅ ATK items
+    private List<ATKitem> atkItems = new ArrayList<>();
 
     private float itemSpawnTimer = 0f;
     private static final float ITEM_SPAWN_INTERVAL = 120f;
@@ -41,8 +36,6 @@ public class GameMap {
         gameObjects = new ArrayList<>();
         occupiedAreas = new ArrayList<>();
         bosses = new ArrayList<>();
-        elites = new ArrayList<>();
-        creeps = new ArrayList<>();
         collidables = new ArrayList<>();
 
         player.bounds.x = MAP_WIDTH / 2f;
@@ -75,30 +68,17 @@ public class GameMap {
     }
 
     private void generateMonsters(Player player) {
-//        for (int i = 0; i < 5; i++) {
-//            Rectangle b1 = generateNonOverlappingBounds(2, 1);
-//            Rectangle b2 = generateNonOverlappingBounds(2, 1);
-//            Rectangle b3 = generateNonOverlappingBounds(2, 1);
-//
-//            if (b1 != null) spawnMonsterSafely(new DemonSoldier(b1), creeps, player);
-//            if (b2 != null) spawnMonsterSafely(new LittleDragon(b2), creeps, player);
-//            if (b3 != null) spawnMonsterSafely(new TitanSoldier(b3), creeps, player);
-//        }
-//
-//        for (int i = 0; i < 3; i++) {
-//            Rectangle b1 = generateNonOverlappingBounds(3, 3);
-//            Rectangle b2 = generateNonOverlappingBounds(3, 3);
-//            Rectangle b3 = generateNonOverlappingBounds(3, 3);
-//
-//            if (b1 != null) spawnMonsterSafely(new DemonKing(b1.x, b1.y), elites, player);
-//            if (b2 != null) spawnMonsterSafely(new GreatDragon(b2.x, b2.y), elites, player);
-//            if (b3 != null) spawnMonsterSafely(new TitanLeader(b3.x, b3.y), elites, player);
-//        }
-
         for (int i = 0; i < 30; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
-            if (b != null) spawnMonsterSafely(new TitanKing(b.x, b.y), bosses, player);
+            if (b != null) spawnTitanKing(new TitanKing(b.x, b.y), player);
         }
+    }
+
+    private void spawnTitanKing(TitanKing boss, Player player) {
+        boss.player = player;
+        bosses.add(boss);
+        collidables.add(boss);
+        occupiedAreas.add(boss.getBounds());
     }
 
     private Rectangle generateNonOverlappingBounds(float width, float height) {
@@ -121,36 +101,23 @@ public class GameMap {
         return null;
     }
 
-    private <T extends com.paradise_seeker.game.entity.Monster> void spawnMonsterSafely(
-            T monster, List<T> list, Player player) {
-        Rectangle mBounds = monster.getBounds();
-        monster.player = player;
-        list.add(monster);
-        collidables.add(monster);
-        occupiedAreas.add(mBounds);
-    }
-
     public void render(SpriteBatch batch) {
         batch.draw(backgroundTexture, 0, 0, MAP_WIDTH, MAP_HEIGHT);
 
         for (GameObject obj : gameObjects) obj.render(batch);
         for (HPitem item : hpItems) item.render(batch);
         for (MPitem item : mpItems) item.render(batch);
-        for (ATKitem item : atkItems) item.render(batch); // ✅ render ATK item
+        for (ATKitem item : atkItems) item.render(batch);
 
         for (TitanKing b : bosses) b.render(batch);
-        for (Monster e : elites) e.render(batch);
-        for (Monster c : creeps) c.render(batch);
     }
 
     public void update(float deltaTime) {
         for (TitanKing b : bosses) b.update(deltaTime);
-        for (Monster e : elites) e.update(deltaTime);
-        for (Monster c : creeps) c.update(deltaTime);
 
         hpItems.removeIf(item -> !item.isActive());
         mpItems.removeIf(item -> !item.isActive());
-        atkItems.removeIf(item -> !item.isActive()); // ✅ clear inactive ATK items
+        atkItems.removeIf(item -> !item.isActive());
 
         itemSpawnTimer += deltaTime;
         if (itemSpawnTimer >= ITEM_SPAWN_INTERVAL) {
@@ -235,12 +202,6 @@ public class GameMap {
         for (TitanKing b : bosses) {
             if (!b.isDead() && isInRange(x, y, b.getBounds(), radius)) b.takeDamage(damage);
         }
-        for (Monster e : elites) {
-            if (!e.isDead() && isInRange(x, y, e.getBounds(), radius)) e.takeDamage(damage);
-        }
-        for (Monster c : creeps) {
-            if (!c.isDead() && isInRange(x, y, c.getBounds(), radius)) c.takeDamage(damage);
-        }
     }
 
     private boolean isInRange(float x, float y, Rectangle bounds, float radius) {
@@ -251,7 +212,5 @@ public class GameMap {
         return dx * dx + dy * dy <= radius * radius;
     }
 
-    public List<com.paradise_seeker.game.entity.Monster> getCreeps() { return creeps; }
-    public List<com.paradise_seeker.game.entity.Monster> getElites() { return elites; }
     public List<TitanKing> getBosses() { return bosses; }
 }

@@ -34,7 +34,7 @@ public class Player extends Character {
 	private float speedMultiplier = 1f;         // Hệ số tốc độ khi đi qua object
 	private Vector2 lastPosition = new Vector2(); // Ghi nhớ vị trí trước khi di chuyển
 
-	public static final int MAX_HP = 100; // Máu tối đa
+	public static final int MAX_HP = 1000; // Máu tối đa
 	public static final int MAX_MP = 100;  // Mana tối đa
     public PlayerSkill playerSkill1; // Kỹ năng 1 của người chơi
     public PlayerSkill playerSkill2; // Kỹ năng 2 của người chơi

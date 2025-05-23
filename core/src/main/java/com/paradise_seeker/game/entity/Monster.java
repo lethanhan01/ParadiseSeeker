@@ -18,7 +18,7 @@ public class Monster extends Character implements Renderable, Collidable {
 
     public boolean isAggressive = false;
     public float aggroTimer = 0f;
-    public final float AGGRO_DURATION = 5f;
+    public final float AGGRO_DURATION = 50f;
     public float spriteWidth;
     public float spriteHeight;
 
@@ -196,4 +196,5 @@ public class Monster extends Character implements Renderable, Collidable {
     public boolean isDead() {
         return isDead;
     }
+    
 }

@@ -15,8 +15,6 @@ import com.paradise_seeker.game.map.GameMap;
 import com.paradise_seeker.game.ui.HUD;
 import com.paradise_seeker.game.entity.skill.LaserBeam;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.paradise_seeker.game.entity.monster.test.TestCreep;
-import com.paradise_seeker.game.entity.monster.test.TestElite;
 import com.paradise_seeker.game.entity.monster.boss.TitanKing;
 
 import java.util.ArrayList;

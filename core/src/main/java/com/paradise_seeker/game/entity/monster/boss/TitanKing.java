@@ -35,7 +35,7 @@ public class TitanKing implements Renderable, Collidable {
     public float cleaveDuration = 1.2f;
     public float cleaveTimer = 0f;
     public int cleaveDamage = 20;
-    public float cleaveRange = 5f;
+    public float cleaveRange = 4f;
 
     public Animation<TextureRegion> deathLeft, deathRight;
     public boolean deathPlayed = false;
@@ -50,16 +50,18 @@ public class TitanKing implements Renderable, Collidable {
     public float stateTime = 0f;
     public Vector2 lastPosition = new Vector2();
     public boolean isMoving = false;
+    public float OFFSET = 2f;
 
     public TitanKing(float x, float y) {
-        this.bounds = new Rectangle(x, y, 2f, 2f);
+        this.bounds = new Rectangle(x, y + OFFSET, 3f, 5f);
         this.spawnX = x;
-        this.spawnY = y;
+        this.spawnY = y + OFFSET;
         this.spriteWidth = 10f;
         this.spriteHeight = 10f;
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
     }
+
 
     public Rectangle getBounds() {
         return bounds;
@@ -70,8 +72,12 @@ public class TitanKing implements Renderable, Collidable {
     }
 
     public void update(float deltaTime) {
-        if (isDead || player == null || player.isDead) return;
+    	if (player == null || player.isDead) return;
 
+        if (isDead) {
+            stateTime += deltaTime; // Cho animation chết tiếp tục chạy
+            return;
+        }
         isMoving = lastPosition.dst(bounds.x, bounds.y) > 0.0001f;
         lastPosition.set(bounds.x, bounds.y);
 
@@ -103,13 +109,28 @@ public class TitanKing implements Renderable, Collidable {
             aggroTimer -= deltaTime;
             if (aggroTimer <= 0f && !isNearPlayer()) isAggressive = false;
             else {
-                approachPlayer(deltaTime);
-                if (isNearPlayer() && cleaveTimer <= 0f) attackPlayer();
+                if (!isCleaving) {
+                    approachPlayer(deltaTime);
+                }
+                if (isPlayerInCleaveRange() && cleaveTimer <= 0f) attackPlayer();
                 return;
             }
+
         }
 
         returnToSpawn(deltaTime);
+    }
+    private boolean isPlayerInCleaveRange() {
+        float bossCenterX = bounds.x + bounds.width / 2;
+        float bossCenterY = bounds.y + bounds.height / 2;
+        float playerCenterX = player.bounds.x + player.bounds.width / 2;
+        float playerCenterY = player.bounds.y + player.bounds.height / 2;
+
+        float dx = bossCenterX - playerCenterX;
+        float dy = bossCenterY - playerCenterY;
+
+        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+        return distance <= cleaveRange;
     }
 
     public void attackPlayer() {
@@ -125,8 +146,9 @@ public class TitanKing implements Renderable, Collidable {
             else {
                 isTakingHit = true;
                 takeHitTimer = takeHitDuration;
-                stateTime = 0f;
-            }
+                if (!isCleaving) {
+                    stateTime = 0f;
+                }            }
         }
     }
 
@@ -152,7 +174,7 @@ public class TitanKing implements Renderable, Collidable {
         if (player != null) facingRight = player.bounds.x > bounds.x;
 
         float drawX = bounds.x - (spriteWidth - bounds.width) / 2f;
-        float drawY = bounds.y - (spriteHeight - bounds.height) / 2f;
+        float drawY = bounds.y + OFFSET  - (spriteHeight - bounds.height) / 2f;
         batch.draw(currentFrame, drawX, drawY, spriteWidth, spriteHeight);
     }
 

@@ -24,7 +24,7 @@ public class PlayerSkill implements Skill {
 
     public PlayerSkill(boolean isSkill1) {
         this.manaCost = 10;
-        this.cooldown = 1500;
+        this.cooldown = 0;
         this.lastUsedTime = 0;
         this.isSkill1 = isSkill1;
         this.skillAnimations = new HashMap<>();
@@ -39,7 +39,6 @@ public class PlayerSkill implements Skill {
             for (String dir : directions) {
                 String path = "images/Entity/skills/PlayerSkills/Skill1/Skill1_" + dir + ".png";
                 try {
-                    System.out.println("Loading: " + path);
                     Texture sheet = new Texture(Gdx.files.internal(path));
                     TextureRegion[] frames;
                     if (dir.equals("left") || dir.equals("right")) {
@@ -59,14 +58,12 @@ public class PlayerSkill implements Skill {
                     }
                     skillAnimations.put(dir, new Animation<>(0.1f, frames));
                 } catch (Exception e) {
-                    System.out.println("Error loading: " + path);
                 }
             }
         } else {
             for (String dir : directions) {
                 String path = "images/Entity/skills/PlayerSkills/Skill2/Skill2_" + dir + ".png";
                 try {
-                    System.out.println("Loading: " + path);
                     Texture sheet = new Texture(Gdx.files.internal(path));
                     TextureRegion[] frames;
                     if (dir.equals("left") || dir.equals("right")) {
@@ -84,7 +81,6 @@ public class PlayerSkill implements Skill {
                     }
                     skillAnimations.put(dir, new Animation<>(0.1f, frames));
                 } catch (Exception e) {
-                    System.out.println("Error loading: " + path);
                 }
             }
         }
@@ -98,7 +94,7 @@ public class PlayerSkill implements Skill {
     @Override
     public void execute(Character target) {
         if (canUse(System.currentTimeMillis()) && target != null) {
-            target.receiveDamage(20);
+            target.receiveDamage(1000);
             lastUsedTime = System.currentTimeMillis();
         }
     }

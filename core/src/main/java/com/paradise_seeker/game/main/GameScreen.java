@@ -15,7 +15,6 @@ import com.paradise_seeker.game.map.GameMap;
 import com.paradise_seeker.game.ui.HUD;
 import com.paradise_seeker.game.entity.skill.LaserBeam;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.paradise_seeker.game.entity.monster.boss.TitanKing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,10 +77,10 @@ public class GameScreen implements Screen {
             LaserBeam projectile = activeProjectiles.get(i);
             projectile.update();
 
-            // Va chạm với boss
-            for (TitanKing boss : gameMap.getBosses()) {
-                if (projectile.isActive() && !boss.isDead() && boss.getBounds().overlaps(projectile.getHitbox())) {
-                    boss.takeDamage(projectile.getDamage());
+            for (Monster monster : gameMap.getMonsters()) {
+                
+                if (projectile.isActive() && !monster.isDead() && monster.getBounds().overlaps(projectile.getHitbox())) {
+                    monster.takeDamage(projectile.getDamage());
                     projectile.setInactive();
                 }
             }
@@ -90,6 +89,7 @@ public class GameScreen implements Screen {
                 activeProjectiles.remove(i);
             }
         }
+
 
         Vector2 playerCenter = new Vector2(
             player.bounds.x + player.bounds.width / 2,
@@ -137,8 +137,7 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
         game.viewport.update(width, height, true);
         hudCamera.setToOrtho(false, width, height);
-        hudCamera.update(); // 🟩 THÊM DÒNG NÀY
-
+        hudCamera.update();
     }
 
     @Override public void pause() {

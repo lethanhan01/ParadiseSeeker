@@ -138,7 +138,9 @@ public class GameScreen implements Screen {
 
         hudCamera.update();
         hud.shapeRenderer.setProjectionMatrix(hudCamera.combined);
-        hud.render();
+        hud.spriteBatch.setProjectionMatrix(hudCamera.combined); // 🟩 THÊM DÒNG NÀY
+        hud.render(hudCamera.viewportHeight);
+
     }
 
     private void handleZoomInput() {
@@ -153,6 +155,8 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
         game.viewport.update(width, height, true);
         hudCamera.setToOrtho(false, width, height);
+        hudCamera.update(); // 🟩 THÊM DÒNG NÀY
+
     }
 
     @Override public void pause() {

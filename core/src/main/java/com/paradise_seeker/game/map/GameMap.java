@@ -6,13 +6,16 @@ import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.CollisionSystem;
 import com.paradise_seeker.game.entity.Player;
+import com.paradise_seeker.game.entity.monster.boss.Boss1;
+import com.paradise_seeker.game.entity.monster.creep.CyanBat;
 import com.paradise_seeker.game.entity.object.*;
-import com.paradise_seeker.game.entity.monster.boss.TitanKing;
+import com.paradise_seeker.game.entity.Monster;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
+import com.paradise_seeker.game.entity.monster.creep.EvilPlant;
+import com.paradise_seeker.game.entity.monster.creep.YellowBat;
 public class GameMap {
     private static final int MAP_WIDTH = 100;
     private static final int MAP_HEIGHT = 100;
@@ -22,7 +25,7 @@ public class GameMap {
     private List<GameObject> gameObjects;
     private List<Rectangle> occupiedAreas;
 
-    private List<TitanKing> bosses;
+    private List<Monster> monsters;
 
     private List<HPitem> hpItems = new ArrayList<>();
     private List<MPitem> mpItems = new ArrayList<>();
@@ -35,7 +38,7 @@ public class GameMap {
         backgroundTexture = new Texture("images/map/test.png");
         gameObjects = new ArrayList<>();
         occupiedAreas = new ArrayList<>();
-        bosses = new ArrayList<>();
+        monsters = new ArrayList<>();
         collidables = new ArrayList<>();
 
         player.bounds.x = MAP_WIDTH / 2f;
@@ -68,17 +71,29 @@ public class GameMap {
     }
 
     private void generateMonsters(Player player) {
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 10; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
-            if (b != null) spawnTitanKing(new TitanKing(b.x, b.y), player);
+            if (b != null) spawnMonster(new Boss1(b.x, b.y), player);
+        }
+        for (int i = 0; i < 10; i++) {
+            Rectangle b = generateNonOverlappingBounds(3, 3);
+            if (b != null) spawnMonster(new CyanBat(b.x, b.y), player);
+        }
+        for (int i = 0; i < 10; i++) {
+            Rectangle b = generateNonOverlappingBounds(3, 3);
+            if (b != null) spawnMonster(new EvilPlant(b.x, b.y), player);
+        }
+        for (int i = 0; i < 10; i++) {
+            Rectangle b = generateNonOverlappingBounds(3, 3);
+            if (b != null) spawnMonster(new YellowBat(b.x, b.y), player);
         }
     }
 
-    private void spawnTitanKing(TitanKing boss, Player player) {
-        boss.player = player;
-        bosses.add(boss);
-        collidables.add(boss);
-        occupiedAreas.add(boss.getBounds());
+    private void spawnMonster(Monster monster, Player player) {
+        monster.player = player;
+        monsters.add(monster);
+        collidables.add(monster);
+        occupiedAreas.add(monster.getBounds());
     }
 
     private Rectangle generateNonOverlappingBounds(float width, float height) {
@@ -109,11 +124,11 @@ public class GameMap {
         for (MPitem item : mpItems) item.render(batch);
         for (ATKitem item : atkItems) item.render(batch);
 
-        for (TitanKing b : bosses) b.render(batch);
+        for (Monster m : monsters) m.render(batch);
     }
 
     public void update(float deltaTime) {
-        for (TitanKing b : bosses) b.update(deltaTime);
+        for (Monster m : monsters) m.update(deltaTime);
 
         hpItems.removeIf(item -> !item.isActive());
         mpItems.removeIf(item -> !item.isActive());
@@ -199,8 +214,8 @@ public class GameMap {
     }
 
     public void damageMonstersInRange(float x, float y, float radius, int damage) {
-        for (TitanKing b : bosses) {
-            if (!b.isDead() && isInRange(x, y, b.getBounds(), radius)) b.takeDamage(damage);
+        for (Monster m : monsters) {
+            if (!m.isDead() && isInRange(x, y, m.getBounds(), radius)) m.takeDamage(damage);
         }
     }
 
@@ -212,5 +227,5 @@ public class GameMap {
         return dx * dx + dy * dy <= radius * radius;
     }
 
-    public List<TitanKing> getBosses() { return bosses; }
+    public List<Monster> getMonsters() { return monsters; }
 }

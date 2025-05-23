@@ -48,17 +48,17 @@ public class Player extends Character {
     private Animation<TextureRegion> idleUp, idleDown, idleLeft, idleRight;
 
     private TextureRegion currentFrame; // Frame hiện tại đang được vẽ
-    private float stateTime = 0f;       // Thời gian trôi qua để cập nhật animation
-    private String direction = "down";  // Hướng hiện tại của nhân vật
-    private boolean isMoving = false;   // Trạng thái đang di chuyển
-    private boolean isAttacking = false; // Trạng thái đang tấn công
+    public float stateTime = 0f;       // Thời gian trôi qua để cập nhật animation
+    public String direction = "down";  // Hướng hiện tại của nhân vật
+    public  boolean isMoving = false;   // Trạng thái đang di chuyển
+    public boolean isAttacking = false; // Trạng thái đang tấn công
 
     private boolean isDashing = false;  // Trạng thái đang dash
     private float dashCooldown = 0f;  // Thời gian hồi chiêu dash
     private float dashTimer = 0f;       // Thời gian còn lại cho dash
     private float dashDistance = 2f;   // Khoảng cách dash
 
-    private boolean isShielding = false; // Trạng thái đang giơ khiên
+    boolean isShielding = false; // Trạng thái đang giơ khiên
     private boolean menuOpen = false;    // Menu đang mở
     private boolean isPaused = false;    // Trò chơi đang bị tạm dừng
 
@@ -78,11 +78,11 @@ public class Player extends Character {
     private Animation<TextureRegion> pushUp, pushDown, pushLeft, pushRight;
 
     // Thêm biến shielded hit
-    private boolean isShieldedHit = true;
+    public boolean isShieldedHit = true;
     private Animation<TextureRegion> shieldedHitUp, shieldedHitDown, shieldedHitLeft, shieldedHitRight;
 
     // Thêm biến hit
-    private boolean isHit = false;
+    public boolean isHit = false;
     private Animation<TextureRegion> hitUp, hitDown, hitLeft, hitRight;
 
     private GameMap gameMap;
@@ -93,7 +93,7 @@ public class Player extends Character {
 
     // Hàm khởi tạo nhân vật với tọa độ khởi đầu
     public Player(Rectangle bounds) {
-        super(bounds, 100, 50, 10, 5f); // Gọi constructor của Character: (bounds, hp, mp, atk, speed)
+        super(bounds, 100, 1000, 10, 5f); // Gọi constructor của Character: (bounds, hp, mp, atk, speed)
         loadAnimations();               // Load các animation cho nhân vật
         this.playerSkill1 = new PlayerSkill(true);  // Khởi tạo kỹ năng 1
         this.playerSkill2 = new PlayerSkill(false); // Khởi tạo kỹ năng 2
@@ -194,11 +194,12 @@ public class Player extends Character {
         dashTimer -= deltaTime;
         speedMultiplier = 1f;
 
-        if (isMoving || isAttacking) {
+        if (isHit || isShieldedHit || isMoving || isAttacking) {
             stateTime += deltaTime;
         } else {
             stateTime = 0;
         }
+
 
         if (isAttacking) {
             Animation<TextureRegion> currentAttack = getAttackAnimationByDirection();
@@ -525,13 +526,20 @@ public class Player extends Character {
 
     public void takeDamage(int damage) {
         if (isShielding) {
-            damage /= 2; // ✅ Giảm 50% sát thương khi giơ khiên
+            damage /= 2;
         }
+
         hp = Math.max(0, hp - damage);
+
         if (hp == 0 && !isDead) {
-            onDeath(); // Gọi khi chết
+            onDeath();
+        } else {
+            // ✅ Tự động bật hiệu ứng bị đánh
+            isHit = true;
+            stateTime = 0;
         }
     }
+
 
 
     public void setSpeedMultiplier(float multiplier) {

@@ -63,13 +63,13 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-    	if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
-	        pause();
-	    }
-    	if (player.hp == 0) {
-			game.setScreen(new DeadScreen(game));
-			game.currentGame = null;
-		}
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            pause();
+        }
+        if (player.hp == 0) {
+            game.setScreen(new DeadScreen(game));
+            game.currentGame = null;
+        }
         handleZoomInput();
 
         player.update(delta);
@@ -80,20 +80,6 @@ public class GameScreen implements Screen {
             LaserBeam projectile = activeProjectiles.get(i);
             projectile.update();
 
-            // Va chạm với quái thường
-            for (Monster creep : gameMap.getCreeps()) {
-                if (projectile.isActive() && !creep.isDead() && creep.getBounds().overlaps(projectile.getHitbox())) {
-                    creep.takeDamage(projectile.getDamage());
-                    projectile.setInactive();
-                }
-            }
-            for (com.paradise_seeker.game.entity.Monster elite : gameMap.getElites()) {
-                if (projectile.isActive() && !elite.isDead() && elite.getBounds().overlaps(projectile.getHitbox())) {
-                    elite.takeDamage(projectile.getDamage());
-                    projectile.setInactive();
-                }
-            }
-
             // Va chạm với boss
             for (TitanKing boss : gameMap.getBosses()) {
                 if (projectile.isActive() && !boss.isDead() && boss.getBounds().overlaps(projectile.getHitbox())) {
@@ -101,7 +87,6 @@ public class GameScreen implements Screen {
                     projectile.setInactive();
                 }
             }
-
 
             if (!projectile.isActive()) {
                 activeProjectiles.remove(i);
@@ -138,9 +123,8 @@ public class GameScreen implements Screen {
 
         hudCamera.update();
         hud.shapeRenderer.setProjectionMatrix(hudCamera.combined);
-        hud.spriteBatch.setProjectionMatrix(hudCamera.combined); // 🟩 THÊM DÒNG NÀY
+        hud.spriteBatch.setProjectionMatrix(hudCamera.combined);
         hud.render(hudCamera.viewportHeight);
-
     }
 
     private void handleZoomInput() {

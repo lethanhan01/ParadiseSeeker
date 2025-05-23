@@ -8,8 +8,7 @@ import com.paradise_seeker.game.entity.CollisionSystem;
 import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.entity.object.*;
 import com.paradise_seeker.game.entity.monster.boss.TitanKing;
-import com.paradise_seeker.game.entity.monster.creep.*;
-import com.paradise_seeker.game.entity.monster.elite.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,16 +16,18 @@ import java.util.Random;
 public class GameMap {
     private static final int MAP_WIDTH = 100;
     private static final int MAP_HEIGHT = 100;
-    private List<Collidable> collidables;
 
     private Texture backgroundTexture;
+    private List<Collidable> collidables;
     private List<GameObject> gameObjects;
     private List<Rectangle> occupiedAreas;
+
     private List<TitanKing> bosses;
-    private List<com.paradise_seeker.game.entity.Monster> elites;
-    private List<com.paradise_seeker.game.entity.Monster> creeps;
+
     private List<HPitem> hpItems = new ArrayList<>();
     private List<MPitem> mpItems = new ArrayList<>();
+    private List<ATKitem> atkItems = new ArrayList<>();
+
     private float itemSpawnTimer = 0f;
     private static final float ITEM_SPAWN_INTERVAL = 120f;
 
@@ -35,8 +36,6 @@ public class GameMap {
         gameObjects = new ArrayList<>();
         occupiedAreas = new ArrayList<>();
         bosses = new ArrayList<>();
-        elites = new ArrayList<>();
-        creeps = new ArrayList<>();
         collidables = new ArrayList<>();
 
         player.bounds.x = MAP_WIDTH / 2f;
@@ -70,22 +69,23 @@ public class GameMap {
 
     private void generateMonsters(Player player) {
         for (int i = 0; i < 30; i++) {
-            Rectangle bounds = generateNonOverlappingBounds(4, 4);
-            if (bounds != null) {
-                TitanKing boss = new TitanKing(bounds.x, bounds.y);
-                boss.player = player;
-                bosses.add(boss);
-                collidables.add(boss);
-                occupiedAreas.add(boss.getBounds());
-            }
+            Rectangle b = generateNonOverlappingBounds(4, 4);
+            if (b != null) spawnTitanKing(new TitanKing(b.x, b.y), player);
         }
+    }
+
+    private void spawnTitanKing(TitanKing boss, Player player) {
+        boss.player = player;
+        bosses.add(boss);
+        collidables.add(boss);
+        occupiedAreas.add(boss.getBounds());
     }
 
     private Rectangle generateNonOverlappingBounds(float width, float height) {
         Random rand = new Random();
         for (int attempts = 0; attempts < 1000; attempts++) {
-            float x = rand.nextInt(MAP_WIDTH - (int)width);
-            float y = rand.nextInt(MAP_HEIGHT - (int)height);
+            float x = rand.nextInt(MAP_WIDTH - (int) width);
+            float y = rand.nextInt(MAP_HEIGHT - (int) height);
             Rectangle newBounds = new Rectangle(x, y, width, height);
             boolean overlaps = false;
             for (Rectangle occ : occupiedAreas) {
@@ -104,23 +104,21 @@ public class GameMap {
     public void render(SpriteBatch batch) {
         batch.draw(backgroundTexture, 0, 0, MAP_WIDTH, MAP_HEIGHT);
 
-        for (GameObject object : gameObjects) {
-            object.render(batch);
-        }
-
+        for (GameObject obj : gameObjects) obj.render(batch);
         for (HPitem item : hpItems) item.render(batch);
         for (MPitem item : mpItems) item.render(batch);
+        for (ATKitem item : atkItems) item.render(batch);
+
         for (TitanKing b : bosses) b.render(batch);
-        for (com.paradise_seeker.game.entity.Monster e : elites) e.render(batch);
-        for (com.paradise_seeker.game.entity.Monster c : creeps) c.render(batch);
     }
 
     public void update(float deltaTime) {
         for (TitanKing b : bosses) b.update(deltaTime);
-        for (com.paradise_seeker.game.entity.Monster e : elites) e.update(deltaTime);
-        for (com.paradise_seeker.game.entity.Monster c : creeps) c.update(deltaTime);
+
         hpItems.removeIf(item -> !item.isActive());
         mpItems.removeIf(item -> !item.isActive());
+        atkItems.removeIf(item -> !item.isActive());
+
         itemSpawnTimer += deltaTime;
         if (itemSpawnTimer >= ITEM_SPAWN_INTERVAL) {
             spawnRandomItem();
@@ -140,28 +138,69 @@ public class GameMap {
                 item.onCollision(player);
             }
         }
+        for (ATKitem item : atkItems) {
+            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                item.onCollision(player);
+            }
+        }
     }
 
     public void dispose() {
         backgroundTexture.dispose();
-        for (GameObject object : gameObjects) object.dispose();
+        for (GameObject obj : gameObjects) obj.dispose();
+    }
+
+    private void generateRandomItems(int hpCount, int mpCount) {
+        Random rand = new Random();
+
+        String[] hpTextures = {"items/potion/potion3.png", "items/potion/potion4.png", "items/potion/potion5.png"};
+        int[] hpValues = {20, 40, 60};
+
+        String[] mpTextures = {"items/potion/potion9.png", "items/potion/potion10.png", "items/potion/potion11.png"};
+        int[] mpValues = {15, 30, 50};
+
+        String[] atkTextures = {"items/atkbuff_potion/potion14.png", "items/atkbuff_potion/potion15.png", "items/atkbuff_potion/potion16.png"};
+        int[] atkValues = {5, 10, 15};
+
+        for (int i = 0; i < hpCount; i++) {
+            int idx = rand.nextInt(hpTextures.length);
+            hpItems.add(new HPitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, hpTextures[idx], hpValues[idx]));
+        }
+        for (int i = 0; i < mpCount; i++) {
+            int idx = rand.nextInt(mpTextures.length);
+            mpItems.add(new MPitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, mpTextures[idx], mpValues[idx]));
+        }
+        for (int i = 0; i < 3; i++) {
+            int idx = rand.nextInt(atkTextures.length);
+            atkItems.add(new ATKitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, atkTextures[idx], atkValues[idx]));
+        }
+    }
+
+    private void spawnRandomItem() {
+        Random rand = new Random();
+        int type = rand.nextInt(3); // 0 = HP, 1 = MP, 2 = ATK
+
+        if (type == 0) {
+            String[] textures = {"items/potion/potion3.png", "items/potion/potion4.png", "items/potion/potion5.png"};
+            int[] values = {20, 40, 60};
+            int idx = rand.nextInt(textures.length);
+            hpItems.add(new HPitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, textures[idx], values[idx]));
+        } else if (type == 1) {
+            String[] textures = {"items/potion/potion9.png", "items/potion/potion10.png", "items/potion/potion11.png"};
+            int[] values = {15, 30, 50};
+            int idx = rand.nextInt(textures.length);
+            mpItems.add(new MPitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, textures[idx], values[idx]));
+        } else {
+            String[] textures = {"items/atkbuff_potion/potion14.png", "items/atkbuff_potion/potion15.png", "items/atkbuff_potion/potion16.png"};
+            int[] values = {5, 10, 15};
+            int idx = rand.nextInt(textures.length);
+            atkItems.add(new ATKitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, textures[idx], values[idx]));
+        }
     }
 
     public void damageMonstersInRange(float x, float y, float radius, int damage) {
         for (TitanKing b : bosses) {
-            if (!b.isDead() && isInRange(x, y, b.getBounds(), radius)) {
-                b.takeDamage(damage);
-            }
-        }
-        for (com.paradise_seeker.game.entity.Monster e : elites) {
-            if (!e.isDead() && isInRange(x, y, e.getBounds(), radius)) {
-                e.takeDamage(damage);
-            }
-        }
-        for (com.paradise_seeker.game.entity.Monster c : creeps) {
-            if (!c.isDead() && isInRange(x, y, c.getBounds(), radius)) {
-                c.takeDamage(damage);
-            }
+            if (!b.isDead() && isInRange(x, y, b.getBounds(), radius)) b.takeDamage(damage);
         }
     }
 
@@ -173,47 +212,5 @@ public class GameMap {
         return dx * dx + dy * dy <= radius * radius;
     }
 
-    public List<com.paradise_seeker.game.entity.Monster> getCreeps() { return creeps; }
-    public List<com.paradise_seeker.game.entity.Monster> getElites() { return elites; }
     public List<TitanKing> getBosses() { return bosses; }
-
-    private void generateRandomItems(int hpCount, int mpCount) {
-        Random rand = new Random();
-        String[] hpTextures = {"items/potion/potion3.png", "items/potion/potion4.png", "items/potion/potion5.png"};
-        int[] hpValues = {20, 40, 60};
-        String[] mpTextures = {"items/potion/potion9.png", "items/potion/potion10.png", "items/potion/potion11.png"};
-        int[] mpValues = {15, 30, 50};
-        for (int i = 0; i < hpCount; i++) {
-            int idx = rand.nextInt(hpTextures.length);
-            float x = rand.nextFloat() * (MAP_WIDTH - 1);
-            float y = rand.nextFloat() * (MAP_HEIGHT - 1);
-            hpItems.add(new HPitem(x, y, 1, hpTextures[idx], hpValues[idx]));
-        }
-        for (int i = 0; i < mpCount; i++) {
-            int idx = rand.nextInt(mpTextures.length);
-            float x = rand.nextFloat() * (MAP_WIDTH - 1);
-            float y = rand.nextFloat() * (MAP_HEIGHT - 1);
-            mpItems.add(new MPitem(x, y, 1, mpTextures[idx], mpValues[idx]));
-        }
-    }
-
-    private void spawnRandomItem() {
-        Random rand = new Random();
-        boolean spawnHP = rand.nextBoolean();
-        if (spawnHP) {
-            String[] hpTextures = {"items/potion/potion3.png", "items/potion/potion4.png", "items/potion/potion5.png"};
-            int[] hpValues = {20, 40, 60};
-            int idx = rand.nextInt(hpTextures.length);
-            float x = rand.nextFloat() * (MAP_WIDTH - 1);
-            float y = rand.nextFloat() * (MAP_HEIGHT - 1);
-            hpItems.add(new HPitem(x, y, 1, hpTextures[idx], hpValues[idx]));
-        } else {
-            String[] mpTextures = {"items/potion/potion9.png", "items/potion/potion10.png", "items/potion/potion11.png"};
-            int[] mpValues = {15, 30, 50};
-            int idx = rand.nextInt(mpTextures.length);
-            float x = rand.nextFloat() * (MAP_WIDTH - 1);
-            float y = rand.nextFloat() * (MAP_HEIGHT - 1);
-            mpItems.add(new MPitem(x, y, 1, mpTextures[idx], mpValues[idx]));
-        }
-    }
 }

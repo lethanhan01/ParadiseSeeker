@@ -52,7 +52,7 @@ public class TitanKing implements Renderable, Collidable {
     public boolean isMoving = false;
 
     public TitanKing(float x, float y) {
-        this.bounds = new Rectangle(x, y, 2f, 5f);
+        this.bounds = new Rectangle(x, y, 2f, 2f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 10f;

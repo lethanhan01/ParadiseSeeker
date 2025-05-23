@@ -14,7 +14,7 @@ public class Boss1 extends Monster {
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 10f;
-        this.spriteHeight = 10f;
+        this.spriteHeight = 6f;
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 5f; // Gán riêng tại đây
@@ -23,7 +23,7 @@ public class Boss1 extends Monster {
 
     @Override
     protected void loadAnimations() {
-        walkRight = loadAnimationNoPadding("images/Entity/characters/monsters/boss/boss_1/walk/phai/", "demon_walk_", 12, ".png", 1);
+    /*    walkRight = loadAnimationNoPadding("images/Entity/characters/monsters/boss/boss_1/walk/phai/", "demon_walk_", 12, ".png", 1);
         walkLeft  = loadAnimationNoPadding("images/Entity/characters/monsters/boss/boss_1/walk/trai/", "demon_walk_", 12, ".png", 1);
 
         idleRight = loadAnimationNoPadding("images/Entity/characters/monsters/boss/boss_1/idle/phai/", "demon_idle_1 (", 6, ").png", 0);
@@ -37,9 +37,21 @@ public class Boss1 extends Monster {
 
         deathRight = loadAnimationNoPadding("images/Entity/characters/monsters/boss/boss_1/death/phai/", "demon_death_", 22, ".png", 1);
         deathLeft  = loadAnimationNoPadding("images/Entity/characters/monsters/boss/boss_1/death/trai/", "demon_death_", 22, ".png", 1);
+        */
+        walkLeft  = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/walk/trai/spritesheet_left.png", 12);
+        walkRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/walk/phai/spritesheet.png", 12);
+
+        takeHitRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/take_hit/phai/spritesheet.png", 5);
+        takeHitLeft  = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/take_hit/trai/spritesheet.png", 5);
+        idleRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/walk/phai/spritesheet.png", 12);
+        idleLeft  = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/walk/trai/spritesheet_left.png", 12);
+        deathLeft = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/death/trai/spritesheet.png", 20);
+        deathRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/death/trai/spritesheet.png", 20);
+        cleaveRight = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/cleave/phai/spritesheet.png", 15);
+        cleaveLeft  = loadSheetAnimation("images/Entity/characters/monsters/boss/boss_1/cleave/trai/spritesheet.png", 15);
     }
 
-    private Animation<TextureRegion> loadAnimationNoPadding(String folder, String prefix, int frameCount, String suffix, int startIndex) {
+   /* private Animation<TextureRegion> loadAnimationNoPadding(String folder, String prefix, int frameCount, String suffix, int startIndex) {
         TextureRegion[] frames = new TextureRegion[frameCount];
         for (int i = 0; i < frameCount; i++) {
             String filename = folder + prefix + (i + startIndex) + suffix;
@@ -47,5 +59,20 @@ public class Boss1 extends Monster {
             frames[i] = new TextureRegion(texture);
         }
         return new Animation<>(0.1f, frames);
+    }*/
+    private Animation<TextureRegion> loadSheetAnimation(String sheetPath, int frameCols) {
+        float frameDuration = 0.1f; // Default duration per frame
+        Texture sheet = new Texture(Gdx.files.internal(sheetPath));
+        int frameWidth = sheet.getWidth() / frameCols;
+        int frameHeight = sheet.getHeight();
+        TextureRegion[][] tmp = TextureRegion.split(sheet, frameWidth, frameHeight);
+        TextureRegion[] frames = new TextureRegion[frameCols];
+        for (int i = 0; i < frameCols; i++) {
+            frames[i] = tmp[0][i];
+        }
+        return new Animation<>(frameDuration, frames);
     }
+
+    
+
 }

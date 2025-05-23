@@ -93,7 +93,7 @@ public class Player extends Character {
 
     // Hàm khởi tạo nhân vật với tọa độ khởi đầu
     public Player(Rectangle bounds) {
-        super(bounds, 100, 1000, 10, 5f); // Gọi constructor của Character: (bounds, hp, mp, atk, speed)
+        super(bounds, 1000, 1000, 10, 5f); // Gọi constructor của Character: (bounds, hp, mp, atk, speed)
         loadAnimations();               // Load các animation cho nhân vật
         this.playerSkill1 = new PlayerSkill(true);  // Khởi tạo kỹ năng 1
         this.playerSkill2 = new PlayerSkill(false); // Khởi tạo kỹ năng 2
@@ -151,7 +151,7 @@ public class Player extends Character {
 
         // Load death animation
         deathAnimation = loadAnimation("images/Entity/characters/player/char_death_all_dir_anim_strip_10.png", 10);
-     // At the end of loadAnimations()
+        // Load smoke animation
         Texture smokeSheet = new Texture(Gdx.files.internal("images/spritesheet_smoke.png"));
         TextureRegion[] smokeFrames = TextureRegion.split(smokeSheet, smokeSheet.getWidth() / 6, smokeSheet.getHeight())[0];
         smokeAnim = new Animation<>(0.08f, smokeFrames);

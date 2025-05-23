@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Monster;
-
+/*
 public class GreatDragon extends Monster {
     public GreatDragon(float x, float y) {
         super(new Rectangle(x, y, 2f, 1f),
@@ -15,3 +15,4 @@ public class GreatDragon extends Monster {
         this.speed = 2.2f;
     }
 }
+*/

@@ -1,5 +1,4 @@
 package com.paradise_seeker.game.entity.monster.boss;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -10,11 +9,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.paradise_seeker.game.entity.Monster;
 
 public class TitanKing extends Monster {
+	
+	private boolean pendingCleaveHit = false;
+	private boolean cleaveDamageDealt = false;
+
 	private Animation<TextureRegion> cleaveLeft, cleaveRight;
 	private boolean isCleaving = false;
 	private float cleaveDuration = 1.2f; // 15 frame * 0.08s
 	private float cleaveTimer = 0f;
-	private int cleaveDamage = 20;
+	private int cleaveDamage = 50;
 	private float cleaveRange = 3f;
 
 	private Animation<TextureRegion> deathLeft, deathRight;
@@ -35,13 +38,14 @@ public class TitanKing extends Monster {
     private boolean isMoving = false;
 
     public TitanKing(float x, float y) {
-        super(new Rectangle(x, y, 3f, 2f), null, 10f, 10f);
-        this.hp = 80;
-        this.atk = 10;
+        super(new Rectangle(x, y, 2f, 2f), null, 10f, 10f);
+        this.hp = 100;
+        this.atk = 20;
         this.speed = 1.5f;
 
-        walkRight = loadAnimation("images/Entity/characters/monsters/boss/boss_1/walk/phai/", "demon_walk_", 12);
-        walkLeft  = loadAnimation("images/Entity/characters/monsters/boss/boss_1/walk/trai/", "demon_walk_", 12);
+        walkRight = loadAnimation("images/Entity/characters/monsters/boss/boss_1/walk/phai/", "demon_walk_", 12, 0.1f);
+        walkLeft  = loadAnimation("images/Entity/characters/monsters/boss/boss_1/walk/trai/", "demon_walk_", 12, 0.1f);
+
 
         takeHitRight = loadAnimation("images/Entity/characters/monsters/boss/boss_1/take_hit/phai/", "demon_take_hit_", 5);
         takeHitLeft  = loadAnimation("images/Entity/characters/monsters/boss/boss_1/take_hit/trai/", "demon_take_hit_", 5);
@@ -74,6 +78,15 @@ public class TitanKing extends Monster {
         return new Animation<>(0.1f, frames);
     }
 
+    private Animation<TextureRegion> loadAnimation(String folder, String prefix, int frameCount, float frameDuration) {
+        TextureRegion[] frames = new TextureRegion[frameCount];
+        for (int i = 0; i < frameCount; i++) {
+            String filename = folder + prefix + (i + 1) + ".png";
+            Texture texture = new Texture(Gdx.files.internal(filename));
+            frames[i] = new TextureRegion(texture);
+        }
+        return new Animation<>(frameDuration, frames);
+    }
 
     private Animation<TextureRegion> loadAnimation(String folder, String prefix, int frameCount) {
         TextureRegion[] frames = new TextureRegion[frameCount];
@@ -88,7 +101,7 @@ public class TitanKing extends Monster {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        isMoving = lastPosition.dst(bounds.x, bounds.y) > 0.01f;
+        isMoving = lastPosition.dst(bounds.x, bounds.y) > 0.0001f;
         lastPosition.set(bounds.x, bounds.y);
 
         stateTime += deltaTime;
@@ -97,19 +110,33 @@ public class TitanKing extends Monster {
             takeHitTimer -= deltaTime;
             if (takeHitTimer <= 0f) {
                 isTakingHit = false;
-                stateTime = 0f;
-            }
-        }
-     // Đếm ngược thời gian chém
-        if (isCleaving) {
-            cleaveTimer -= deltaTime;
-            if (cleaveTimer <= 0f) {
-                isCleaving = false;
-                stateTime = 0f;
             }
         }
 
+        // Đếm ngược thời gian chém
+        if (isCleaving) {
+            // Gây damage ở giữa animation cleave (50% thời gian)
+            if (pendingCleaveHit && !cleaveDamageDealt && stateTime >= cleaveDuration * 0.8f) {
+                if (player != null && !player.isDead) {
+                    float dx = player.bounds.x + player.bounds.width / 2 - (bounds.x + bounds.width / 2);
+                    float dy = player.bounds.y + player.bounds.height / 2 - (bounds.y + bounds.height / 2);
+                    float dist = (float) Math.sqrt(dx * dx + dy * dy);
+                    if (dist <= cleaveRange) {
+                        player.takeDamage(cleaveDamage);
+                    }
+                }
+                cleaveDamageDealt = true;
+            }
+
+            cleaveTimer -= deltaTime;
+            if (cleaveTimer <= 0f) {
+                isCleaving = false;
+                pendingCleaveHit = false;
+                cleaveDamageDealt = false;
+            }
+        }
     }
+
 
     @Override
     public void render(SpriteBatch batch) {
@@ -141,9 +168,44 @@ public class TitanKing extends Monster {
         float drawX = bounds.x - (spriteWidth - bounds.width) / 2f;
         float drawY = bounds.y - (spriteHeight - bounds.height) / 2f;
         batch.draw(currentFrame, drawX, drawY, spriteWidth, spriteHeight);
+
+        // ======= Thêm log ở đây =======
+        String anim = "unknown";
+        int frameIdx = 0;
+        if (isDead()) {
+            anim = "death";
+            frameIdx = (facingRight ? deathRight : deathLeft).getKeyFrameIndex(stateTime);
+        } else if (isCleaving) {
+            anim = "cleave";
+            frameIdx = (facingRight ? cleaveRight : cleaveLeft).getKeyFrameIndex(stateTime);
+        } else if (isTakingHit) {
+            anim = "takeHit";
+            frameIdx = (facingRight ? takeHitRight : takeHitLeft).getKeyFrameIndex(stateTime);
+        } else if (!isMoving) {
+            anim = "idle";
+            frameIdx = (facingRight ? idleRight : idleLeft).getKeyFrameIndex(stateTime);
+        } else {
+            anim = "walk";
+            frameIdx = (facingRight ? walkRight : walkLeft).getKeyFrameIndex(stateTime);
+        }
+        System.out.println("[RENDER] TitanKing render anim=" + anim
+            + " frame=" + frameIdx
+            + " time=" + String.format("%.3f", stateTime)
+            + " x=" + String.format("%.2f", bounds.x)
+            + " y=" + String.format("%.2f", bounds.y)
+            + " isMoving=" + isMoving
+            + " isCleaving=" + isCleaving
+            + " isTakingHit=" + isTakingHit
+            + " isDead=" + isDead()
+        );
+        // ===============================
     }
 
-
+    @Override
+    public void attackPlayer() {
+        useCleaveSkill();
+    }
+    
     @Override
     public void takeDamage(int damage) {
         super.takeDamage(damage);
@@ -164,18 +226,13 @@ public class TitanKing extends Monster {
             isCleaving = true;
             cleaveTimer = cleaveDuration;
             stateTime = 0f;
-
+            isAggressive = true;
+            aggroTimer = AGGRO_DURATION;
             // Gây sát thương nếu player trong phạm vi
-            if (player != null && !player.isDead) {
-                float dx = player.bounds.x + player.bounds.width / 2 - (bounds.x + bounds.width / 2);
-                float dy = player.bounds.y + player.bounds.height / 2 - (bounds.y + bounds.height / 2);
-                float dist = (float) Math.sqrt(dx * dx + dy * dy);
-                if (dist <= cleaveRange) {
-                    player.takeDamage(cleaveDamage);
-                }
-            }
+            pendingCleaveHit = true;
+            cleaveDamageDealt = false;
+
         }
     }
 
 }
-//    public void useCleaveSkill() {

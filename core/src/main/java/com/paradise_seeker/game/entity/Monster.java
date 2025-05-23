@@ -16,15 +16,15 @@ public class Monster extends Character implements Renderable, Collidable {
     private float attackTimer = 0f;
     public boolean isDead = false;
 
-    private boolean isAggressive = false;
-    private float aggroTimer = 0f;
-    private final float AGGRO_DURATION = 5f;
-    protected float spriteWidth;
-    protected float spriteHeight;
+    public boolean isAggressive = false;
+    public float aggroTimer = 0f;
+    public final float AGGRO_DURATION = 5f;
+    public float spriteWidth;
+    public float spriteHeight;
 
     // Lang thang quanh spawn
-    private float wanderTimer = 0f;
-    private float wanderCooldown = 0.5f;
+    private float wanderTimer = 5f;
+    private float wanderCooldown = 5f;
     private float wanderTargetX;
     private float wanderTargetY;
 
@@ -85,27 +85,27 @@ public class Monster extends Character implements Renderable, Collidable {
             return;
         }
 
-        wanderTimer -= deltaTime;
-
-        if (wanderTimer <= 0f) {
-            wanderTimer = wanderCooldown;
-
-            float angle = (float)(Math.random() * Math.PI * 2);
-            wanderTargetX = spawnX + (float)Math.cos(angle) * maxDistance;
-            wanderTargetY = spawnY + (float)Math.sin(angle) * maxDistance;
-        }
-
-        float dx = wanderTargetX - bounds.x;
-        float dy = wanderTargetY - bounds.y;
-        float distance = (float)Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > 0.1f) {
-            float moveX = (dx / distance) * speed * deltaTime;
-            float moveY = (dy / distance) * speed * deltaTime;
-            bounds.x += moveX;
-            bounds.y += moveY;
-
-        }
+//        wanderTimer -= deltaTime;
+//
+//        if (wanderTimer <= 0f) {
+//            wanderTimer = wanderCooldown;
+//
+//            float angle = (float)(Math.random() * Math.PI * 2);
+//            wanderTargetX = spawnX + (float)Math.cos(angle) * maxDistance;
+//            wanderTargetY = spawnY + (float)Math.sin(angle) * maxDistance;
+//        }
+//
+//        float dx = wanderTargetX - bounds.x;
+//        float dy = wanderTargetY - bounds.y;
+//        float distance = (float)Math.sqrt(dx * dx + dy * dy);
+//
+//        if (distance > 0.1f) {
+//            float moveX = (dx / distance) * speed * deltaTime;
+//            float moveY = (dy / distance) * speed * deltaTime;
+//            bounds.x += moveX;
+//            bounds.y += moveY;
+//
+//        }
     }
 
     private void returnToSpawn(float deltaTime) {
@@ -141,7 +141,7 @@ public class Monster extends Character implements Renderable, Collidable {
         return near;
     }
 
-    private void attackPlayer() {
+    public void attackPlayer() {
         if (!player.isDead) {
             player.takeDamage(atk);
             isAggressive = true;

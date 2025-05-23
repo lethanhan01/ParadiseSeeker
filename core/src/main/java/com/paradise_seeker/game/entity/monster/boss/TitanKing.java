@@ -53,7 +53,7 @@ public class TitanKing extends Monster {
                 "demon_idle_1 (", 6, ").png", 0);
         idleLeft  = loadAnimation("images/Entity/characters/monsters/boss/boss_1/idle/trai/", "demon_idle_", 6, ".png");
         deathLeft = loadAnimation("images/Entity/characters/monsters/boss/boss_1/death/trai/", "demon_death_", 22, ".png");
-        deathRight = loadAnimation("images/Entity/characters/monsters/boss/boss_1/death/phai/", "demon_death_", 22, ".png");
+        deathRight = loadAnimation("images/Entity/characters/monsters/boss/boss_1/death/trai/", "demon_death_", 22, ".png");
         cleaveRight = loadAnimation("images/Entity/characters/monsters/boss/boss_1/cleave/phai/", "demon_cleave_", 15, ".png");
         cleaveLeft  = loadAnimation("images/Entity/characters/monsters/boss/boss_1/cleave/trai/", "demon_cleave_", 15, ".png");
 

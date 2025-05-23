@@ -1,5 +1,9 @@
 package com.paradise_seeker.game.entity;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 // Import các class từ LibGDX để xử lý input, hình ảnh, animation, và hình chữ nhật
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,9 +16,21 @@ import com.badlogic.gdx.math.Vector2;
 // Import các kỹ năng người chơi
 import com.paradise_seeker.game.entity.skill.*;
 import com.paradise_seeker.game.map.GameMap;
+//At the top of Player class
 
 // Lớp Player đại diện cho nhân vật điều khiển được, kế thừa từ lớp Character
 public class Player extends Character {
+	// Added smoke animation
+	// Thêm lớp Smoke để quản lý hiệu ứng khói khi dash
+	// Lớp này lưu trữ vị trí và thời gian của khói
+	private class Smoke {
+        float x, y, stateTime;
+        Smoke(float x, float y) { this.x = x; this.y = y; this.stateTime = 0f; }
+    }
+    private List<Smoke> smokes = new ArrayList<>();
+    private Animation<TextureRegion> smokeAnim;
+    
+    
 	private float speedMultiplier = 1f;         // Hệ số tốc độ khi đi qua object
 	private Vector2 lastPosition = new Vector2(); // Ghi nhớ vị trí trước khi di chuyển
 
@@ -135,6 +151,10 @@ public class Player extends Character {
 
         // Load death animation
         deathAnimation = loadAnimation("images/Entity/characters/player/char_death_all_dir_anim_strip_10.png", 10);
+     // At the end of loadAnimations()
+        Texture smokeSheet = new Texture(Gdx.files.internal("images/spritesheet_smoke.png"));
+        TextureRegion[] smokeFrames = TextureRegion.split(smokeSheet, smokeSheet.getWidth() / 6, smokeSheet.getHeight())[0];
+        smokeAnim = new Animation<>(0.08f, smokeFrames);
 
         currentFrame = runDown.getKeyFrame(0); // Khung hình đầu tiên khi game khởi động
     }
@@ -189,6 +209,13 @@ public class Player extends Character {
         }
 
         isClimbing = false;
+        Iterator<Smoke> iter = smokes.iterator();
+        while (iter.hasNext()) {
+            Smoke s = iter.next();
+            s.stateTime += deltaTime;
+            if (smokeAnim.isAnimationFinished(s.stateTime)) iter.remove();
+        }
+
     }
 
 
@@ -247,6 +274,17 @@ public class Player extends Character {
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) dx += 1;
 
             float len = (float) Math.sqrt(dx * dx + dy * dy);
+         // Before updating bounds in handleDash()
+            float prevX = bounds.x;
+            float prevY = bounds.y;
+            
+            if (len > 0) {
+                bounds.x += (dx / len) * dashDistance;
+                bounds.y += (dy / len) * dashDistance;
+                dashTimer = dashCooldown;
+                smokes.add(new Smoke(prevX, prevY));
+            }
+
             if (len > 0) {
                 bounds.x += (dx / len) * dashDistance;
                 bounds.y += (dy / len) * dashDistance;
@@ -333,6 +371,11 @@ public class Player extends Character {
         } else {
             renderIdle(batch);
         }
+        for (Smoke s : smokes) {
+            TextureRegion frame = smokeAnim.getKeyFrame(s.stateTime, false);
+            batch.draw(frame, s.x, s.y, bounds.width, bounds.height);
+        }
+
     }
 
     // Vẽ nhân vật đang giơ khiên

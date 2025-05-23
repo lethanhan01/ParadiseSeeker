@@ -7,16 +7,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class PauseScreen implements Screen {
-
-    final Main game;
+public class DeadScreen implements Screen{
+	
+	final Main game;
     GlyphLayout layout;
-    String[] menuItems = {"PAUSING","CONTINUE", "SETTINGS", "RETURN TO MAIN MENU"};
+    String[] menuItems = {"YOU'RE DEAD","NEW GAME", "RETURN TO MAIN MENU"};
     int selectedIndex = 1; 
-    public PauseScreen(Main game) {
+    public DeadScreen(Main game) {
         this.game = game;
         this.layout = new GlyphLayout();
     }
+    
 
     @Override
     public void show() {
@@ -38,7 +39,7 @@ public class PauseScreen implements Screen {
             String text = menuItems[i];
             layout.setText(game.font, text);
             float x = (viewportWidth - layout.width) / 2f;
-            float y = viewportHeight - 2f - i * 1.5f;
+            float y = viewportHeight - 2f - i * 2f;
 
           
                 game.font.setColor(Color.WHITE);
@@ -66,13 +67,11 @@ public class PauseScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             switch (selectedIndex) {
                 case 1: 
+                	game.currentGame = new GameScreen(game);
                 	game.setScreen(game.currentGame);
                     break;
-                case 2: // Setting
-            		game.setScreen(game.settingMenu);
-                    break;
-                case 3: // Return to Main Menu
-                	game.setScreen(game.mainMenu);
+                case 2: // Return to Main Menu
+                	game.setScreen(new MainMenuScreen(game));
                     break;
             }
         }
@@ -87,4 +86,5 @@ public class PauseScreen implements Screen {
     @Override public void resume() {}
     @Override public void hide() {}
     @Override public void dispose() {}
+
 }

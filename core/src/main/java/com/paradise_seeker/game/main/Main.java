@@ -18,8 +18,9 @@ public class Main extends Game {
     public BitmapFont font;
     public OrthographicCamera camera;
     public FitViewport viewport;
-    public GameScreen newGame = null;
     public GameScreen currentGame = null;
+    public MainMenuScreen mainMenu = null;
+    public SettingScreen settingMenu = null;
 
     @Override
     public void create() {
@@ -43,7 +44,10 @@ public class Main extends Game {
         font.getData().setScale(WORLD_HEIGHT / Gdx.graphics.getHeight());
 
         // Khởi tạo màn hình game
-        this.setScreen(new MainMenuScreen(this));
+        this.settingMenu = new SettingScreen(this);
+        this.mainMenu = new MainMenuScreen(this);
+        this.setScreen(mainMenu);
+        
     }
 
     @Override

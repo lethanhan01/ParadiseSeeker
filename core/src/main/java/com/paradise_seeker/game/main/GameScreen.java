@@ -65,8 +65,11 @@ public class GameScreen implements Screen {
     public void render(float delta) {
     	if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
 	        pause();
-
 	    }
+    	if (player.hp == 0) {
+			game.setScreen(new DeadScreen(game));
+			game.currentGame = null;
+		}
         handleZoomInput();
 
         player.update(delta);

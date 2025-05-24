@@ -50,6 +50,8 @@ public class HUD {
     }
 
     public void render(float screenHeight) {
+    	float scaledBarWidth = BAR_WIDTH * 1.2f;
+        float scaledBarHeight = BAR_HEIGHT * 1.2f;
     	float hpPercent = Math.max(0, Math.min(player.hp / (float) Player.MAX_HP, 1f));
         float mpPercent = Math.max(0, Math.min(player.mp / (float) Player.MAX_MP, 1f));
 
@@ -57,10 +59,9 @@ public class HUD {
         int frameIndexmp = Math.round((1 - mpPercent) * 73);
 
         spriteBatch.begin();
-        spriteBatch.draw(hpBarFrames[frameIndexhp], PADDING, screenHeight - PADDING - BAR_HEIGHT);
-        spriteBatch.draw(mpBarFrames[frameIndexmp], PADDING, screenHeight - PADDING - BAR_HEIGHT*2);
-        spriteBatch.end();
-    }
+        spriteBatch.draw(hpBarFrames[frameIndexhp], PADDING, screenHeight - PADDING - scaledBarHeight, scaledBarWidth, scaledBarHeight);
+        spriteBatch.draw(mpBarFrames[frameIndexmp], PADDING*1.18f, screenHeight - PADDING - scaledBarHeight * 2, scaledBarWidth*0.9f, scaledBarHeight*0.9f);
+        spriteBatch.end();    }
 
     public void dispose() {
     	shapeRenderer.dispose();

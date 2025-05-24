@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -14,9 +15,31 @@ public class SettingScreen implements Screen {
     GlyphLayout layout;
     String[] menuItems = {"SETTINGS","Full Screen", "Music", "SE", "Control", "End Game", "Back"};
     int selectedIndex = 1; 
+    Texture background;
+    Texture[] buttonTextures;
+    Texture[] selectedButtonTextures;
     public SettingScreen(Main game) {
         this.game = game;
         this.layout = new GlyphLayout();
+        background = new Texture("menu/settings_menu/setting_main/menu_setting_c.png");
+
+        buttonTextures = new Texture[] {
+            new Texture("menu/settings_menu/setting_main/full_screen (1).png"),
+            new Texture("menu/settings_menu/setting_main/music.png"),
+            new Texture("menu/settings_menu/setting_main/SE.png"),
+            new Texture("menu/settings_menu/setting_main/control.png"),
+            new Texture("menu/settings_menu/setting_main/end_game.png"),
+            new Texture("menu/settings_menu/setting_main/Back.png")
+        };
+
+        selectedButtonTextures = new Texture[] {
+        		new Texture("menu/settings_menu/setting_main/full_screen_b (1).png"),
+                new Texture("menu/settings_menu/setting_main/music_b.png"),
+                new Texture("menu/settings_menu/setting_main/SE_b.png"),
+                new Texture("menu/settings_menu/setting_main/control_b.png"),
+                new Texture("menu/settings_menu/setting_main/end_game_b.png"),
+                new Texture("menu/settings_menu/setting_main/Back_b.png")
+        };
     }
 
     @Override
@@ -34,23 +57,29 @@ public class SettingScreen implements Screen {
 
         game.batch.begin();
 
-        // 1. Title "SETTINGS" (căn giữa)
-        layout.setText(game.font, menuItems[0], Color.RED, 
-                     viewportWidth, Align.center, true);
-        game.font.draw(game.batch, layout, 0, viewportHeight - 2f);
+     // 1. Vẽ nền
+        game.batch.draw(background, 0, 0, viewportWidth, viewportHeight);
 
-        // 2. Menu items (căn trái)
-        float leftMargin = 2f; // Khoảng cách từ lề trái
-        for (int i = 1; i < menuItems.length; i++) {
-            layout.setText(game.font, menuItems[i], Color.WHITE, 
-                         viewportWidth - leftMargin, Align.left, true);
-            
-            float y = viewportHeight - 2f - i * 1f;
-            if (i == selectedIndex) {
-                game.font.draw(game.batch, ">", leftMargin - 1.2f, y);
+        float buttonWidth = 3.2f;    // 🔽 Giảm chiều ngang (từ 4f)
+        float buttonHeight = 0.85f;  // 🔽 Giảm chiều cao (từ 1f)
+        float xButton = 1.2f; 
+
+        float yStart = viewportHeight - 2.5f; 
+        float buttonSpacing = 0.55f;
+        
+
+
+        for (int i = 0; i < buttonTextures.length; i++) {
+            float y = yStart - i * (buttonHeight + buttonSpacing);
+            Texture tex = (i + 1 == selectedIndex) ? selectedButtonTextures[i] : buttonTextures[i];
+            game.batch.draw(tex, xButton, y, buttonWidth, buttonHeight);
+            if (i + 1 == selectedIndex) {
+                // Vẽ mũi tên ở bên trái nút đang được chọn
+                game.font.setColor(Color.WHITE); // hoặc màu khác nếu muốn
+                game.font.draw(game.batch, ">", xButton - 0.5f, y + buttonHeight * 0.7f);
             }
-            game.font.draw(game.batch, layout, leftMargin, y);
         }
+
         game.batch.end();
 
         handleInput();
@@ -107,5 +136,10 @@ public class SettingScreen implements Screen {
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
-    @Override public void dispose() {}
+    @Override
+    public void dispose() {
+        background.dispose();
+        for (Texture t : buttonTextures) t.dispose();
+        for (Texture t : selectedButtonTextures) t.dispose();
+    }
 }

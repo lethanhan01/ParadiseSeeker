@@ -204,7 +204,9 @@ public abstract class Monster implements Renderable, Collidable {
         isDead = true;
         stateTime = 0f;
         deathPlayed = true;
+        bounds.set(0, 0, 0, 0); // Reset bounds để không va chạm nữa
     }
+
 
     @Override
     public void onCollision(Player player) {

@@ -17,14 +17,21 @@ public class MainMenuScreen implements Screen {
     Texture[] buttonTextures;
     Texture background;
     Texture[] selectedButtonTextures;
+    Texture characterIcon;
 
     public MainMenuScreen(final Main game) {
         this.game = game;
         touchPos = new Vector2();
+
         // Use your title PNG here
         titleTexture = new Texture(Gdx.files.internal("menu/start_menu/main_menu/test.png"));
         titleTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         background = new Texture("menu/start_menu/main_menu/bg_7.png");
+
+        characterIcon = new Texture(Gdx.files.internal("images/Entity/characters/player/char_shielded_static_up.png"));
+        characterIcon.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        
+
         buttonTextures = new Texture[] {
             new Texture("menu/start_menu/main_menu/newgame1.png"),
             new Texture("menu/start_menu/main_menu/loadgame1.png"),

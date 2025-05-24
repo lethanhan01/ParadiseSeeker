@@ -47,7 +47,6 @@ public class Main extends Game {
         // Khởi tạo màn hình game
         this.settingMenu = new SettingScreen(this);
         this.mainMenu = new MainMenuScreen(this);
-        this.inventoryScreen = new InventoryScreen(this);
         this.setScreen(mainMenu);
         
     }

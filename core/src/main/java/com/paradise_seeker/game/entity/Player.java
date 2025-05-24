@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.paradise_seeker.game.entity.object.Item;
 // Import các kỹ năng người chơi
 import com.paradise_seeker.game.entity.skill.*;
 import com.paradise_seeker.game.map.GameMap;
@@ -39,6 +40,9 @@ public class Player extends Character {
     public PlayerSkill playerSkill1; // Kỹ năng 1 của người chơi
     public PlayerSkill playerSkill2; // Kỹ năng 2 của người chơi
     public Weapon weapon;            // Vũ khí đang dùng
+    
+    public ArrayList<Item> inventory = new ArrayList<>(); // Kho đồ của người chơi
+    public int inventorySize = 18; // Kích thước kho đồ
 
     // Các animation cho nhân vật di chuyển theo các hướng
     private Animation<TextureRegion> runUp, runDown, runLeft, runRight;
@@ -581,7 +585,11 @@ public class Player extends Character {
         bounds.x += (dx / distance) * pushAmount;
         bounds.y += (dy / distance) * pushAmount;
     }
-
-
-
+    public void addItemToInventory(Item item) {
+		if (inventory.size() < inventorySize) {
+			inventory.add(item);
+		} else {
+			System.out.println("Inventory is full!");
+		}
+	}
 }

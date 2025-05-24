@@ -63,6 +63,11 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             pause();
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+			game.setScreen(game.inventoryScreen);
+			music.stop();
+			return;
+		}
         if (player.hp == 0) {
             game.setScreen(new DeadScreen(game));
             music.stop();

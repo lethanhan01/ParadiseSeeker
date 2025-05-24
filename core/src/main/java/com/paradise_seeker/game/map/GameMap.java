@@ -72,51 +72,67 @@ public class GameMap {
     }
 
     private void generateMonsters(Player player) {
-        for (int i = 0; i < 5; i++) {
+        int bossCount = 5;  // Số lượng Boss1
+        int normalMonsterCount = 15; // Số lượng cho mỗi loại quái bình thường
+
+        // Boss1
+        for (int i = 0; i < bossCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new Boss1(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        // Các loại quái khác (CyanBat, DevilCreep, EvilPlant, YellowBat, RatCreep, FlyingCreep, FlyingDemon, FirewormElite, IceElite, MinotaurElite)
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new CyanBat(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new DevilCreep(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new EvilPlant(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new YellowBat(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new RatCreep(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new FlyingCreep(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new FlyingDemon(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new FirewormElite(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new IceElite(b.x, b.y), player);
         }
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new MinotaurElite(b.x, b.y), player);
         }
     }
+
 
 
     private void spawnMonster(Monster monster, Player player) {

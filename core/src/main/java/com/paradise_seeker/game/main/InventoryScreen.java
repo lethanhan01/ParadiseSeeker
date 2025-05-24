@@ -6,31 +6,28 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.paradise_seeker.game.entity.Player;
+import com.paradise_seeker.game.entity.object.Item;
 
 public class InventoryScreen implements Screen {
+    private final Player player;
+    private final Main game;
+    private final GlyphLayout layout;
+    private final ShapeRenderer shapeRenderer;
+    
+    private int selectedSlotX = 9;
+    private int selectedSlotY = 5;
+    private boolean inDescriptionArea = false;
 
-    final Main game;
-    GlyphLayout layout;
-    String[] menuItems = {"INVENTORY","STATS", "ITEMS", "DECRIPTION"};
-    ShapeRenderer shapeRenderer;
-    private int selectedItemX = 9;
-    private int selectedItemY = 7;
-    private Texture[][] InventoryItems = new Texture[3][6];
-
-
-    public InventoryScreen(Main game) {
-		this.game = game;
-		this.layout = new GlyphLayout();
-		this.shapeRenderer = new ShapeRenderer();
-		InventoryItems[0][0] = new Texture(Gdx.files.internal("items/potion/potion9.png"));
-		InventoryItems[0][1] = new Texture(Gdx.files.internal("items/potion/potion10.png"));
-		InventoryItems[0][2] = new Texture(Gdx.files.internal("items/potion/potion11.png"));
-		InventoryItems[0][3] = new Texture(Gdx.files.internal("items/potion/potion3.png"));
-		InventoryItems[0][4] = new Texture(Gdx.files.internal("items/potion/potion4.png"));
-		InventoryItems[0][5] = new Texture(Gdx.files.internal("items/potion/potion5.png"));
-	}
+    public InventoryScreen(Main game, Player player) {
+        this.game = game;
+        this.player = player;
+        this.layout = new GlyphLayout();
+        this.shapeRenderer = new ShapeRenderer();
+    }
 
     @Override
     public void show() {
@@ -38,136 +35,178 @@ public class InventoryScreen implements Screen {
 
     @Override
     public void render(float delta) {
-    	if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
-			game.setScreen(game.currentGame);
-		}
+        // Xử lý đóng inventory
+        if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+            game.setScreen(game.currentGame);
+            return;
+        }
+
         ScreenUtils.clear(Color.BLACK);
-        
-        
         game.camera.update();
         
+        // Vẽ UI
+        drawUI();
         
-        shapeRenderer.setProjectionMatrix(game.camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line); // Line: chỉ viền. Dùng .Filled nếu muốn fill
-
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(2, 1, 6, 7);   // Rectangle 1
-
-        shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.rect(9, 5, 6, 3);   // Rectangle 2
-
-        shapeRenderer.setColor(Color.BLUE);
-        shapeRenderer.rect(9, 1, 6, 3);   // Rectangle 3
-        shapeRenderer.setColor(Color.YELLOW);
-        SelectionItems(shapeRenderer);
-        
-
-        shapeRenderer.end();
-        
-        game.batch.setProjectionMatrix(game.camera.combined);
-        
-        float viewportWidth = game.viewport.getWorldWidth();
-        float viewportHeight = game.viewport.getWorldHeight();
-        
-
-        game.batch.begin();
-        
-        game.font.setColor(Color.RED);
-        String text = menuItems[0];
-        layout.setText(game.font, text);
-        float x = (viewportWidth - layout.width) / 2f;
-        float y = viewportHeight;
-        game.font.draw(game.batch, layout, x, y);
-        
-        game.font.setColor(Color.RED);
-        String text1 = menuItems[1];
-        layout.setText(game.font, text1);
-        float x1 = (10 - layout.width) / 2f;
-        float y1 = 8.8f;
-        game.font.draw(game.batch, layout, x1, y1);
-        
-        game.font.setColor(Color.GREEN);
-        String text2 = menuItems[2];
-        layout.setText(game.font, text2);
-        float x2 = (24- layout.width) / 2f;
-        float y2 = 8.8f;
-        game.font.draw(game.batch, layout, x2, y2);
-        
-        game.font.setColor(Color.BLUE);
-        String text3 = menuItems[3];
-        layout.setText(game.font, text3);
-        float x3 = (24 - layout.width) / 2f;
-        float y3 = 4.6f;
-        game.font.draw(game.batch, layout, x3, y3);
-        for (int row = 2; row >= 0; row--) {
-            for (int col = 5; col >= 0; col--) {
-                Texture tex = InventoryItems[row][col];
-                if (tex != null) {
-                    float drawX = 9 + col;      // Hoặc col * cellSize
-                    float drawY = 5 + row;      // Hoặc row * cellSize
-                    game.batch.draw(tex, drawX, drawY, 1, 1);  // size = 1x1 unit
-                }
-            }
-        }
-        
-       
-        game.batch.end();
-
+        // Xử lý input
         handleInput();
     }
 
-    private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            int gridX = selectedItemX - 9; // Giả sử grid bắt đầu từ x = 9
-            int gridY = selectedItemY - 5; // Giả sử grid bắt đầu từ y = 5
-
-            // Kiểm tra trong giới hạn mảng
-            if (gridY >= 0 && gridY < InventoryItems.length && gridX >= 0 && gridX < InventoryItems[0].length) {
-                Texture selectedItem = InventoryItems[gridY][gridX];
-                if (selectedItem != null) {
-                    System.out.println("Used item: " + selectedItem);
-                    // TODO: gọi hàm useItem(selectedItem);
-                    InventoryItems[gridY][gridX] = null; // Xoá item sau khi dùng (nếu cần)
-                } else {
-                    System.out.println("No item in this slot.");
-                }
-            }
-        }
-    }
-    public void addItemToInventory(Texture texture) {
+    private void drawUI() {
+        shapeRenderer.setProjectionMatrix(game.camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        
+        // Vẽ khung stats
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(2, 1, 6, 7);
+        
+        // Vẽ khung inventory
+        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.rect(9, 5, 6, 3);
+        
+        // Vẽ khung mô tả
+        shapeRenderer.setColor(Color.BLUE);
+        shapeRenderer.rect(9, 1, 6, 3);
+        
+        // Vẽ khung chọn item
+        shapeRenderer.setColor(Color.YELLOW);
+        shapeRenderer.rect(selectedSlotX, selectedSlotY, 1, 1);
+        
+        shapeRenderer.end();
+        
+        // Vẽ text và items
+        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.begin();
+        
+        // Vẽ tiêu đề
+        game.font.setColor(Color.RED);
+        drawCenteredText("INVENTORY", game.viewport.getWorldHeight() - 0.5f);
+        
+        // Vẽ stats player
+        game.font.setColor(Color.WHITE);
+        drawText("HP: " + player.hp + "/" + Player.MAX_HP, 2.5f, 6.5f);
+        drawText("MP: " + player.mp + "/" + Player.MAX_MP, 2.5f, 5.5f);
+        drawText("ATK: " + player.atk, 2.5f, 4.5f);
+        
+        // Vẽ các item trong inventory
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 6; col++) {
-                if (InventoryItems[row][col] == null) {
-                    InventoryItems[row][col] = texture;
-                    return;
+                int index = row * 6 + col;
+                if (index < player.inventory.size()) {
+                    Item item = player.inventory.get(index);
+                    float x = 9 + col + 0.1f;
+                    float y = 5 + (2 - row) + 0.1f; // Đảo ngược hàng để hiển thị từ trên xuống
+                    game.batch.draw(item.getTexture(), x, y, 0.8f, 0.8f);
                 }
             }
         }
-        System.out.println("Inventory is full!");
+        
+        // Vẽ mô tả item được chọn
+        if (getSelectedItem() != null) {
+            Item item = getSelectedItem();
+            game.font.setColor(Color.WHITE);
+            drawText("Name: " + item.getName(), 9.5f, 3.5f);
+            drawText("Desc: " + item.getDescription(), 9.5f, 2.5f);
+            drawText("Press E to use", 9.5f, 2.0f);
+            drawText("Press Q to drop", 9.5f, 1.5f);
+        }
+        
+        game.batch.end();
     }
 
-    
-    private void SelectionItems(ShapeRenderer shapeRenderer) {
-		
-    	 if ((Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP))&& selectedItemY < 7) 
-    		 selectedItemY += 1;
-         if ((Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN))&& selectedItemY > 5) 
-        	 selectedItemY -= 1;
-         if ((Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT))&& selectedItemX > 9) 
-        	 selectedItemX -= 1;
-         if ((Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))&& selectedItemX < 14) 
-        	 selectedItemX += 1;
-         shapeRenderer.rect(selectedItemX, selectedItemY, 1, 1);
-	}
+    private void handleInput() {
+        // Di chuyển giữa các ô inventory
+        if (!inDescriptionArea) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.W)|| Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                selectedSlotY = Math.min(7, selectedSlotY + 1);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.S)|| Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                selectedSlotY = Math.max(5, selectedSlotY - 1);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.A)|| Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                selectedSlotX = Math.max(9, selectedSlotX - 1);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.D)|| Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                selectedSlotX = Math.min(14, selectedSlotX + 1);
+            }
+            
+            // Chuyển sang vùng mô tả
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                inDescriptionArea = true;
+            }
+        } else {
+            // Quay lại inventory
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                inDescriptionArea = false;
+            }
+        }
+        
+        // Sử dụng item
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            useSelectedItem();
+        }
+        
+        // Vứt item
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            dropSelectedItem();
+        }
+    }
 
-    @Override public void resize(int width, int height) {
+    private Item getSelectedItem() {
+        int col = selectedSlotX - 9;
+        int row = 7 - selectedSlotY; // Chuyển đổi từ tọa độ màn hình sang index hàng
+        int index = row * 6 + col;
+        
+        if (index >= 0 && index < player.inventory.size()) {
+            return player.inventory.get(index);
+        }
+        return null;
+    }
+
+    private void useSelectedItem() {
+        Item item = getSelectedItem();
+        if (item != null) {
+            item.use(player);
+            if (item.getCount() <= 0) {
+                player.inventory.remove(item);
+            }
+        }
+    }
+
+    private void dropSelectedItem() {
+        Item item = getSelectedItem();
+        if (item != null) {
+            // TODO: Thêm logic thả item xuống map
+            player.inventory.remove(item);
+        }
+    }
+
+    private void drawText(String text, float x, float y) {
+        layout.setText(game.font, text);
+        game.font.draw(game.batch, layout, x, y);
+    }
+
+    private void drawCenteredText(String text, float y) {
+        layout.setText(game.font, text);
+        float x = (game.viewport.getWorldWidth() - layout.width) / 2;
+        game.font.draw(game.batch, layout, x, y);
+    }
+
+    @Override
+    public void resize(int width, int height) {
         game.viewport.update(width, height, true);
     }
 
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void hide() {}
-    @Override public void dispose() {
-    	shapeRenderer.dispose();
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+
+    @Override
+    public void hide() {}
+
+    @Override
+    public void dispose() {
+        shapeRenderer.dispose();
     }
 }

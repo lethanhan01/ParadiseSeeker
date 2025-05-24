@@ -8,7 +8,9 @@ public class HPitem extends Item {
     public HPitem(float x, float y, float size, String texturePath, int healAmount) {
         super(x, y, size, texturePath);
         this.healAmount = healAmount;
-        this.name = "Health Potion";
+        this.stackable = true; // Cho phép stack
+        this.maxStackSize = 5; // Số lượng tối đa có thể stack
+        this.name = "Health Potion" + " (" + healAmount + ")";
         this.description = "Restores " + healAmount + " HP.";
     }
 
@@ -21,6 +23,11 @@ public class HPitem extends Item {
     }
     public void use(Player player) {
         player.hp = Math.min(Player.MAX_HP, player.hp + healAmount);
-        count--;
+
+    }
+    public boolean canStackWith(Item other) {
+        if (!(other instanceof HPitem)) return false;
+        HPitem otherHP = (HPitem) other;
+        return super.canStackWith(other) && this.healAmount == otherHP.healAmount;
     }
 }

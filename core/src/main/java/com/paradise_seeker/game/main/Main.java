@@ -21,6 +21,7 @@ public class Main extends Game {
     public GameScreen currentGame = null;
     public MainMenuScreen mainMenu = null;
     public SettingScreen settingMenu = null;
+    public InventoryScreen inventoryScreen = null;
 
     @Override
     public void create() {
@@ -46,6 +47,7 @@ public class Main extends Game {
         // Khởi tạo màn hình game
         this.settingMenu = new SettingScreen(this);
         this.mainMenu = new MainMenuScreen(this);
+        this.inventoryScreen = new InventoryScreen(this);
         this.setScreen(mainMenu);
         
     }

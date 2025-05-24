@@ -52,7 +52,7 @@ public abstract class Monster implements Renderable, Collidable {
 
     public Texture[] hpBarFrames;
     public static final float HP_BAR_WIDTH = 2.0f; // Độ dài cố định (ví dụ: 2 đơn vị game)
-    public static final float HP_BAR_HEIGHT = 0.75f; // Độ dày thanh HP
+    public static final float HP_BAR_HEIGHT = 0.5f; // Độ dày thanh HP
     public static final float HP_BAR_Y_OFFSET = 0.5f;
     
     public Monster(float x, float y, int hp, float speed, int cleaveDamage, float offset) {

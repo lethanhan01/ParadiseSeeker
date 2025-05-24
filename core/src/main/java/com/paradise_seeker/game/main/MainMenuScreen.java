@@ -33,8 +33,8 @@ public class MainMenuScreen implements Screen {
         
 
         buttonTextures = new Texture[] {
-            new Texture("menu/start_menu/main_menu/newgame.png"),
-            new Texture("menu/start_menu/main_menu/loadgame.png"),
+            new Texture("menu/start_menu/main_menu/newgame1.png"),
+            new Texture("menu/start_menu/main_menu/loadgame1.png"),
             new Texture("menu/start_menu/main_menu/settings1.png"),
             new Texture("menu/start_menu/main_menu/exit1.png")
         };
@@ -65,14 +65,14 @@ public class MainMenuScreen implements Screen {
         game.batch.draw(background, 0, 0, viewportWidth, viewportHeight);
 
         // 2. Draw the title image at the top center
-        float titleWidth = 11.5f;   // Adjust as needed for your image
+        float titleWidth = 10.5f;   // Adjust as needed for your image
         float titleHeight = 4.8f;  // Adjust as needed for your image
         float xTitle = (viewportWidth - titleWidth) / 2f;
         float yTitle = viewportHeight - titleHeight - 0.4f;
         game.batch.draw(titleTexture, xTitle, yTitle, titleWidth, titleHeight);
 
         // 3. Draw the menu buttons under the title
-        float buttonWidth = 3.2f;
+        float buttonWidth = 3f;
         float buttonHeight = 0.75f;
         float xButton = (viewportWidth - buttonWidth) / 2f;
 
@@ -84,10 +84,13 @@ public class MainMenuScreen implements Screen {
             Texture buttonTex = (i == selectedIndex) ? selectedButtonTextures[i] : buttonTextures[i];
             game.batch.draw(buttonTex, xButton, yButton, buttonWidth, buttonHeight);
 
-            // Draw selector arrow (optional)
+            // Draw selector arrow 
             if (i == selectedIndex) {
-                game.font.setColor(Color.YELLOW);
+                game.font.setColor(Color.WHITE);
+                // Draw ">" on the left
                 game.font.draw(game.batch, ">", xButton - 0.3f, yButton + buttonHeight * 0.7f);
+                // Draw "<" on the right
+                game.font.draw(game.batch, "<", xButton + buttonWidth + 0.1f, yButton + buttonHeight * 0.7f);
             }
         }
 

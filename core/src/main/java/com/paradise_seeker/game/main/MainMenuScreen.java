@@ -17,17 +17,35 @@ public class MainMenuScreen implements Screen {
     Vector2 touchPos;
     Texture characterIcon;
     int selectedIndex = 0;
-    String[] menuItems = {"New Game", "Load Game", "Settings", "Exit"};
+    Texture[] buttonTextures;
+    Texture background;
+    Texture[] selectedButtonTextures;
+   
 
     public MainMenuScreen(final Main game) {
         this.game = game;
         touchPos = new Vector2();
         characterIcon = new Texture(Gdx.files.internal("images/Entity/characters/player/char_shielded_static_up.png"));
+        characterIcon.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        background = new Texture("menu/start_menu/main_menu/backgroundColorForest.png");
+        buttonTextures = new Texture[] {
+        	    new Texture("menu/start_menu/main_menu/new_game.png"),
+        	    new Texture("menu/start_menu/main_menu/load_game.png"),
+        	    new Texture("menu/start_menu/main_menu/settings.png"),
+        	    new Texture("menu/start_menu/main_menu/exit.png")
+        	};
+        selectedButtonTextures = new Texture[] {
+        	    new Texture("menu/start_menu/main_menu/new_game_b.png"),
+        	    new Texture("menu/start_menu/main_menu/load_game_b.png"),
+        	    new Texture("menu/start_menu/main_menu/settings_b.png"),
+        	    new Texture("menu/start_menu/main_menu/exit_b.png")
+        	};
 }
     @Override
     public void show() {
     }
 
+    
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
@@ -40,36 +58,43 @@ public class MainMenuScreen implements Screen {
 
         game.batch.begin();
 
-        // Tiêu đề
+        // 1. Vẽ nền
+        game.batch.draw(background, 0, 0, viewportWidth, viewportHeight);
+
+        // 2. Tiêu đề
         game.font.setColor(Color.RED);
         GlyphLayout layout = new GlyphLayout();
         String title = "Paradise Seeker";
         layout.setText(game.font, title);
-        float xTitle = (viewportWidth - layout.width) / 2f;
-        float yTitle = viewportHeight - 1f;
-        
+        float xTitle = Math.round((viewportWidth - layout.width) / 2f + 0.4f);
+        float yTitle = Math.round(viewportHeight - 0.6f);
         game.font.draw(game.batch, layout, xTitle, yTitle);
 
-        // Icon nhân vật
+        // 3. Vẽ icon nhân vật
         float iconWidth = 1.5f;
         float iconHeight = 1.5f;
-        float xIcon = (viewportWidth - iconWidth) / 2f;
-        float yIcon = yTitle - 3f;
-        
+        float xIcon = Math.round((viewportWidth - iconWidth) / 2f)+0.2f;
+        float yIcon = Math.round(yTitle - iconHeight - 0.6f)-0.2f;
         game.batch.draw(characterIcon, xIcon, yIcon, iconWidth, iconHeight);
+        
+        // 4. Vẽ các nút menu
+        float buttonWidth = 3.0f;            // giảm để không bị to/méo ảnh
+        float buttonHeight = 0.9f;
+        float xButton = (viewportWidth - buttonWidth) / 2f;
 
-        // Menu
-        game.font.setColor(Color.WHITE);
-        for (int i = 0; i < menuItems.length; i++) {
-            String item = menuItems[i];
-            layout.setText(game.font, item);
-            float xItem = (viewportWidth - layout.width) / 2f;
-            float yItem = yIcon - 1f - i * 1f;
-            game.font.draw(game.batch, item, xItem, yItem);
+        // Bắt đầu từ dưới nhân vật 1 khoảng
+        float yStart = yIcon - 1.5f; 
 
-            // Con trỏ >
+        for (int i = 0; i < buttonTextures.length; i++) {
+            float yButton = yStart - i * (buttonHeight + 0.6f); // khoảng cách đều đẹp
+            Texture buttonTex = (i == selectedIndex) ? selectedButtonTextures[i] : buttonTextures[i];
+            game.batch.draw(buttonTex, xButton, yButton, buttonWidth, buttonHeight);
+
+            // Vẽ dấu >
             if (i == selectedIndex) {
-                game.font.draw(game.batch, ">", xItem - 1f, yItem);
+                game.font.setColor(Color.YELLOW);
+                game.font.setColor(Color.BLACK); // hoặc Color.DARK_GRAY
+                game.font.draw(game.batch, ">", xButton - 0.3f, yButton + buttonHeight * 0.7f);
             }
         }
 
@@ -78,14 +103,16 @@ public class MainMenuScreen implements Screen {
         handleInput();
     }
 
+
+
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             selectedIndex--;
-            if (selectedIndex < 0) selectedIndex = menuItems.length - 1;
+            if (selectedIndex < 0) selectedIndex = buttonTextures.length - 1;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
             selectedIndex++;
-            if (selectedIndex >= menuItems.length) selectedIndex = 0;
+            if (selectedIndex >= buttonTextures.length) selectedIndex = 0;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
            selectMenuItem();
@@ -101,7 +128,7 @@ public class MainMenuScreen implements Screen {
             float iconHeight = 1.5f;
             float yIcon = yTitle - 3f;
 
-            for (int i = 0; i < menuItems.length; i++) {
+            for (int i = 0; i < buttonTextures.length; i++) {
                 float yItem = yIcon - 1f - i * 1.5f;
                 float itemHeight = 1f;  // chiều cao ước lượng dòng menu
 
@@ -152,5 +179,7 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
        characterIcon.dispose();
+       for (Texture t : buttonTextures) t.dispose();
+       for (Texture t : selectedButtonTextures) t.dispose();
     }
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -11,11 +12,26 @@ public class DeadScreen implements Screen{
 	
 	final Main game;
     GlyphLayout layout;
-    String[] menuItems = {"YOU'RE DEAD","NEW GAME", "RETURN TO MAIN MENU"};
+    
     int selectedIndex = 1; 
+    Texture background;
+    Texture[] buttonTextures;
+    Texture[] selectedButtonTextures;
     public DeadScreen(Main game) {
         this.game = game;
         this.layout = new GlyphLayout();
+        background = new Texture("menu/end_menu/main_death/background_lose.png");
+
+        buttonTextures = new Texture[] {
+            new Texture("menu/end_menu/main_death/new_game.png"),
+            new Texture("menu/end_menu/main_death/main_menu1.png")
+        };
+
+        selectedButtonTextures = new Texture[] {
+            new Texture("menu/end_menu/main_death/new_game_b.png"),
+            new Texture("menu/end_menu/main_death/Main_menu_b.png")
+        };
+
     }
     
 
@@ -33,22 +49,22 @@ public class DeadScreen implements Screen{
         float viewportHeight = game.viewport.getWorldHeight();
 
         game.batch.begin();
-        
-        game.font.setColor(Color.RED);
-        for (int i = 0; i < menuItems.length; i++) {
-            String text = menuItems[i];
-            layout.setText(game.font, text);
-            float x = (viewportWidth - layout.width) / 2f;
-            float y = viewportHeight - 2f - i * 2f;
-
-          
-                game.font.setColor(Color.WHITE);
-                if (i == selectedIndex) {
-                    game.font.draw(game.batch, ">", x - 1.2f, y);
+        game.batch.draw(background, 0, 0, viewportWidth, viewportHeight);
+        float buttonWidth = 3f;
+        float buttonHeight = 0.9f;
+        float xButton = (viewportWidth - buttonWidth) / 2f;
+        float yStart = viewportHeight - 5.4f;
+  
+        for (int i = 0; i < buttonTextures.length; i++) {
+            float yButton = yStart - i * (buttonHeight + 0.8f);
+            if (i == selectedIndex) {
+            	game.font.setColor(Color.WHITE);
+                game.font.draw(game.batch, ">", xButton - 0.5f, yButton + buttonHeight * 0.7f);
             }
-
-            game.font.draw(game.batch, layout, x, y);
+            Texture tex = (i == selectedIndex) ? selectedButtonTextures[i] : buttonTextures[i];
+            game.batch.draw(tex, xButton, yButton, buttonWidth, buttonHeight);
         }
+
 
         game.batch.end();
 
@@ -58,22 +74,22 @@ public class DeadScreen implements Screen{
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             selectedIndex--;
-            if (selectedIndex < 1) selectedIndex = menuItems.length - 1;
+            if (selectedIndex < 0) selectedIndex = buttonTextures.length - 1;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
             selectedIndex++;
-            if (selectedIndex >= menuItems.length) selectedIndex = 1;
+            if (selectedIndex >= buttonTextures.length) selectedIndex = 0;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            switch (selectedIndex) {
-                case 1: 
-                	game.currentGame = new GameScreen(game);
-                	game.setScreen(game.currentGame);
-                    break;
-                case 2: // Return to Main Menu
-                	game.setScreen(new MainMenuScreen(game));
-                    break;
-            }
+        	switch (selectedIndex) {
+            case 0: // NEW GAME
+                game.currentGame = new GameScreen(game);
+                game.setScreen(game.currentGame);
+                break;
+            case 1: // RETURN TO MAIN MENU
+                game.setScreen(new MainMenuScreen(game));
+                break;
+        }
         }
     }
    

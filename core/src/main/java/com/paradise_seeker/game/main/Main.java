@@ -29,7 +29,7 @@ public class Main extends Game {
         //font = new BitmapFont();
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/MinecraftStandard.otf"));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        parameter.size = 14; // Set your desired font size
+        parameter.size = 16; // Set your desired font size
         font = generator.generateFont(parameter);
         generator.dispose();
         // Khởi tạo camera

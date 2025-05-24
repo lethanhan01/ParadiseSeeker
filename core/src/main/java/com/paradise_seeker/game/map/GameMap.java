@@ -6,8 +6,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.CollisionSystem;
 import com.paradise_seeker.game.entity.Player;
-import com.paradise_seeker.game.entity.monster.boss.Boss1;
-import com.paradise_seeker.game.entity.monster.creep.CyanBat;
+import com.paradise_seeker.game.entity.monster.boss.*;
+import com.paradise_seeker.game.entity.monster.creep.*;
+import com.paradise_seeker.game.entity.monster.elite.*;
 import com.paradise_seeker.game.entity.object.*;
 import com.paradise_seeker.game.entity.Monster;
 
@@ -71,23 +72,52 @@ public class GameMap {
     }
 
     private void generateMonsters(Player player) {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new Boss1(b.x, b.y), player);
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new CyanBat(b.x, b.y), player);
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
+            Rectangle b = generateNonOverlappingBounds(3, 3);
+            if (b != null) spawnMonster(new DevilCreep(b.x, b.y), player);
+        }
+        for (int i = 0; i < 5; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new EvilPlant(b.x, b.y), player);
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new YellowBat(b.x, b.y), player);
         }
+        for (int i = 0; i < 5; i++) {
+            Rectangle b = generateNonOverlappingBounds(3, 3);
+            if (b != null) spawnMonster(new RatCreep(b.x, b.y), player);
+        }
+        for (int i = 0; i < 5; i++) {
+            Rectangle b = generateNonOverlappingBounds(3, 3);
+            if (b != null) spawnMonster(new FlyingCreep(b.x, b.y), player);
+        }
+        for (int i = 0; i < 5; i++) {
+            Rectangle b = generateNonOverlappingBounds(3, 3);
+            if (b != null) spawnMonster(new FlyingDemon(b.x, b.y), player);
+        }
+        for (int i = 0; i < 5; i++) {
+            Rectangle b = generateNonOverlappingBounds(4, 4);
+            if (b != null) spawnMonster(new FirewormElite(b.x, b.y), player);
+        }
+        for (int i = 0; i < 5; i++) {
+            Rectangle b = generateNonOverlappingBounds(4, 4);
+            if (b != null) spawnMonster(new IceElite(b.x, b.y), player);
+        }
+        for (int i = 0; i < 5; i++) {
+            Rectangle b = generateNonOverlappingBounds(4, 4);
+            if (b != null) spawnMonster(new MinotaurElite(b.x, b.y), player);
+        }
     }
+
 
     private void spawnMonster(Monster monster, Player player) {
         monster.player = player;

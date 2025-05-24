@@ -93,9 +93,14 @@ public class InventoryScreen implements Screen {
                 int index = row * 6 + col;
                 if (index < player.inventory.size()) {
                     Item item = player.inventory.get(index);
-                    float x = 9 + col + 0.1f;
-                    float y = 5 + (2 - row) + 0.1f; // Đảo ngược hàng để hiển thị từ trên xuống
-                    game.batch.draw(item.getTexture(), x, y, 0.8f, 0.8f);
+                    float x = 9 + col;
+                    float y = 5 + (2 - row);
+                    game.batch.draw(item.getTexture(), x, y, 1, 1);
+                    
+                    // Hiển thị số lượng nếu item có thể stack và count > 1
+                    if (item.isStackable() && item.getCount() > 1) {
+                        drawText(String.valueOf(item.getCount()), x + 0.7f, y + 0.3f);
+                    }
                 }
             }
         }
@@ -166,9 +171,16 @@ public class InventoryScreen implements Screen {
         Item item = getSelectedItem();
         if (item != null) {
             item.use(player);
-            if (item.getCount() <= 0) {
-                player.inventory.remove(item);
-            }
+            
+            // Giảm count và xóa nếu count <= 0
+            if (item.isStackable()) {
+                item.setCount(item.getCount() - 1);
+                if (item.getCount() <= 0) {
+                    player.inventory.remove(item);
+            	}
+            }else{
+				player.inventory.remove(item);
+			}
         }
     }
 

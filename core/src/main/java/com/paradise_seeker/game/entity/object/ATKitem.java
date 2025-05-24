@@ -8,7 +8,9 @@ public class ATKitem extends Item {
     public ATKitem(float x, float y, float size, String texturePath, int atkBoost) {
         super(x, y, size, texturePath);
         this.atkBoost = atkBoost;
-        this.name = "Attack Boost";
+        this.stackable = true;
+        this.maxStackSize = 5;
+        this.name = "Attack Boost" + " (" + atkBoost + ")";
         this.description = "Attack + " + atkBoost + ".";
     }
 
@@ -21,6 +23,11 @@ public class ATKitem extends Item {
     }
     public void use(Player player) {
 		player.atk += atkBoost;
-		count--;
+
+	}
+    public boolean canStackWith(Item other) {
+		if (!(other instanceof ATKitem)) return false;
+		ATKitem otherATK = (ATKitem) other;
+		return super.canStackWith(other) && this.atkBoost == otherATK.atkBoost;
 	}
 }

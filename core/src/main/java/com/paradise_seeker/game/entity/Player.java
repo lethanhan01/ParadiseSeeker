@@ -585,11 +585,34 @@ public class Player extends Character {
         bounds.x += (dx / distance) * pushAmount;
         bounds.y += (dy / distance) * pushAmount;
     }
-    public void addItemToInventory(Item item) {
-		if (inventory.size() < inventorySize) {
-			inventory.add(item);
-		} else {
-			System.out.println("Inventory is full!");
-		}
-	}
+    public void addItemToInventory(Item newItem) {
+        if (newItem == null || !newItem.isActive()) return;
+
+        // Nếu item có thể stack, kiểm tra xem đã có trong inventory chưa
+        if (newItem.isStackable()) {
+            for (Item existingItem : inventory) {
+                if (existingItem.canStackWith(newItem)) {
+                    int total = existingItem.getCount() + newItem.getCount();
+                    if (total <= existingItem.getMaxStackSize()) {
+                        existingItem.setCount(total);
+                        newItem.setActive(false);
+                        return;
+                    } else {
+                        int remaining = total - existingItem.getMaxStackSize();
+                        existingItem.setCount(existingItem.getMaxStackSize());
+                        newItem.setCount(remaining);
+                    }
+                }
+            }
+        }
+
+        // Nếu không stack được hoặc inventory còn chỗ
+        if (inventory.size() < inventorySize) {
+            inventory.add(newItem);
+            newItem.setActive(false);
+        } else {
+            // Inventory đầy, có thể thông báo cho người chơi
+            System.out.println("Inventory is full!");
+        }
+    }
 }

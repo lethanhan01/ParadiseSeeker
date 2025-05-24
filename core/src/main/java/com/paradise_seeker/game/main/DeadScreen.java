@@ -20,16 +20,16 @@ public class DeadScreen implements Screen{
     public DeadScreen(Main game) {
         this.game = game;
         this.layout = new GlyphLayout();
-        background = new Texture("menu/end_menu/main_death/background_lose.png");
+        background = new Texture("menu/end_menu/main_death/bgdeath3.png");
 
         buttonTextures = new Texture[] {
-            new Texture("menu/end_menu/main_death/new_game.png"),
-            new Texture("menu/end_menu/main_death/main_menu1.png")
+            new Texture("menu/end_menu/main_death/newgame.png"),
+            new Texture("menu/end_menu/main_death/backtomain.png")
         };
 
         selectedButtonTextures = new Texture[] {
-            new Texture("menu/end_menu/main_death/new_game_b.png"),
-            new Texture("menu/end_menu/main_death/Main_menu_b.png")
+            new Texture("menu/end_menu/main_death/newgame2.png"),
+            new Texture("menu/end_menu/main_death/backtomain2.png")
         };
 
     }
@@ -50,16 +50,19 @@ public class DeadScreen implements Screen{
 
         game.batch.begin();
         game.batch.draw(background, 0, 0, viewportWidth, viewportHeight);
-        float buttonWidth = 3f;
-        float buttonHeight = 0.9f;
+        float buttonWidth = 5f;
+        float buttonHeight = 1f;
         float xButton = (viewportWidth - buttonWidth) / 2f;
-        float yStart = viewportHeight - 5.4f;
+        float yStart = viewportHeight - 7f;
   
         for (int i = 0; i < buttonTextures.length; i++) {
-            float yButton = yStart - i * (buttonHeight + 0.8f);
+            float yButton = yStart - i * (buttonHeight + 0.1f);
             if (i == selectedIndex) {
-            	game.font.setColor(Color.WHITE);
+                game.font.setColor(Color.RED);
+                // Draw ">" on the left
                 game.font.draw(game.batch, ">", xButton - 0.5f, yButton + buttonHeight * 0.7f);
+                // Draw "<" on the right
+                game.font.draw(game.batch, "<", xButton + buttonWidth + 0.2f, yButton + buttonHeight * 0.7f);
             }
             Texture tex = (i == selectedIndex) ? selectedButtonTextures[i] : buttonTextures[i];
             game.batch.draw(tex, xButton, yButton, buttonWidth, buttonHeight);

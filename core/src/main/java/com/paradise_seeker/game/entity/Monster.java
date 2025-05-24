@@ -1,5 +1,7 @@
 package com.paradise_seeker.game.entity;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 public abstract class Monster implements Renderable, Collidable {
     public Rectangle bounds;
     public int hp;
+    public int MAX_HP; // Giả sử HP tối đa là 100
     public float speed;
     public int cleaveDamage;
 
@@ -47,12 +50,23 @@ public abstract class Monster implements Renderable, Collidable {
     public boolean isMoving = false;
     public float OFFSET;
 
+    public Texture[] hpBarFrames;
+    public static final float HP_BAR_WIDTH = 2.0f; // Độ dài cố định (ví dụ: 2 đơn vị game)
+    public static final float HP_BAR_HEIGHT = 0.75f; // Độ dày thanh HP
+    public static final float HP_BAR_Y_OFFSET = 0.5f;
+    
     public Monster(float x, float y, int hp, float speed, int cleaveDamage, float offset) {
         this.hp = hp;
+        this.MAX_HP = hp;
         this.speed = speed;
         this.cleaveDamage = cleaveDamage;
         this.OFFSET = offset;
         this.currentFrame = null;
+        hpBarFrames = new Texture[30];
+        for (int i = 0; i < 30; i++) {
+            String filename = String.format("ui/HP_bar_monster/hpm/Hp_monster%02d.png", i);
+            hpBarFrames[i] = new Texture(Gdx.files.internal(filename));
+        }
     }
 
 
@@ -167,9 +181,22 @@ public abstract class Monster implements Renderable, Collidable {
         else currentFrame = (facingRight ? walkRight : walkLeft).getKeyFrame(stateTime, true);
 
         if (player != null) facingRight = player.bounds.x > bounds.x;
+        float hpPercent = Math.max(0, Math.min(hp / (float) MAX_HP, 1f));
+        int frameIndex = Math.round((1 - hpPercent) * 29);
 
         float drawX = bounds.x - (spriteWidth - bounds.width) / 2f;
         float drawY = bounds.y + OFFSET  - (spriteHeight - bounds.height) / 2f;
+        float hpBarX = bounds.x + (bounds.width - HP_BAR_WIDTH) / 2f;
+        float hpBarY = bounds.y + bounds.height + HP_BAR_Y_OFFSET;
+
+        // Vẽ thanh HP (frameIndex từ mảng hpBarFrames)
+        batch.draw(
+            hpBarFrames[frameIndex], 
+            hpBarX, 
+            hpBarY, 
+            HP_BAR_WIDTH, 
+            HP_BAR_HEIGHT
+        );
         batch.draw(currentFrame, drawX, drawY, spriteWidth, spriteHeight);
     }
 

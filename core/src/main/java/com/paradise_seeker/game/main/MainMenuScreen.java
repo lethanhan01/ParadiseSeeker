@@ -5,47 +5,43 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class MainMenuScreen implements Screen {
 
     final Main game;
     Vector2 touchPos;
-    Texture characterIcon;
+    Texture titleTexture;
     int selectedIndex = 0;
     Texture[] buttonTextures;
     Texture background;
     Texture[] selectedButtonTextures;
-   
 
     public MainMenuScreen(final Main game) {
         this.game = game;
         touchPos = new Vector2();
-        characterIcon = new Texture(Gdx.files.internal("images/Entity/characters/player/char_shielded_static_up.png"));
-        characterIcon.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        background = new Texture("menu/start_menu/main_menu/backgroundColorForest.png");
+        // Use your title PNG here
+        titleTexture = new Texture(Gdx.files.internal("menu/start_menu/main_menu/test.png"));
+        titleTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        background = new Texture("menu/start_menu/main_menu/bg_7.png");
         buttonTextures = new Texture[] {
-        	    new Texture("menu/start_menu/main_menu/new_game.png"),
-        	    new Texture("menu/start_menu/main_menu/load_game.png"),
-        	    new Texture("menu/start_menu/main_menu/settings.png"),
-        	    new Texture("menu/start_menu/main_menu/exit.png")
-        	};
+            new Texture("menu/start_menu/main_menu/newgame.png"),
+            new Texture("menu/start_menu/main_menu/loadgame.png"),
+            new Texture("menu/start_menu/main_menu/settings1.png"),
+            new Texture("menu/start_menu/main_menu/exit1.png")
+        };
         selectedButtonTextures = new Texture[] {
-        	    new Texture("menu/start_menu/main_menu/new_game_b.png"),
-        	    new Texture("menu/start_menu/main_menu/load_game_b.png"),
-        	    new Texture("menu/start_menu/main_menu/settings_b.png"),
-        	    new Texture("menu/start_menu/main_menu/exit_b.png")
-        	};
-}
-    @Override
-    public void show() {
+            new Texture("menu/start_menu/main_menu/newgame_test.png"),
+            new Texture("menu/start_menu/main_menu/loadgame2.png"),
+            new Texture("menu/start_menu/main_menu/settings2.png"),
+            new Texture("menu/start_menu/main_menu/exit2.png")
+        };
     }
 
-    
+    @Override
+    public void show() {}
+
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
@@ -58,42 +54,32 @@ public class MainMenuScreen implements Screen {
 
         game.batch.begin();
 
-        // 1. Vẽ nền
+        // 1. Draw background
         game.batch.draw(background, 0, 0, viewportWidth, viewportHeight);
 
-        // 2. Tiêu đề
-        game.font.setColor(Color.RED);
-        GlyphLayout layout = new GlyphLayout();
-        String title = "Paradise Seeker";
-        layout.setText(game.font, title);
-        float xTitle = Math.round((viewportWidth - layout.width) / 2f + 0.4f);
-        float yTitle = Math.round(viewportHeight - 0.6f);
-        game.font.draw(game.batch, layout, xTitle, yTitle);
+        // 2. Draw the title image at the top center
+        float titleWidth = 11.5f;   // Adjust as needed for your image
+        float titleHeight = 4.8f;  // Adjust as needed for your image
+        float xTitle = (viewportWidth - titleWidth) / 2f;
+        float yTitle = viewportHeight - titleHeight - 0.4f;
+        game.batch.draw(titleTexture, xTitle, yTitle, titleWidth, titleHeight);
 
-        // 3. Vẽ icon nhân vật
-        float iconWidth = 1.5f;
-        float iconHeight = 1.5f;
-        float xIcon = Math.round((viewportWidth - iconWidth) / 2f)+0.2f;
-        float yIcon = Math.round(yTitle - iconHeight - 0.6f)-0.2f;
-        game.batch.draw(characterIcon, xIcon, yIcon, iconWidth, iconHeight);
-        
-        // 4. Vẽ các nút menu
-        float buttonWidth = 3.0f;            // giảm để không bị to/méo ảnh
-        float buttonHeight = 0.9f;
+        // 3. Draw the menu buttons under the title
+        float buttonWidth = 3.2f;
+        float buttonHeight = 0.75f;
         float xButton = (viewportWidth - buttonWidth) / 2f;
 
-        // Bắt đầu từ dưới nhân vật 1 khoảng
-        float yStart = yIcon - 1.5f; 
+        // Buttons start below the title image
+        float yStart = yTitle - buttonHeight - 0.01f;
 
         for (int i = 0; i < buttonTextures.length; i++) {
-            float yButton = yStart - i * (buttonHeight + 0.6f); // khoảng cách đều đẹp
+            float yButton = yStart - i * (buttonHeight + 0.2f);
             Texture buttonTex = (i == selectedIndex) ? selectedButtonTextures[i] : buttonTextures[i];
             game.batch.draw(buttonTex, xButton, yButton, buttonWidth, buttonHeight);
 
-            // Vẽ dấu >
+            // Draw selector arrow (optional)
             if (i == selectedIndex) {
                 game.font.setColor(Color.YELLOW);
-                game.font.setColor(Color.BLACK); // hoặc Color.DARK_GRAY
                 game.font.draw(game.batch, ">", xButton - 0.3f, yButton + buttonHeight * 0.7f);
             }
         }
@@ -102,8 +88,6 @@ public class MainMenuScreen implements Screen {
 
         handleInput();
     }
-
-
 
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
@@ -117,22 +101,21 @@ public class MainMenuScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
            selectMenuItem();
         }
-        
+
         if (Gdx.input.justTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
             game.viewport.unproject(touchPos);
 
             float viewportWidth = game.viewport.getWorldWidth();
             float viewportHeight = game.viewport.getWorldHeight();
-            float yTitle = viewportHeight - 1f;
-            float iconHeight = 1.5f;
-            float yIcon = yTitle - 3f;
+            float titleHeight = 2f; // Should match above
+            float yTitle = viewportHeight - titleHeight - 0.4f;
+            float buttonHeight = 0.9f;
+            float yStart = yTitle - buttonHeight - 0.8f;
 
             for (int i = 0; i < buttonTextures.length; i++) {
-                float yItem = yIcon - 1f - i * 1.5f;
-                float itemHeight = 1f;  // chiều cao ước lượng dòng menu
-
-                if (touchPos.y > yItem - itemHeight && touchPos.y < yItem + 0.5f) {
+                float yButton = yStart - i * (buttonHeight + 0.2f);
+                if (touchPos.y > yButton && touchPos.y < yButton + buttonHeight) {
                     selectedIndex = i;
                     selectMenuItem();
                     break;
@@ -140,24 +123,24 @@ public class MainMenuScreen implements Screen {
             }
         }
     }
-    
+
     private void selectMenuItem() {
         switch (selectedIndex) {
             case 0:
-            	if (game.currentGame == null) {
-					game.currentGame = new GameScreen(game);
-				}else {
-					game.currentGame = null;
-					game.currentGame = new GameScreen(game);
-				}
-            	game.setScreen(game.currentGame);
+                if (game.currentGame == null) {
+                    game.currentGame = new GameScreen(game);
+                } else {
+                    game.currentGame = null;
+                    game.currentGame = new GameScreen(game);
+                }
+                game.setScreen(game.currentGame);
                 break;
             case 1:
-            	if (game.currentGame == null) {
-            		game.setScreen(new MainMenuScreen(game));
-            	}else {
-                game.setScreen(game.currentGame);
-            	}
+                if (game.currentGame == null) {
+                    game.setScreen(new MainMenuScreen(game));
+                } else {
+                    game.setScreen(game.currentGame);
+                }
                 break;
             case 2:
                 game.setScreen(game.settingMenu);
@@ -178,7 +161,7 @@ public class MainMenuScreen implements Screen {
     @Override public void hide() {}
     @Override
     public void dispose() {
-       characterIcon.dispose();
+       titleTexture.dispose();
        for (Texture t : buttonTextures) t.dispose();
        for (Texture t : selectedButtonTextures) t.dispose();
     }

@@ -80,7 +80,7 @@ public class GameMap {
         generateNPC2s(player);
 
 
-        portal = new Portal(10f, 10f);
+        portal = new Portal(15f, 25f);
         // Add the portal to your collision system
         collidables.add(portal);
         // --- Load all "solid" rectangles, scale to world units, no Y flip ---
@@ -99,7 +99,7 @@ public class GameMap {
                         collidables.add(new SolidObject(fixedRect));
                     }
                 }
-            }
+            } 
         }
     }
     private void generateNPC2s(Player player) {
@@ -117,18 +117,13 @@ public class GameMap {
     }
 
     private void generateNPCs() {
-        Random random = new Random();
-        int npcCount = 2;
-        for (int i = 0; i < npcCount; i++) {
-            Rectangle bounds = generateNonOverlappingBounds(3f, 3f);
-            if (bounds != null) {
-                NPC1 npc = new NPC1(bounds.x, bounds.y);
-                npcList.add(npc);
-                collidables.add(npc);
-
-                occupiedAreas.add(new Rectangle(bounds)); // Đánh dấu vùng đã chiếm
-            }
-        }
+        // Place the NPC at the bottom-left corner of the map
+        float npcX = 1f; // Bottom-left X + 1 coordinate
+        float npcY = 1f; // Bottom-left Y + 1 coordinate
+        NPC1 npc = new NPC1(npcX, npcY);
+        npcList.add(npc);
+        collidables.add(npc);
+        occupiedAreas.add(npc.getBounds());
     }
 
     private void generateObjects() {

@@ -18,6 +18,7 @@ import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
 import com.paradise_seeker.game.entity.npc.*;
 import com.paradise_seeker.game.entity.object.*;
+import com.paradise_seeker.game.ui.HUD;
 import com.paradise_seeker.game.entity.Monster;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ public class GameMap {
         generateMonsters(player);
         generateRandomItems(5, 5);
         generateNPCs(); // ✅ Thêm dòng này
-        generateNPC2s(player);
+        //generateNPC2s(player);
 
 
         portal = new Portal(15f, 25f);
@@ -104,7 +105,7 @@ public class GameMap {
     }
     private void generateNPC2s(Player player) {
         Random random = new Random();
-        int npc2Count = 2;
+        int npc2Count = 1;
         for (int i = 0; i < npc2Count; i++) {
             Rectangle bounds = generateNonOverlappingBounds(3f, 3f);
             if (bounds != null) {
@@ -279,14 +280,42 @@ public class GameMap {
         }
     }
 
-    public void checkCollisions(Player player) {
+    public void checkCollisions(Player player, HUD hud) {
+        // Still check for collisions with solid objects (if you need this)
         CollisionSystem.checkCollisions(player, collidables);
-        for (HPitem item : hpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
-        for (MPitem item : mpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
-        for (ATKitem item : atkItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
-        for (Skill1item item : skill1Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
-        for (Skill2item item : skill2Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+
+        for (HPitem item : hpItems) {
+            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                item.onCollision(player);
+                if (hud != null) hud.showNotification("Obtained " + item.getName());
+            }
+        }
+        for (MPitem item : mpItems) {
+            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                item.onCollision(player);
+                if (hud != null) hud.showNotification("Obtained " + item.getName());
+            }
+        }
+        for (ATKitem item : atkItems) {
+            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                item.onCollision(player);
+                if (hud != null) hud.showNotification("Obtained " + item.getName());
+            }
+        }
+        for (Skill1item item : skill1Items) {
+            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                item.onCollision(player);
+                if (hud != null) hud.showNotification("Obtained " + item.getName());
+            }
+        }
+        for (Skill2item item : skill2Items) {
+            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                item.onCollision(player);
+                if (hud != null) hud.showNotification("Obtained " + item.getName());
+            }
+        }
     }
+
     public boolean isBlocked(Rectangle nextBounds) {
         for (Collidable c : collidables) {
             if (c.getBounds().overlaps(nextBounds)) {

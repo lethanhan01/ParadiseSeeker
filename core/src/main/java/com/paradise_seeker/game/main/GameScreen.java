@@ -85,7 +85,8 @@ public class GameScreen implements Screen {
 
         player.update(delta);
         gameMap.update(delta);
-        gameMap.checkCollisions(player);
+        //gameMap.checkCollisions(player);
+        gameMap.checkCollisions(player, hud); 
 
         for (int i = activeProjectiles.size() - 1; i >= 0; i--) {
             LaserBeam projectile = activeProjectiles.get(i);

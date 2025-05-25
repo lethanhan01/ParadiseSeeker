@@ -72,6 +72,13 @@ public class HUD {
         spriteBatch.begin();
         spriteBatch.draw(hpBarFrames[frameIndexhp], PADDING, screenHeight - PADDING - scaledBarHeight, scaledBarWidth, scaledBarHeight);
         spriteBatch.draw(mpBarFrames[frameIndexmp], PADDING*0.95f, screenHeight - PADDING - scaledBarHeight * 1.8f, scaledBarWidth, scaledBarHeight);
+        
+        if (player.showInteractMessage) {
+            // Below MP bar, 20px extra offset for readability
+            float messageY = screenHeight - PADDING - scaledBarHeight * 2.7f - 20f;
+            font.draw(spriteBatch, "> Press F to interact", PADDING, messageY);
+        }
+        
         // Adjust button sizes based on screen dimensions
         inventoryButtonWidth = screenWidth * 0.03f *1.5f; // 5% of screen width + 0.5f for scaling
         inventoryButtonHeight = screenHeight * 0.05f*1.5f; // 5% of screen height

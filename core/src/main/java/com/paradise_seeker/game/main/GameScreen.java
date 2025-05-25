@@ -38,7 +38,8 @@ public class GameScreen implements Screen {
 
     public GameScreen(final Main game) {
         this.game = game;
-        this.player = new Player(new Rectangle(5, 5, 1, 1)); // world units (tiles)
+        Rectangle playerBounds = new Rectangle(5, 5, 1, 1);
+        player = new Player(playerBounds, game.font);
         this.gameMap = new GameMap(player);
         this.player.setGameMap(gameMap);
         this.hud = new HUD(player);

@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.Player;
 
-// A simple solid object for collision boundaries from Tiled map objects
+
 public class SolidObject implements Collidable {
     private Rectangle bounds;
 
@@ -19,7 +19,7 @@ public class SolidObject implements Collidable {
 
     @Override
     public void onCollision(Player player) {
-        // Usually, you can leave this empty for static solids,
-        // but you can add logic if you want special behavior on touch
+        // No-op: Collision logic handled during movement, not here.
+
     }
 }

@@ -56,7 +56,8 @@ public class HUD {
     private float inventoryButtonHeight = 44f;
     private float pauseButtonWidth = 44f;
     private float pauseButtonHeight = 44f;
-
+    float screenWidth = Gdx.graphics.getWidth();
+    float screenHeight = Gdx.graphics.getHeight();
     public void render(float delta) {
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
@@ -73,12 +74,15 @@ public class HUD {
         spriteBatch.draw(hpBarFrames[frameIndexhp], PADDING, screenHeight - PADDING - scaledBarHeight, scaledBarWidth, scaledBarHeight);
         spriteBatch.draw(mpBarFrames[frameIndexmp], PADDING*0.95f, screenHeight - PADDING - scaledBarHeight * 1.8f, scaledBarWidth, scaledBarHeight);
         
+        float baseHeight = 450f; // or 1080f, depending on your base design
+        float fontScale = screenHeight / baseHeight; // Relative to a 720p or 1080p baseline
+        font.getData().setScale(fontScale);
+
         if (player.showInteractMessage) {
-            // Below MP bar, 20px extra offset for readability
-            float messageY = screenHeight - PADDING - scaledBarHeight * 2.7f - 20f;
+            // Compute position under MP bar, with dynamic vertical offset
+            float messageY = screenHeight - PADDING - (screenHeight * 0.07f) * 2.7f - (screenHeight * 0.03f);
             font.draw(spriteBatch, "> Press F to interact", PADDING, messageY);
         }
-        
         // Adjust button sizes based on screen dimensions
         inventoryButtonWidth = screenWidth * 0.03f *1.5f; // 5% of screen width + 0.5f for scaling
         inventoryButtonHeight = screenHeight * 0.05f*1.5f; // 5% of screen height

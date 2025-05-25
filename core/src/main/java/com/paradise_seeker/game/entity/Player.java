@@ -103,7 +103,7 @@ public class Player extends Character {
     // Hàm khởi tạo nhân vật với tọa độ khởi đầu
     private BitmapFont font;
     public Player(Rectangle bounds, BitmapFont font) {
-        super(bounds, 1000, 1000, 10, 5f); // existing code
+        super(bounds, 1000, 100, 10, 5f); // existing code
         loadAnimations();
         this.playerSkill1 = new PlayerSkill(true);
         this.playerSkill2 = new PlayerSkill(false);
@@ -183,15 +183,16 @@ public class Player extends Character {
         return new Animation<>(0.1f, tmp[0]);
     }
 
-    // Hồi phục mana mỗi giây
     public void regenMana(float deltaTime) {
         if (mp < MAX_MP) {
-            mp += 20 * deltaTime; // Hồi 5 mana mỗi giây
+            mp += 45 * deltaTime; // Regenerate 45 mana per deltaTime
         }
-        if(mp > MAX_MP) {
-			mp = MAX_MP; // Giới hạn mana không vượt quá MAX_MP
-		}
+        if (mp > MAX_MP) {
+            mp = MAX_MP; // Cap mana at MAX_MP
+        }
+        //System.out.println("Mana: " + mp + ", DeltaTime: " + deltaTime); // Debug log
     }
+
 
     // Cập nhật logic nhân vật mỗi frame
  // Trong update()

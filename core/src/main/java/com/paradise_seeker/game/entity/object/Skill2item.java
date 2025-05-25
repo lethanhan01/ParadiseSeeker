@@ -9,7 +9,7 @@ public class Skill2item extends Item  {
         super(x, y, size, texturePath);
         this.damageMultiplier = 0.5f;
         this.name = "Skill 2 Item";
-        this.description = "Skill_2's Mul +2.";
+        this.description = "Skill 2's DMG +0.5x.";
         this.stackable = true;
         this.maxStackSize = 5; // Giới hạn số lượng tối đa trong một stack
     }

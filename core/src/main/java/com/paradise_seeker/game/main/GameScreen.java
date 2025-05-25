@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
         player = new Player(playerBounds, game.font);
         this.gameMap = new GameMap(player);
         this.player.setGameMap(gameMap);
-        this.hud = new HUD(player);
+        this.hud = new HUD(player, game.font);
         this.shapeRenderer = new ShapeRenderer();
 
         // World-unit based camera

@@ -1,33 +1,50 @@
 package com.paradise_seeker.game.entity.object;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.Player;
 
-public class HPitem extends Item {
+public class HPitem implements Collidable {
+    private Rectangle bounds;
+    private Texture texture;
     private int healAmount;
+    private boolean active = true;
 
     public HPitem(float x, float y, float size, String texturePath, int healAmount) {
-        super(x, y, size, texturePath);
+        this.bounds = new Rectangle(x, y, size, size);
         this.healAmount = healAmount;
-        this.stackable = true; // Cho phép stack
-        this.maxStackSize = 5; // Số lượng tối đa có thể stack
-        this.name = "Health Potion" + " (" + healAmount + ")";
-        this.description = "Restores " + healAmount + " HP.";
+        this.texture = new Texture(texturePath);
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return bounds;
     }
 
     @Override
     public void onCollision(Player player) {
         if (active) {
-            player.addItemToInventory(this);
+            player.hp = Math.min(Player.MAX_HP, player.hp + healAmount);
             active = false;
+            System.out.println("Player healed for " + healAmount + " HP.");
         }
     }
-    public void use(Player player) {
-        player.hp = Math.min(Player.MAX_HP, player.hp + healAmount);
 
+    public void render(SpriteBatch batch) {
+        if (active) {
+            batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
+        }
     }
-    public boolean canStackWith(Item other) {
-        if (!(other instanceof HPitem)) return false;
-        HPitem otherHP = (HPitem) other;
-        return super.canStackWith(other) && this.healAmount == otherHP.healAmount;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void dispose() {
+        if (texture != null) {
+            texture.dispose();
+        }
     }
 }

@@ -11,12 +11,10 @@ import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
 import com.paradise_seeker.game.entity.object.*;
 import com.paradise_seeker.game.entity.Monster;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import com.paradise_seeker.game.entity.monster.creep.EvilPlant;
-import com.paradise_seeker.game.entity.monster.creep.YellowBat;
+
 public class GameMap {
     private static final int MAP_WIDTH = 100;
     private static final int MAP_HEIGHT = 100;
@@ -27,10 +25,11 @@ public class GameMap {
     private List<Rectangle> occupiedAreas;
 
     private List<Monster> monsters;
-
     private List<HPitem> hpItems = new ArrayList<>();
     private List<MPitem> mpItems = new ArrayList<>();
     private List<ATKitem> atkItems = new ArrayList<>();
+    private List<Skill1item> skill1Items = new ArrayList<>();
+    private List<Skill2item> skill2Items = new ArrayList<>();
 
     private float itemSpawnTimer = 0f;
     private static final float ITEM_SPAWN_INTERVAL = 120f;
@@ -72,68 +71,55 @@ public class GameMap {
     }
 
     private void generateMonsters(Player player) {
-        int bossCount = 5;  // Số lượng Boss1
-        int normalMonsterCount = 15; // Số lượng cho mỗi loại quái bình thường
+        int bossCount = 5;
+        int normalMonsterCount = 15;
 
-        // Boss1
         for (int i = 0; i < bossCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new Boss1(b.x, b.y), player);
         }
 
-        // Các loại quái khác (CyanBat, DevilCreep, EvilPlant, YellowBat, RatCreep, FlyingCreep, FlyingDemon, FirewormElite, IceElite, MinotaurElite)
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new CyanBat(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new DevilCreep(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new EvilPlant(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new YellowBat(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new RatCreep(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new FlyingCreep(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new FlyingDemon(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new FirewormElite(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new IceElite(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new MinotaurElite(b.x, b.y), player);
         }
     }
-
-
 
     private void spawnMonster(Monster monster, Player player) {
         monster.player = player;
@@ -169,6 +155,8 @@ public class GameMap {
         for (HPitem item : hpItems) item.render(batch);
         for (MPitem item : mpItems) item.render(batch);
         for (ATKitem item : atkItems) item.render(batch);
+        for (Skill1item item : skill1Items) item.render(batch);
+        for (Skill2item item : skill2Items) item.render(batch);
 
         for (Monster m : monsters) m.render(batch);
     }
@@ -179,6 +167,8 @@ public class GameMap {
         hpItems.removeIf(item -> !item.isActive());
         mpItems.removeIf(item -> !item.isActive());
         atkItems.removeIf(item -> !item.isActive());
+        skill1Items.removeIf(item -> !item.isActive());
+        skill2Items.removeIf(item -> !item.isActive());
 
         itemSpawnTimer += deltaTime;
         if (itemSpawnTimer >= ITEM_SPAWN_INTERVAL) {
@@ -189,21 +179,12 @@ public class GameMap {
 
     public void checkCollisions(Player player) {
         CollisionSystem.checkCollisions(player, collidables);
-        for (HPitem item : hpItems) {
-            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                item.onCollision(player);
-            }
-        }
-        for (MPitem item : mpItems) {
-            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                item.onCollision(player);
-            }
-        }
-        for (ATKitem item : atkItems) {
-            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                item.onCollision(player);
-            }
-        }
+
+        for (HPitem item : hpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+        for (MPitem item : mpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+        for (ATKitem item : atkItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+        for (Skill1item item : skill1Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+        for (Skill2item item : skill2Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
     }
 
     public void dispose() {
@@ -234,12 +215,14 @@ public class GameMap {
         for (int i = 0; i < 3; i++) {
             int idx = rand.nextInt(atkTextures.length);
             atkItems.add(new ATKitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, atkTextures[idx], atkValues[idx]));
+            skill1Items.add(new Skill1item(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, "items/buff/potion12.png"));
+            skill2Items.add(new Skill2item(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, "items/buff/potion13.png"));
         }
     }
 
     private void spawnRandomItem() {
         Random rand = new Random();
-        int type = rand.nextInt(3); // 0 = HP, 1 = MP, 2 = ATK
+        int type = rand.nextInt(5); // 0 = HP, 1 = MP, 2 = ATK, 3 = Skill1, 4 = Skill2
 
         if (type == 0) {
             String[] textures = {"items/potion/potion3.png", "items/potion/potion4.png", "items/potion/potion5.png"};
@@ -251,11 +234,15 @@ public class GameMap {
             int[] values = {15, 30, 50};
             int idx = rand.nextInt(textures.length);
             mpItems.add(new MPitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, textures[idx], values[idx]));
-        } else {
+        } else if (type == 2) {
             String[] textures = {"items/atkbuff_potion/potion14.png", "items/atkbuff_potion/potion15.png", "items/atkbuff_potion/potion16.png"};
             int[] values = {5, 10, 15};
             int idx = rand.nextInt(textures.length);
             atkItems.add(new ATKitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, textures[idx], values[idx]));
+        } else if (type == 3) {
+            skill1Items.add(new Skill1item(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, "items/buff/potion12.png"));
+        } else {
+            skill2Items.add(new Skill2item(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, "items/buff/potion13.png"));
         }
     }
 

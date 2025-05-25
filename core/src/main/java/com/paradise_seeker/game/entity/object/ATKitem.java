@@ -1,33 +1,50 @@
 package com.paradise_seeker.game.entity.object;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.Player;
 
-public class ATKitem extends Item {
-    private int atkBoost;
+public class ATKitem implements Collidable {
+    private Rectangle bounds;
+    private Texture texture;
+    private int bonus;
+    private boolean active = true;
 
-    public ATKitem(float x, float y, float size, String texturePath, int atkBoost) {
-        super(x, y, size, texturePath);
-        this.atkBoost = atkBoost;
-        this.stackable = true;
-        this.maxStackSize = 5;
-        this.name = "Attack Boost" + " (" + atkBoost + ")";
-        this.description = "Attack + " + atkBoost + ".";
+    public ATKitem(float x, float y, float size, String texturePath, int bonus) {
+        this.bounds = new Rectangle(x, y, size, size);
+        this.bonus = bonus;
+        this.texture = new Texture(texturePath);
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return bounds;
     }
 
     @Override
     public void onCollision(Player player) {
         if (active) {
-            player.addItemToInventory(this);
+            player.atk += bonus;
             active = false;
+            System.out.println("Player ATK increased by " + bonus + ".");
         }
     }
-    public void use(Player player) {
-		player.atk += atkBoost;
 
-	}
-    public boolean canStackWith(Item other) {
-		if (!(other instanceof ATKitem)) return false;
-		ATKitem otherATK = (ATKitem) other;
-		return super.canStackWith(other) && this.atkBoost == otherATK.atkBoost;
-	}
+    public void render(SpriteBatch batch) {
+        if (active) {
+            batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
+        }
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void dispose() {
+        if (texture != null) {
+            texture.dispose();
+        }
+    }
 }

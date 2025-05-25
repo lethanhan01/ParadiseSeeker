@@ -16,6 +16,7 @@ import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.entity.monster.boss.Boss1;
 import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
+import com.paradise_seeker.game.entity.npc.NPC1;
 import com.paradise_seeker.game.entity.object.*;
 import com.paradise_seeker.game.entity.Monster;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class GameMap {
     private List<ATKitem> atkItems = new ArrayList<>();
     private List<Skill1item> skill1Items = new ArrayList<>();
     private List<Skill2item> skill2Items = new ArrayList<>();
-
+	private List<NPC1> npcList = new ArrayList<>(); // Danh sách NPC
     private float itemSpawnTimer = 0f;
     private static final float ITEM_SPAWN_INTERVAL = 120f;
 
@@ -73,6 +74,8 @@ public class GameMap {
         //generateObjects();
         generateMonsters(player);
         generateRandomItems(5, 5);
+        generateNPCs(); // ✅ Thêm dòng này
+
         portal = new Portal(10f, 10f);
         // Add the portal to your collision system
         collidables.add(portal);
@@ -95,6 +98,20 @@ public class GameMap {
             }
         }
     }
+    private void generateNPCs() {
+        Random random = new Random();
+        int npcCount = 2;
+        for (int i = 0; i < npcCount; i++) {
+            Rectangle bounds = generateNonOverlappingBounds(3f, 3f);
+            if (bounds != null) {
+                NPC1 npc = new NPC1(bounds.x, bounds.y);
+                npcList.add(npc);
+                collidables.add(npc);
+
+                occupiedAreas.add(new Rectangle(bounds)); // Đánh dấu vùng đã chiếm
+            }
+        }
+    }
 
     private void generateObjects() {
         Random random = new Random();
@@ -114,6 +131,10 @@ public class GameMap {
                 collidables.add(obj);
             }
         }
+    }
+
+    public List<NPC1> getNPCs() {
+        return npcList; // npcList là danh sách NPC bạn đã lưu trong map
     }
 
 /*    private void generateMonsters(Player player) {
@@ -219,11 +240,16 @@ public class GameMap {
         for (Skill1item item : skill1Items) item.render(batch);
         for (Skill2item item : skill2Items) item.render(batch);
         for (Monster m : monsters) m.render(batch);
+        for (NPC1 npc : npcList) npc.render(batch);
         if (portal != null) portal.render(batch);
 
     }
 
     public void update(float deltaTime) {
+    	for (NPC1 npc : npcList) {
+    	    npc.update(deltaTime);
+    	}
+
         for (Monster m : monsters) m.update(deltaTime);
         hpItems.removeIf(item -> !item.isActive());
         mpItems.removeIf(item -> !item.isActive());

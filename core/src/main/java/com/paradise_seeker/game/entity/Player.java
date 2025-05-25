@@ -10,6 +10,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -31,7 +32,7 @@ public class Player extends Character {
     }
     private List<Smoke> smokes = new ArrayList<>();
     private Animation<TextureRegion> smokeAnim;
-    
+    public boolean showInteractMessage = false;
     
 	private float speedMultiplier = 1f;         // Hệ số tốc độ khi đi qua object
 	private Vector2 lastPosition = new Vector2(); // Ghi nhớ vị trí trước khi di chuyển
@@ -100,13 +101,14 @@ public class Player extends Character {
     }
 
     // Hàm khởi tạo nhân vật với tọa độ khởi đầu
-    public Player(Rectangle bounds) {
-        super(bounds, 1000, 1000, 10, 5f); // Gọi constructor của Character: (bounds, hp, mp, atk, speed)
-        loadAnimations();               // Load các animation cho nhân vật
-        this.playerSkill1 = new PlayerSkill(true);  // Khởi tạo kỹ năng 1
-        this.playerSkill2 = new PlayerSkill(false); // Khởi tạo kỹ năng 2
+    private BitmapFont font;
+    public Player(Rectangle bounds, BitmapFont font) {
+        super(bounds, 1000, 1000, 10, 5f); // existing code
+        loadAnimations();
+        this.playerSkill1 = new PlayerSkill(true);
+        this.playerSkill2 = new PlayerSkill(false);
+        this.font = font; // Save the font reference
     }
-
     // Load tất cả animation và texture của nhân vật
     private void loadAnimations() {
         // Load animation di chuyển
@@ -225,15 +227,17 @@ public class Player extends Character {
             if (smokeAnim.isAnimationFinished(s.stateTime)) iter.remove();
         }
         if (gameMap != null) {
-            nearestNPC = null; // Reset NPC gần nhất
+            nearestNPC = null; // Reset NPC near the player
+            showInteractMessage = false; // Reset the message flag
             for (NPC1 npc : gameMap.getNPCs()) {
                 float distance = Vector2.dst(
                     bounds.x + bounds.width / 2, bounds.y + bounds.height / 2,
                     npc.getBounds().x + npc.getBounds().width / 2, npc.getBounds().y + npc.getBounds().height / 2
                 );
-                if (distance <= 4f) {
+                if (distance <= 2.5f) { // If within interaction range
                     nearestNPC = npc;
                     npc.setTalking(true);
+                    showInteractMessage = true; // Show the interaction message
                 } else {
                     npc.setTalking(false);
                 }
@@ -440,6 +444,8 @@ public class Player extends Character {
             TextureRegion frame = smokeAnim.getKeyFrame(s.stateTime, false);
             batch.draw(frame, s.x, s.y, bounds.width, bounds.height);
         }
+        
+
 
     }
 

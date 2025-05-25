@@ -10,6 +10,8 @@ public class HPitem extends Item {
         this.healAmount = healAmount;
         this.name = "Health Potion";
         this.description = "Restores " + healAmount + " HP.";
+        this.stackable = true;
+        this.maxStackSize = 5; // Giới hạn số lượng tối đa trong một stack
     }
 
     @Override

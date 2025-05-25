@@ -10,6 +10,8 @@ public class MPitem extends Item {
         this.manaAmount = manaAmount;
         this.name = "Mana Potion";
         this.description = "Restores " + manaAmount + " MP.";
+        this.stackable = true;
+        this.maxStackSize = 5; // Giới hạn số lượng tối đa trong một stack
     }
 
     @Override

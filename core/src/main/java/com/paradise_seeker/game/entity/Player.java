@@ -242,7 +242,6 @@ public class Player extends Character {
     }
 
     // Xử lý di chuyển nhân vật bằng phím WASD hoặc phím mũi tên
- // Trong handleMovement()
     private void handleMovement(float deltaTime) {
         float dx = 0, dy = 0; // Hướng di chuyển
 
@@ -254,49 +253,88 @@ public class Player extends Character {
         float len = (float) Math.sqrt(dx * dx + dy * dy);
         isMoving = len > 0;
 
-        if (isMoving) {
-            bounds.x += (dx / len) * speed * speedMultiplier * deltaTime;
-            bounds.y += (dy / len) * speed * speedMultiplier * deltaTime;
-
+        // --- Always update direction if input is held ---
+        if (len > 0) {
             if (Math.abs(dx) > Math.abs(dy)) {
                 direction = dx > 0 ? "right" : "left";
-            } else {
+            } else if (Math.abs(dy) > 0) {
                 direction = dy > 0 ? "up" : "down";
             }
+        }
+
+        // --- Only move if not blocked ---
+        if (isMoving) {
+            float moveX = (dx / len) * speed * speedMultiplier * deltaTime;
+            float moveY = (dy / len) * speed * speedMultiplier * deltaTime;
+
+            float nextX = bounds.x + moveX;
+            float nextY = bounds.y + moveY;
+            Rectangle nextBounds = new Rectangle(nextX, nextY, bounds.width, bounds.height);
+
+            if (gameMap == null || !gameMap.isBlocked(nextBounds)) {
+                bounds.x = nextX;
+                bounds.y = nextY;
+            }
+            clampToMapBounds();
+
         }
     }
 
 
-    // Xử lý dash khi nhấn Shift và hết cooldown
     private void handleDash() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT) && dashTimer <= 0 && isMoving) {
             float dx = 0, dy = 0;
 
-            // Xác định hướng
+            // Xác định hướng dash
             if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) dy += 1;
             if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) dy -= 1;
             if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) dx -= 1;
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) dx += 1;
 
             float len = (float) Math.sqrt(dx * dx + dy * dy);
-         // Before updating bounds in handleDash()
-            float prevX = bounds.x;
-            float prevY = bounds.y;
-            
+
             if (len > 0) {
-                bounds.x += (dx / len) * dashDistance;
-                bounds.y += (dy / len) * dashDistance;
+                float stepSize = 0.1f; // Step size per mini-move (smaller = more precise, larger = faster)
+                float totalDash = 0f;
+                float maxDash = dashDistance;
+                float prevX = bounds.x;
+                float prevY = bounds.y;
+
+                // Try to move in increments until hit something or finished full dash
+                while (totalDash < maxDash) {
+                    float nextX = bounds.x + (dx / len) * stepSize;
+                    float nextY = bounds.y + (dy / len) * stepSize;
+                    Rectangle nextBounds = new Rectangle(nextX, nextY, bounds.width, bounds.height);
+
+                    if (gameMap == null || !gameMap.isBlocked(nextBounds)) {
+                        bounds.x = nextX;
+                        bounds.y = nextY;
+                        totalDash += stepSize;
+                    } else {
+                        // Hit solid, stop dash here
+                        break;
+                    }
+                }
                 dashTimer = dashCooldown;
                 smokes.add(new Smoke(prevX, prevY));
             }
+            clampToMapBounds();
 
-            if (len > 0) {
-                bounds.x += (dx / len) * dashDistance;
-                bounds.y += (dy / len) * dashDistance;
-                dashTimer = dashCooldown; // Reset thời gian dash
-            }
         }
     }
+
+    private void clampToMapBounds() {
+        // Ensure the player's rectangle stays inside the map boundaries
+        if (gameMap == null) return;
+        float minX = 0;
+        float minY = 0;
+        float maxX = gameMap.getMapWidth() - bounds.width;
+        float maxY = gameMap.getMapHeight() - bounds.height;
+
+        bounds.x = Math.max(minX, Math.min(bounds.x, maxX));
+        bounds.y = Math.max(minY, Math.min(bounds.y, maxY));
+    }
+
 
     // Bắt đầu tấn công nếu nhấn phím Space
     private void handleAttack() {

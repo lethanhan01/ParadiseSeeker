@@ -7,7 +7,7 @@ public class Skill1item extends Item {
 
     public Skill1item(float x, float y, float size, String texturePath) {
         super(x, y, size, texturePath);
-        this.damageMultiplier = 2.0f;
+        this.damageMultiplier = 0.5f;
         this.name = "Skill 1 Item";
         this.description = "Skill_1's Mul +2.";
         this.stackable = true;

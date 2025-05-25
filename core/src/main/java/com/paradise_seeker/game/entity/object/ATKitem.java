@@ -10,6 +10,8 @@ public class ATKitem extends Item {
         this.atkBoost = atkBoost;
         this.name = "Attack Boost";
         this.description = "Attack + " + atkBoost + ".";
+        this.stackable = true;
+        this.maxStackSize = 5; // Giới hạn số lượng tối đa trong một stack
     }
 
     @Override

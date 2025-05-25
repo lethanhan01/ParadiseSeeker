@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.paradise_seeker.game.entity.npc.NPC1;
 import com.paradise_seeker.game.entity.object.Item;
 // Import các kỹ năng người chơi
 import com.paradise_seeker.game.entity.skill.*;
@@ -40,6 +41,9 @@ public class Player extends Character {
     public PlayerSkill playerSkill1; // Kỹ năng 1 của người chơi
     public PlayerSkill playerSkill2; // Kỹ năng 2 của người chơi
     public Weapon weapon;            // Vũ khí đang dùng
+ // Thêm biến để theo dõi NPC gần nhất
+    private NPC1 nearestNPC = null;
+
     
     public ArrayList<Item> inventory = new ArrayList<>(); // Kho đồ của người chơi
     public int inventorySize = 18; // Kích thước kho đồ
@@ -220,6 +224,21 @@ public class Player extends Character {
             s.stateTime += deltaTime;
             if (smokeAnim.isAnimationFinished(s.stateTime)) iter.remove();
         }
+        if (gameMap != null) {
+            nearestNPC = null; // Reset NPC gần nhất
+            for (NPC1 npc : gameMap.getNPCs()) {
+                float distance = Vector2.dst(
+                    bounds.x + bounds.width / 2, bounds.y + bounds.height / 2,
+                    npc.getBounds().x + npc.getBounds().width / 2, npc.getBounds().y + npc.getBounds().height / 2
+                );
+                if (distance <= 4f) {
+                    nearestNPC = npc;
+                    npc.setTalking(true);
+                } else {
+                    npc.setTalking(false);
+                }
+            }
+        }
 
     }
 
@@ -244,6 +263,9 @@ public class Player extends Character {
     // Xử lý di chuyển nhân vật bằng phím WASD hoặc phím mũi tên
     private void handleMovement(float deltaTime) {
         float dx = 0, dy = 0; // Hướng di chuyển
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F) && nearestNPC != null) {
+            nearestNPC.openChest();
+        }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) dy += 1;
         if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) dy -= 1;

@@ -12,10 +12,10 @@ import com.paradise_seeker.game.entity.Player;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.paradise_seeker.game.map.GameMap;
-import com.paradise_seeker.game.map.AnotherGameMap; // Import map mới
 import com.paradise_seeker.game.ui.HUD;
 import com.paradise_seeker.game.entity.skill.LaserBeam;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,39 +31,29 @@ public class GameScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     public static List<LaserBeam> activeProjectiles = new ArrayList<>();
 
-    private final float BASE_VIRTUAL_WIDTH = 16f;
-    private final float BASE_VIRTUAL_HEIGHT = 10f;
+    // Camera will show 16x10 world units (tiles) by default
+    private final float CAMERA_VIEW_WIDTH = 16f;
+    private final float CAMERA_VIEW_HEIGHT = 10f;
     private float zoom = 1.0f;
 
     public GameScreen(final Main game) {
         this.game = game;
-        this.player = new Player(new Rectangle(5, 5, 1, 1));
+        this.player = new Player(new Rectangle(5, 5, 1, 1)); // world units (tiles)
         this.gameMap = new GameMap(player);
         this.player.setGameMap(gameMap);
         this.hud = new HUD(player);
         this.shapeRenderer = new ShapeRenderer();
 
-        this.gameCamera = new OrthographicCamera();
-        this.gameCamera.setToOrtho(false, BASE_VIRTUAL_WIDTH, BASE_VIRTUAL_HEIGHT);
-        this.hudCamera = new OrthographicCamera();
-        this.hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // World-unit based camera
+        this.gameCamera = new OrthographicCamera(CAMERA_VIEW_WIDTH, CAMERA_VIEW_HEIGHT);
+        this.gameCamera.position.set(
+            player.bounds.x + player.bounds.width / 2f,
+            player.bounds.y + player.bounds.height / 2f,
+            0
+        );
+        this.gameCamera.update();
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/map2.mp3"));
-        music.setLooping(true);
-        music.setVolume(0.5f);
-    }
-
-    // Constructor mới để nhận map khác (AnotherGameMap)
-    public GameScreen(final Main game, GameMap gameMap) {
-        this.game = game;
-        this.player = new Player(new Rectangle(5, 5, 1, 1));
-        this.gameMap = gameMap;
-        this.player.setGameMap(gameMap);
-        this.hud = new HUD(player);
-        this.shapeRenderer = new ShapeRenderer();
-
-        this.gameCamera = new OrthographicCamera();
-        this.gameCamera.setToOrtho(false, BASE_VIRTUAL_WIDTH, BASE_VIRTUAL_HEIGHT);
+        // HUD camera can stay in screen pixels
         this.hudCamera = new OrthographicCamera();
         this.hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -79,13 +69,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            pause();
-        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) pause();
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
-            if (game.inventoryScreen == null) {
-                game.inventoryScreen = new InventoryScreen(game, player);
-            }
+            if (game.inventoryScreen == null) game.inventoryScreen = new InventoryScreen(game, player);
             game.setScreen(game.inventoryScreen);
             music.pause();
         }
@@ -100,52 +86,31 @@ public class GameScreen implements Screen {
         gameMap.update(delta);
         gameMap.checkCollisions(player);
 
-        // 🌟 Kiểm tra chạm Portal và chuyển map
-        if (gameMap.portal != null && gameMap.portal.activated) {
-            gameMap.portal.activated = false;
-            if (gameMap.getClass() == GameMap.class) {
-                System.out.println("Chuyển sang AnotherGameMap!");
-                game.setScreen(new GameScreen(game, new AnotherGameMap(player)));
-            } else {
-                System.out.println("Chuyển về GameMap!");
-                game.setScreen(new GameScreen(game, new GameMap(player)));
-            }
-            return;
-        }
-
-
-
-
         for (int i = activeProjectiles.size() - 1; i >= 0; i--) {
             LaserBeam projectile = activeProjectiles.get(i);
             projectile.update();
-
             for (Monster monster : gameMap.getMonsters()) {
                 if (projectile.isActive() && !monster.isDead() && monster.getBounds().overlaps(projectile.getHitbox())) {
                     monster.takeDamage(projectile.getDamage());
                     projectile.setInactive();
                 }
             }
-
-            if (!projectile.isActive()) {
-                activeProjectiles.remove(i);
-            }
+            if (!projectile.isActive()) activeProjectiles.remove(i);
         }
 
+        // --- Camera follows player (in world units)
         Vector2 playerCenter = new Vector2(
             player.bounds.x + player.bounds.width / 2,
             player.bounds.y + player.bounds.height / 2
         );
-
         Vector2 currentCameraPos = new Vector2(gameCamera.position.x, gameCamera.position.y);
         Vector2 newCameraPos = new Vector2(
             currentCameraPos.x + (playerCenter.x - currentCameraPos.x) * cameraLerp,
             currentCameraPos.y + (playerCenter.y - currentCameraPos.y) * cameraLerp
         );
-
         gameCamera.position.set(newCameraPos.x, newCameraPos.y, 0);
-        gameCamera.viewportWidth = BASE_VIRTUAL_WIDTH * zoom;
-        gameCamera.viewportHeight = BASE_VIRTUAL_HEIGHT * zoom;
+        gameCamera.viewportWidth = CAMERA_VIEW_WIDTH * zoom;
+        gameCamera.viewportHeight = CAMERA_VIEW_HEIGHT * zoom;
         gameCamera.update();
 
         ScreenUtils.clear(Color.BLACK);
@@ -155,10 +120,11 @@ public class GameScreen implements Screen {
         player.render(game.batch);
         player.playerSkill1.render(game.batch);
         player.playerSkill2.render(game.batch);
-        for (LaserBeam projectile : activeProjectiles) {
-            projectile.render(game.batch);
-        }
+        for (LaserBeam projectile : activeProjectiles) projectile.render(game.batch);
         game.batch.end();
+
+        shapeRenderer.setProjectionMatrix(gameCamera.combined);
+        //gameMap.renderSolids(shapeRenderer);  // Uncomment to see solid tiles
 
         hudCamera.update();
         hud.shapeRenderer.setProjectionMatrix(hudCamera.combined);
@@ -167,11 +133,9 @@ public class GameScreen implements Screen {
     }
 
     private void handleZoomInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
-            zoom = Math.min(3.0f, zoom + 0.1f);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.EQUALS) || Gdx.input.isKeyJustPressed(Input.Keys.PLUS)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) zoom = Math.min(3.0f, zoom + 0.1f);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.EQUALS) || Gdx.input.isKeyJustPressed(Input.Keys.PLUS))
             zoom = Math.max(0.5f, zoom - 0.1f);
-        }
     }
 
     @Override
@@ -181,10 +145,7 @@ public class GameScreen implements Screen {
         hudCamera.update();
     }
 
-    @Override public void pause() {
-        game.setScreen(new PauseScreen(game));
-        music.pause();
-    }
+    @Override public void pause() { game.setScreen(new PauseScreen(game)); music.pause(); }
     @Override public void resume() {}
     @Override public void hide() {}
 

@@ -1,12 +1,19 @@
 package com.paradise_seeker.game.map;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.CollisionSystem;
 import com.paradise_seeker.game.entity.Player;
-import com.paradise_seeker.game.entity.monster.boss.*;
+import com.paradise_seeker.game.entity.monster.boss.Boss1;
 import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
 import com.paradise_seeker.game.entity.object.*;
@@ -16,8 +23,16 @@ import java.util.List;
 import java.util.Random;
 
 public class GameMap {
-    private static final int MAP_WIDTH = 100;
-    private static final int MAP_HEIGHT = 100;
+    private int MAP_WIDTH;      // In world units (tiles)
+    private int MAP_HEIGHT;     // In world units (tiles)
+    private int TILE_WIDTH;     // In pixels
+    private int TILE_HEIGHT;    // In pixels
+    public float getMapWidth() {
+        return MAP_WIDTH;
+    }
+    public float getMapHeight() {
+        return MAP_HEIGHT;
+    }
 
     private Texture backgroundTexture;
     private List<Collidable> collidables;
@@ -35,19 +50,48 @@ public class GameMap {
     private static final float ITEM_SPAWN_INTERVAL = 120f;
 
     public GameMap(Player player) {
-        backgroundTexture = new Texture("images/map/test.png");
+        // --- Load Tiled map and get real size ---
+        TiledMap tiledMap = new TmxMapLoader().load("tilemaps/TileMaps/maps/map1.tmx");
+        MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class);
+        MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class);
+        TILE_WIDTH = tiledMap.getProperties().get("tilewidth", Integer.class);
+        TILE_HEIGHT = tiledMap.getProperties().get("tileheight", Integer.class);
+
+        // Load matching background PNG in world units
+        backgroundTexture = new Texture("tilemaps/TileMaps/maps/test1.png");
+
         gameObjects = new ArrayList<>();
         occupiedAreas = new ArrayList<>();
         monsters = new ArrayList<>();
         collidables = new ArrayList<>();
 
+        // Player starts at map center (world units)
         player.bounds.x = MAP_WIDTH / 2f;
         player.bounds.y = MAP_HEIGHT / 2f;
         occupiedAreas.add(new Rectangle(player.bounds));
 
-        generateObjects();
+        //generateObjects();
         generateMonsters(player);
         generateRandomItems(5, 5);
+
+        // --- Load all "solid" rectangles, scale to world units, no Y flip ---
+        for (MapLayer layer : tiledMap.getLayers()) {
+            for (MapObject obj : layer.getObjects()) {
+                if (obj instanceof RectangleMapObject) {
+                    Object solidProp = obj.getProperties().get("solid");
+                    if (solidProp instanceof Boolean && ((Boolean) solidProp)) {
+                        Rectangle rect = ((RectangleMapObject) obj).getRectangle();
+                        float worldX = rect.x / (float) TILE_WIDTH;
+                        float worldY = rect.y / (float) TILE_HEIGHT;
+                        float worldWidth = rect.width / (float) TILE_WIDTH;
+                        float worldHeight = rect.height / (float) TILE_HEIGHT;
+                        Rectangle fixedRect = new Rectangle(worldX, worldY, worldWidth, worldHeight);
+                        //System.out.println("Loaded solid (world units, no Y flip): " + fixedRect);
+                        collidables.add(new SolidObject(fixedRect));
+                    }
+                }
+            }
+        }
     }
 
     private void generateObjects() {
@@ -70,15 +114,13 @@ public class GameMap {
         }
     }
 
-    private void generateMonsters(Player player) {
-        int bossCount = 5;
-        int normalMonsterCount = 15;
-
+/*    private void generateMonsters(Player player) {
+        int bossCount = 1;
+        int normalMonsterCount = 3;
         for (int i = 0; i < bossCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new Boss1(b.x, b.y), player);
         }
-
         for (int i = 0; i < normalMonsterCount; i++) {
             Rectangle b = generateNonOverlappingBounds(3, 3);
             if (b != null) spawnMonster(new CyanBat(b.x, b.y), player);
@@ -119,7 +161,25 @@ public class GameMap {
             Rectangle b = generateNonOverlappingBounds(4, 4);
             if (b != null) spawnMonster(new MinotaurElite(b.x, b.y), player);
         }
+    	
+    }*/
+    
+    private void generateMonsters(Player player) {
+        Rectangle b;
+
+        // Only 3 creeps of your choice
+        b = generateNonOverlappingBounds(3, 3);
+        if (b != null) spawnMonster(new CyanBat(b.x, b.y), player);
+
+        b = generateNonOverlappingBounds(3, 3);
+        if (b != null) spawnMonster(new DevilCreep(b.x, b.y), player);
+
+        b = generateNonOverlappingBounds(3, 3);
+        if (b != null) spawnMonster(new RatCreep(b.x, b.y), player);
+
+        // No bosses, no other creeps
     }
+
 
     private void spawnMonster(Monster monster, Player player) {
         monster.player = player;
@@ -131,8 +191,8 @@ public class GameMap {
     private Rectangle generateNonOverlappingBounds(float width, float height) {
         Random rand = new Random();
         for (int attempts = 0; attempts < 1000; attempts++) {
-            float x = rand.nextInt(MAP_WIDTH - (int) width);
-            float y = rand.nextInt(MAP_HEIGHT - (int) height);
+            float x = rand.nextFloat() * (MAP_WIDTH - width);
+            float y = rand.nextFloat() * (MAP_HEIGHT - height);
             Rectangle newBounds = new Rectangle(x, y, width, height);
             boolean overlaps = false;
             for (Rectangle occ : occupiedAreas) {
@@ -150,26 +210,22 @@ public class GameMap {
 
     public void render(SpriteBatch batch) {
         batch.draw(backgroundTexture, 0, 0, MAP_WIDTH, MAP_HEIGHT);
-
         for (GameObject obj : gameObjects) obj.render(batch);
         for (HPitem item : hpItems) item.render(batch);
         for (MPitem item : mpItems) item.render(batch);
         for (ATKitem item : atkItems) item.render(batch);
         for (Skill1item item : skill1Items) item.render(batch);
         for (Skill2item item : skill2Items) item.render(batch);
-
         for (Monster m : monsters) m.render(batch);
     }
 
     public void update(float deltaTime) {
         for (Monster m : monsters) m.update(deltaTime);
-
         hpItems.removeIf(item -> !item.isActive());
         mpItems.removeIf(item -> !item.isActive());
         atkItems.removeIf(item -> !item.isActive());
         skill1Items.removeIf(item -> !item.isActive());
         skill2Items.removeIf(item -> !item.isActive());
-
         itemSpawnTimer += deltaTime;
         if (itemSpawnTimer >= ITEM_SPAWN_INTERVAL) {
             spawnRandomItem();
@@ -179,14 +235,29 @@ public class GameMap {
 
     public void checkCollisions(Player player) {
         CollisionSystem.checkCollisions(player, collidables);
-
         for (HPitem item : hpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
         for (MPitem item : mpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
         for (ATKitem item : atkItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
         for (Skill1item item : skill1Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
         for (Skill2item item : skill2Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
     }
-
+    public boolean isBlocked(Rectangle nextBounds) {
+        for (Collidable c : collidables) {
+            if (c.getBounds().overlaps(nextBounds)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void renderSolids(ShapeRenderer shapeRenderer) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        for (Collidable c : collidables) {
+            Rectangle r = c.getBounds();
+            shapeRenderer.rect(r.x, r.y, r.width, r.height);
+        }
+        shapeRenderer.end();
+    }
     public void dispose() {
         backgroundTexture.dispose();
         for (GameObject obj : gameObjects) obj.dispose();
@@ -194,16 +265,12 @@ public class GameMap {
 
     private void generateRandomItems(int hpCount, int mpCount) {
         Random rand = new Random();
-
         String[] hpTextures = {"items/potion/potion3.png", "items/potion/potion4.png", "items/potion/potion5.png"};
         int[] hpValues = {20, 40, 60};
-
         String[] mpTextures = {"items/potion/potion9.png", "items/potion/potion10.png", "items/potion/potion11.png"};
         int[] mpValues = {15, 30, 50};
-
         String[] atkTextures = {"items/atkbuff_potion/potion14.png", "items/atkbuff_potion/potion15.png", "items/atkbuff_potion/potion16.png"};
         int[] atkValues = {5, 10, 15};
-
         for (int i = 0; i < hpCount; i++) {
             int idx = rand.nextInt(hpTextures.length);
             hpItems.add(new HPitem(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, hpTextures[idx], hpValues[idx]));
@@ -223,7 +290,6 @@ public class GameMap {
     private void spawnRandomItem() {
         Random rand = new Random();
         int type = rand.nextInt(5); // 0 = HP, 1 = MP, 2 = ATK, 3 = Skill1, 4 = Skill2
-
         if (type == 0) {
             String[] textures = {"items/potion/potion3.png", "items/potion/potion4.png", "items/potion/potion5.png"};
             int[] values = {20, 40, 60};

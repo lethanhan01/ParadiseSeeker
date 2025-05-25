@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.Gdx;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,12 +16,14 @@ public class PlayerSkill implements Skill {
     private int manaCost;
     private long cooldown;
     private long lastUsedTime;
-    private Map<String, Animation<TextureRegion>> skillAnimations; // up, down, left, right
+    private Map<String, Animation<TextureRegion>> skillAnimations;
     private float stateTime = 0f;
     private boolean isActive = false;
     private float x, y;
     private String direction;
-    private boolean isSkill1; // true: skill1, false: skill2
+    private boolean isSkill1;
+
+    private float damageMultiplier = 1.0f; // ✅ Mặc định: không buff
 
     public PlayerSkill(boolean isSkill1) {
         this.manaCost = 10;
@@ -31,57 +34,38 @@ public class PlayerSkill implements Skill {
         loadSkillAnimations();
     }
 
+    public void setDamageMultiplier(float multiplier) {
+        this.damageMultiplier = multiplier;
+        System.out.println("Skill " + (isSkill1 ? "1" : "2") + " damage multiplier set to " + multiplier);
+    }
+
     private void loadSkillAnimations() {
         String[] directions = {"up", "down", "left", "right"};
-        int FRAME_ROWS = 5; // số frame dọc
-        int FRAME_COLS = 5; // số frame ngang (giả sử số frame ngang bằng số frame dọc)
-        if (isSkill1) {
-            for (String dir : directions) {
-                String path = "images/Entity/skills/PlayerSkills/Skill1/Skill1_" + dir + ".png";
-                try {
-                    Texture sheet = new Texture(Gdx.files.internal(path));
-                    TextureRegion[] frames;
-                    if (dir.equals("left") || dir.equals("right")) {
-                        // Sprite sheet ngang (nhiều cột, 1 dòng)
-                        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth() / FRAME_COLS, sheet.getHeight());
-                        frames = new TextureRegion[FRAME_COLS];
-                        for (int i = 0; i < FRAME_COLS; i++) {
-                            frames[i] = tmp[0][i];
-                        }
-                    } else {
-                        // Sprite sheet dọc (1 cột, nhiều dòng)
-                        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth(), sheet.getHeight() / FRAME_ROWS);
-                        frames = new TextureRegion[FRAME_ROWS];
-                        for (int i = 0; i < FRAME_ROWS; i++) {
-                            frames[i] = tmp[i][0];
-                        }
+        int FRAME_ROWS = 5;
+        int FRAME_COLS = 5;
+        for (String dir : directions) {
+            String path = isSkill1
+                    ? "images/Entity/skills/PlayerSkills/Skill1/Skill1_" + dir + ".png"
+                    : "images/Entity/skills/PlayerSkills/Skill2/Skill2_" + dir + ".png";
+            try {
+                Texture sheet = new Texture(Gdx.files.internal(path));
+                TextureRegion[] frames;
+                if (dir.equals("left") || dir.equals("right")) {
+                    TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth() / FRAME_COLS, sheet.getHeight());
+                    frames = new TextureRegion[FRAME_COLS];
+                    for (int i = 0; i < FRAME_COLS; i++) {
+                        frames[i] = tmp[0][i];
                     }
-                    skillAnimations.put(dir, new Animation<>(0.1f, frames));
-                } catch (Exception e) {
-                }
-            }
-        } else {
-            for (String dir : directions) {
-                String path = "images/Entity/skills/PlayerSkills/Skill2/Skill2_" + dir + ".png";
-                try {
-                    Texture sheet = new Texture(Gdx.files.internal(path));
-                    TextureRegion[] frames;
-                    if (dir.equals("left") || dir.equals("right")) {
-                        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth() / FRAME_COLS, sheet.getHeight());
-                        frames = new TextureRegion[FRAME_COLS];
-                        for (int i = 0; i < FRAME_COLS; i++) {
-                            frames[i] = tmp[0][i];
-                        }
-                    } else {
-                        TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth(), sheet.getHeight() / FRAME_ROWS);
-                        frames = new TextureRegion[FRAME_ROWS];
-                        for (int i = 0; i < FRAME_ROWS; i++) {
-                            frames[i] = tmp[i][0];
-                        }
+                } else {
+                    TextureRegion[][] tmp = TextureRegion.split(sheet, sheet.getWidth(), sheet.getHeight() / FRAME_ROWS);
+                    frames = new TextureRegion[FRAME_ROWS];
+                    for (int i = 0; i < FRAME_ROWS; i++) {
+                        frames[i] = tmp[i][0];
                     }
-                    skillAnimations.put(dir, new Animation<>(0.1f, frames));
-                } catch (Exception e) {
                 }
+                skillAnimations.put(dir, new Animation<>(0.1f, frames));
+            } catch (Exception e) {
+                // Ignore load errors
             }
         }
     }
@@ -94,27 +78,16 @@ public class PlayerSkill implements Skill {
     @Override
     public void execute(Character target) {
         if (canUse(System.currentTimeMillis()) && target != null) {
-            target.receiveDamage(1000);
+            int damage = (int) (1000 * damageMultiplier);
+            target.receiveDamage(damage);
             lastUsedTime = System.currentTimeMillis();
-        }
-    }
-
-    @Override
-    public void update(long now) {
-        if (isActive) {
-            stateTime += Gdx.graphics.getDeltaTime();
-            Animation<TextureRegion> currentAnimation = skillAnimations.get(direction);
-            if (currentAnimation.isAnimationFinished(stateTime)) {
-                isActive = false;
-                stateTime = 0f;
-            }
         }
     }
 
     @Override
     public void castSkill(int atk, Character target) {
         if (canUse(System.currentTimeMillis()) && target != null) {
-            int damage = atk * 2;
+            int damage = (int) ((atk * 2) * damageMultiplier);
             target.receiveDamage(damage);
             lastUsedTime = System.currentTimeMillis();
         }
@@ -127,18 +100,20 @@ public class PlayerSkill implements Skill {
             this.direction = direction;
             isActive = true;
             stateTime = 0f;
-            // Căn chỉnh vị trí xuất phát của đạn
-            float offset = 0.5f; // hoặc 0.75f nếu muốn đạn xuất phát xa hơn một chút
+
+            float offset = 0.5f;
             float startX = x, startY = y;
             switch (direction) {
-                case "up":    startY += offset; break;
-                case "down":  startY -= offset; break;
-                case "left":  startX -= offset; break;
+                case "up": startY += offset; break;
+                case "down": startY -= offset; break;
+                case "left": startX -= offset; break;
                 case "right": startX += offset; break;
             }
+
             Animation<TextureRegion> anim = skillAnimations.get(direction);
             Animation<TextureRegion> animDown = skillAnimations.get("down");
-            LaserBeam laser = new LaserBeam(startX, startY, atk, direction, anim);
+            int damage = (int) ((atk * 2) * damageMultiplier);
+            LaserBeam laser = new LaserBeam(startX, startY, damage, direction, anim);
             if (anim == null && animDown != null) {
                 laser.setAnimDown(animDown);
             }
@@ -154,21 +129,24 @@ public class PlayerSkill implements Skill {
             this.direction = direction;
             isActive = true;
             stateTime = 0f;
+
             float offset = 0.5f;
             float startX = centerX, startY = centerY;
             switch (direction) {
-                case "up":    startY += offset; break;
-                case "down":  startY -= offset; break;
-                case "left":  startX -= offset; break;
+                case "up": startY += offset; break;
+                case "down": startY -= offset; break;
+                case "left": startX -= offset; break;
                 case "right": startX += offset; break;
             }
-            // Clamp tọa độ trong biên map
+
             float MIN_X = 0f, MAX_X = 100f, MIN_Y = 0f, MAX_Y = 100f;
             startX = Math.max(MIN_X, Math.min(MAX_X, startX));
             startY = Math.max(MIN_Y, Math.min(MAX_Y, startY));
+
             Animation<TextureRegion> anim = skillAnimations.get(direction);
             Animation<TextureRegion> animDown = skillAnimations.get("down");
-            LaserBeam laser = new LaserBeam(startX, startY, atk, direction, anim);
+            int damage = (int) ((atk * 2) * damageMultiplier);
+            LaserBeam laser = new LaserBeam(startX, startY, damage, direction, anim);
             if (anim == null && animDown != null) {
                 laser.setAnimDown(animDown);
             }
@@ -177,13 +155,25 @@ public class PlayerSkill implements Skill {
         }
     }
 
+    @Override
+    public void update(long now) {
+        if (isActive) {
+            stateTime += Gdx.graphics.getDeltaTime();
+            Animation<TextureRegion> currentAnimation = skillAnimations.get(direction);
+            if (currentAnimation != null && currentAnimation.isAnimationFinished(stateTime)) {
+                isActive = false;
+                stateTime = 0f;
+            }
+        }
+    }
+
     public void render(SpriteBatch batch) {
-        // Không làm gì ở đây
+        // Tạm thời không cần vẽ ở đây
     }
 
     @Override
     public void castSkill(int atk, int x, int y) {
-        // Không còn dùng đến nếu muốn bắn theo hướng cụ thể
+        // Không dùng
     }
 
     @Override
@@ -206,4 +196,4 @@ public class PlayerSkill implements Skill {
     public long getLastUsedTime() {
         return lastUsedTime;
     }
-} 
+}

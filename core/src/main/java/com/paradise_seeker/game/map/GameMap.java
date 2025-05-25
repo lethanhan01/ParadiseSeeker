@@ -11,6 +11,7 @@ import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
 import com.paradise_seeker.game.entity.object.*;
 import com.paradise_seeker.game.entity.Monster;
+import com.paradise_seeker.game.entity.npc.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,6 +24,7 @@ public class GameMap {
     protected List<Collidable> collidables;
     protected List<GameObject> gameObjects;
     protected List<Rectangle> occupiedAreas;
+    protected List<NPC1> npcs = new ArrayList<>();
 
     protected List<Monster> monsters;
     protected List<HPitem> hpItems = new ArrayList<>();
@@ -77,8 +79,9 @@ public class GameMap {
     }
 
     private void generateMonsters(Player player) {
-        int bossCount = 5;
-        int normalMonsterCount = 15;
+        int bossCount = 0;
+        int normalMonsterCount = 0;
+        generateNPCs();
 
         for (int i = 0; i < bossCount; i++) {
             Rectangle b = generateNonOverlappingBounds(4, 4);
@@ -126,6 +129,28 @@ public class GameMap {
             if (b != null) spawnMonster(new MinotaurElite(b.x, b.y), player);
         }
     }
+    private void generateNPCs() {
+        // Tạo 1 NPC1 tại vị trí ngẫu nhiên
+        Rectangle bounds = generateNonOverlappingBounds(1, 1);
+        if (bounds != null) {
+            NPC1 npc = new NPC1(bounds.x, bounds.y);
+            npcs.add(npc);
+        }
+
+        // Có thể thêm nhiều NPC hơn nếu muốn
+        // Ví dụ: thêm 3 NPC
+        for (int i = 0; i < 50; i++) {
+            Rectangle moreBounds = generateNonOverlappingBounds(1, 1);
+            if (moreBounds != null) {
+                NPC1 npc = new NPC1(moreBounds.x, moreBounds.y);
+                npcs.add(npc);
+            }
+        }
+    }
+    public List<NPC1> getNPCs() {
+        return npcs;
+    }
+
 
     private void spawnMonster(Monster monster, Player player) {
         monster.player = player;
@@ -165,11 +190,14 @@ public class GameMap {
         for (Skill2item item : skill2Items) item.render(batch);
 
         for (Monster m : monsters) m.render(batch);
+        for (NPC1 npc : npcs) npc.render(batch);
+
         portal.render(batch); 
     }
 
     public void update(float deltaTime) {
         for (Monster m : monsters) m.update(deltaTime);
+        for (NPC1 npc : npcs) npc.update(deltaTime);
 
         hpItems.removeIf(item -> !item.isActive());
         mpItems.removeIf(item -> !item.isActive());

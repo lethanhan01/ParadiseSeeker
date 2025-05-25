@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.paradise_seeker.game.entity.npc.NPC1;
 import com.paradise_seeker.game.entity.object.Item;
 // Import các kỹ năng người chơi
 import com.paradise_seeker.game.entity.skill.*;
@@ -220,6 +221,51 @@ public class Player extends Character {
             s.stateTime += deltaTime;
             if (smokeAnim.isAnimationFinished(s.stateTime)) iter.remove();
         }
+     // ✅ Thay thế toàn bộ đoạn kiểm tra NPC trong Player.update()
+        if (gameMap != null) {
+            NPC1 nearestNPC = null;
+            float nearestDistance = Float.MAX_VALUE;
+
+            for (NPC1 npc : gameMap.getNPCs()) {
+                float playerCenterX = bounds.x + bounds.width / 2f;
+                float playerCenterY = bounds.y + bounds.height / 2f;
+                float npcCenterX = npc.getBounds().x + npc.getBounds().width / 2f;
+                float npcCenterY = npc.getBounds().y + npc.getBounds().height / 2f;
+
+                float dx = playerCenterX - npcCenterX;
+                float dy = playerCenterY - npcCenterY;
+                float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < nearestDistance) {
+                    nearestDistance = distance;
+                    nearestNPC = npc;
+                }
+            }
+
+            // Chỉ NPC gần nhất trong 1f nói chuyện
+            for (NPC1 npc : gameMap.getNPCs()) {
+                if (npc == nearestNPC && nearestDistance <= 3f) {
+                    npc.setTalking(true);
+                } else {
+                    npc.setTalking(false);
+                }
+            }
+
+            // Bấm F để mở rương với NPC gần nhất
+            if (Gdx.input.isKeyJustPressed(Input.Keys.F) && nearestNPC != null && nearestDistance <= 5f) {
+                nearestNPC.openChest();
+            }
+
+            // Kiểm tra va chạm
+            boolean isBlocked = false;
+            for (NPC1 npc : gameMap.getNPCs()) {
+                if (bounds.overlaps(npc.getBounds())) {
+                    isBlocked = true;
+                }
+            }
+            if (isBlocked) blockMovement();
+        }
+
 
     }
 

@@ -86,6 +86,8 @@ public class InventoryScreen implements Screen {
         drawText("HP: " + player.hp + "/" + Player.MAX_HP, 2.5f, 6.5f);
         drawText("MP: " + player.mp + "/" + Player.MAX_MP, 2.5f, 5.5f);
         drawText("ATK: " + player.atk, 2.5f, 4.5f);
+        drawText("Skill 1: " + player.playerSkill1.getdamageMultiplier(), 2.5f, 3.5f);
+        drawText("Skill 2: " + player.playerSkill2.getdamageMultiplier(), 2.5f, 2.5f);
         
         // Vẽ các item trong inventory
         for (int row = 0; row < 3; row++) {

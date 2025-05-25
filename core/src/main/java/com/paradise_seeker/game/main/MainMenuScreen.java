@@ -141,6 +141,7 @@ public class MainMenuScreen implements Screen {
                     game.currentGame = new GameScreen(game);
                 } else {
                     game.currentGame = null;
+                    game.inventoryScreen = null; // Reset inventory screengam
                     game.currentGame = new GameScreen(game);
                 }
                 game.setScreen(game.currentGame);

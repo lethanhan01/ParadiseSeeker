@@ -1,50 +1,38 @@
 package com.paradise_seeker.game.entity.object;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
-import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.Player;
 
-public class ATKitem implements Collidable {
-    private Rectangle bounds;
-    private Texture texture;
-    private int bonus;
-    private boolean active = true;
+public class ATKitem extends Item {
+    private int atkBoost;
 
-    public ATKitem(float x, float y, float size, String texturePath, int bonus) {
-        this.bounds = new Rectangle(x, y, size, size);
-        this.bonus = bonus;
-        this.texture = new Texture(texturePath);
-    }
-
-    @Override
-    public Rectangle getBounds() {
-        return bounds;
+    public ATKitem(float x, float y, float size, String texturePath, int atkBoost) {
+        super(x, y, size, texturePath);
+        this.atkBoost = atkBoost;
+        this.name = "Attack Boost";
+        this.description = "Attack + " + atkBoost + ".";
     }
 
     @Override
     public void onCollision(Player player) {
         if (active) {
-            player.atk += bonus;
+            player.addItemToInventory(this);
             active = false;
-            System.out.println("Player ATK increased by " + bonus + ".");
         }
     }
+    public void use(Player player) {
+		player.atk += atkBoost;
+		count--;
+	}
 
-    public void render(SpriteBatch batch) {
-        if (active) {
-            batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
-        }
-    }
+	public boolean canStackWith(Item other) {
+		if (!(other instanceof ATKitem)) return false;
+		ATKitem otherATK = (ATKitem) other;
+		return super.canStackWith(other) && this.atkBoost == otherATK.atkBoost;
+	}
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void dispose() {
-        if (texture != null) {
-            texture.dispose();
-        }
-    }
+	public void dispose() {
+		if (texture != null) {
+			texture.dispose();
+		}
+	}
 }

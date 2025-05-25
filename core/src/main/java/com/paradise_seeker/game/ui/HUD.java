@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class HUD {
+	private String notificationMessage = "";
+    private float notificationTimer = 0f;
+    private static final float NOTIFICATION_DISPLAY_TIME = 3f; // seconds
     public ShapeRenderer shapeRenderer;
     public SpriteBatch spriteBatch;
     private BitmapFont font;
@@ -58,12 +61,16 @@ public class HUD {
     private float pauseButtonHeight = 44f;
     float screenWidth = Gdx.graphics.getWidth();
     float screenHeight = Gdx.graphics.getHeight();
+    
+    public void showNotification(String message) {
+        this.notificationMessage = message;
+        this.notificationTimer = NOTIFICATION_DISPLAY_TIME;
+    }
     public void render(float delta) {
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
-        // Adjust bar sizes based on screen dimensions
-        float scaledBarWidth = screenWidth * 0.45f; // 40% of screen width
-        float scaledBarHeight = screenHeight * 0.07f; // 4% of screen height
+        float scaledBarWidth = screenWidth * 0.45f;
+        float scaledBarHeight = screenHeight * 0.07f;
         float hpPercent = Math.max(0, Math.min(player.hp / (float) Player.MAX_HP, 1f));
         float mpPercent = Math.max(0, Math.min(player.mp / (float) Player.MAX_MP, 1f));
 
@@ -71,28 +78,41 @@ public class HUD {
         int frameIndexmp = Math.round((1 - mpPercent) * 73);
 
         spriteBatch.begin();
+
         spriteBatch.draw(hpBarFrames[frameIndexhp], PADDING, screenHeight - PADDING - scaledBarHeight, scaledBarWidth, scaledBarHeight);
         spriteBatch.draw(mpBarFrames[frameIndexmp], PADDING*0.95f, screenHeight - PADDING - scaledBarHeight * 1.8f, scaledBarWidth, scaledBarHeight);
-        
-        float baseHeight = 450f; // or 1080f, depending on your base design
-        float fontScale = screenHeight / baseHeight; // Relative to a 720p or 1080p baseline
+
+        float baseHeight = 450f;
+        float fontScale = screenHeight / baseHeight;
         font.getData().setScale(fontScale);
 
+        // Show notification below MP bar
+        if (notificationTimer > 0f && !notificationMessage.isEmpty()) {
+            float notificationY = screenHeight - PADDING - (scaledBarHeight * 2.7f) - (screenHeight * 0.07f);
+            font.draw(spriteBatch, notificationMessage, PADDING, notificationY);
+            notificationTimer -= delta* 0.00005f; // Slow down the timer for better visibility
+            if (notificationTimer <= 0f) {
+                notificationMessage = "";
+            }
+        }
+
+        // Show interact message lower than notification
         if (player.showInteractMessage) {
-            // Compute position under MP bar, with dynamic vertical offset
-            float messageY = screenHeight - PADDING - (screenHeight * 0.07f) * 2.7f - (screenHeight * 0.03f);
+            float messageY = screenHeight - PADDING - (scaledBarHeight * 2.7f) - (screenHeight * 0.17f);
             font.draw(spriteBatch, "> Press F to interact", PADDING, messageY);
         }
-        // Adjust button sizes based on screen dimensions
-        inventoryButtonWidth = screenWidth * 0.03f *1.5f; // 5% of screen width + 0.5f for scaling
-        inventoryButtonHeight = screenHeight * 0.05f*1.5f; // 5% of screen height
-        pauseButtonWidth = screenWidth * 0.03f*1.5f; // 5% of screen width
-        pauseButtonHeight = screenHeight * 0.05f*1.5f; // 5% of screen height
-     // Draw buttons with dynamically adjusted width and height
+
+        // Button rendering (unchanged)
+        inventoryButtonWidth = screenWidth * 0.03f * 1.5f;
+        inventoryButtonHeight = screenHeight * 0.05f * 1.5f;
+        pauseButtonWidth = screenWidth * 0.03f * 1.5f;
+        pauseButtonHeight = screenHeight * 0.05f * 1.5f;
+
         spriteBatch.draw(inventoryButton, screenWidth - PADDING - inventoryButtonWidth * 2.2f, screenHeight - PADDING - inventoryButtonHeight, inventoryButtonWidth, inventoryButtonHeight);
         spriteBatch.draw(pauseButton, screenWidth - PADDING - pauseButtonWidth, screenHeight - PADDING - pauseButtonHeight, pauseButtonWidth, pauseButtonHeight);
         spriteBatch.end();
     }
+
 
 
     public void dispose() {

@@ -27,7 +27,7 @@ public class NPC2 {
     private Map<String, Animation<TextureRegion>> leftAnimations = new HashMap<>();
 
     public NPC2(float x, float y, Player player) {
-        this.bounds = new Rectangle(x, y, 4f, 4f);
+        this.bounds = new Rectangle(x, y, 5.5f, 5.5f);
         this.player = player;
         this.speed = player.speed;
 
@@ -35,8 +35,8 @@ public class NPC2 {
     }
 
     private void loadAnimations() {
-        String basePathRight = "images/Entity/characters/NPCs/npc2 - Copy/phai/";
-        String basePathLeft = "images/Entity/characters/NPCs/npc2 - Copy/trai/";
+        String basePathRight = "images/Entity/characters/NPCs/npc2 - Copy/trai/";
+        String basePathLeft = "images/Entity/characters/NPCs/npc2 - Copy/phai/";
 
         String[] folders = {"idle", "walk", "agree", "cleave", "death", "jump", "takehit"};
 
@@ -62,37 +62,57 @@ public class NPC2 {
         return new Animation<>(0.1f, frames.toArray(new TextureRegion[0]));
     }
 
+    
+    // Track if player is within 2f radius
+    private boolean playerInRange = false; // tracks if player is within 2f radius last frame
     public void update(float deltaTime) {
         stateTime += deltaTime;
-        float playerX = player.getBounds().x;
-        float playerY = player.getBounds().y;
-        float dx = playerX - bounds.x;
-        float dy = playerY - bounds.y;
+
+        float playerX = player.getBounds().x + player.getBounds().width / 2f;
+        float playerY = player.getBounds().y + player.getBounds().height / 2f;
+        float npcX = bounds.x + bounds.width / 2f;
+        float npcY = bounds.y + bounds.height / 2f;
+
+        float dx = playerX - npcX;
+        float dy = playerY - npcY;
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
-        isMoving = distance > 2f;
+        boolean wasInRange = playerInRange;
+        playerInRange = distance <= 2f;
 
-        if (isMoving) {
+        if (playerInRange) {
+            // If just entered range, do NOT update facing
+            isMoving = false;
+            // Facing remains as it was
+        } else {
+            // Only update facing & move when leaving range
+            isMoving = true;
+            // Left or right only (because you only have left/right anims)
+            facingRight = dx >= 0;
+
+            // Move towards player
             float moveX = (dx / distance) * speed * deltaTime;
             float moveY = (dy / distance) * speed * deltaTime;
             bounds.x += moveX;
             bounds.y += moveY;
-            facingRight = dx >= 0;
         }
     }
 
-    public void render(SpriteBatch batch) {
-        Animation<TextureRegion> currentAnim;
-        if (isMoving) {
-            currentAnim = facingRight ? rightAnimations.get("walk") : leftAnimations.get("walk");
-        } else {
-            currentAnim = facingRight ? rightAnimations.get("idle") : leftAnimations.get("idle");
-        }
 
-        if (currentAnim != null) {
-            TextureRegion frame = currentAnim.getKeyFrame(stateTime, true);
-            batch.draw(frame, bounds.x, bounds.y, bounds.width, bounds.height);
-        }
+
+
+    public void render(SpriteBatch batch) {
+    	Animation<TextureRegion> currentAnim;
+    	if (isMoving) {
+    	    currentAnim = facingRight ? rightAnimations.get("walk") : leftAnimations.get("walk");
+    	} else {
+    	    currentAnim = facingRight ? rightAnimations.get("idle") : leftAnimations.get("idle");
+    	}
+    	if (currentAnim != null) {
+    	    TextureRegion frame = currentAnim.getKeyFrame(stateTime, true);
+    	    batch.draw(frame, bounds.x, bounds.y, bounds.width, bounds.height);
+    	}
+
     }
 
     public Rectangle getBounds() {

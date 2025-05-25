@@ -1,50 +1,26 @@
 package com.paradise_seeker.game.entity.object;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
-import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.Player;
 
-public class MPitem implements Collidable {
-    private Rectangle bounds;
-    private Texture texture;
-    private int restoreAmount;
-    private boolean active = true;
+public class MPitem extends Item {
+    private int manaAmount;
 
-    public MPitem(float x, float y, float size, String texturePath, int restoreAmount) {
-        this.bounds = new Rectangle(x, y, size, size);
-        this.restoreAmount = restoreAmount;
-        this.texture = new Texture(texturePath);
-    }
-
-    @Override
-    public Rectangle getBounds() {
-        return bounds;
+    public MPitem(float x, float y, float size, String texturePath, int manaAmount) {
+        super(x, y, size, texturePath);
+        this.manaAmount = manaAmount;
+        this.name = "Mana Potion";
+        this.description = "Restores " + manaAmount + " MP.";
     }
 
     @Override
     public void onCollision(Player player) {
         if (active) {
-            player.mp = Math.min(Player.MAX_MP, player.mp + restoreAmount);
+            player.addItemToInventory(this);
             active = false;
-            System.out.println("Player restored " + restoreAmount + " MP.");
         }
     }
-
-    public void render(SpriteBatch batch) {
-        if (active) {
-            batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
-        }
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void dispose() {
-        if (texture != null) {
-            texture.dispose();
-        }
-    }
+    public void use(Player player) {
+		player.mp = Math.min(Player.MAX_MP, player.mp + manaAmount);
+		count--;
+	}
 }

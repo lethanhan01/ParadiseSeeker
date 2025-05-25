@@ -35,7 +35,7 @@ public class PlayerSkill implements Skill {
     }
 
     public void setDamageMultiplier(float multiplier) {
-        this.damageMultiplier = multiplier;
+        this.damageMultiplier +=  multiplier ;
         System.out.println("Skill " + (isSkill1 ? "1" : "2") + " damage multiplier set to " + multiplier);
     }
 
@@ -196,4 +196,7 @@ public class PlayerSkill implements Skill {
     public long getLastUsedTime() {
         return lastUsedTime;
     }
+    public float getdamageMultiplier() {
+		return damageMultiplier;
+	}
 }

@@ -8,6 +8,7 @@
         ".",
         "maps"
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "TX Plant.tsx": {
             "scaleInDock": 1,
@@ -42,16 +43,16 @@
             "scaleInEditor": 1
         },
         "maps/map1.tmx": {
-            "scale": 0.5,
+            "scale": 1,
             "selectedLayer": 10,
             "viewCenter": {
-                "x": 492,
-                "y": 531
+                "x": 633,
+                "y": 567.5
             }
         }
     },
     "last.exportedFilePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/tilemaps/TileMaps",
-    "last.externalTilesetPath": "G:/TileMaps",
+    "last.externalTilesetPath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/tilemaps/TileMaps",
     "last.imagePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/GameGraphics/assetpack/Pixel Art Top Down - Basic v1.1.2/Texture",
     "map.height": 50,
     "map.lastUsedExportFilter": "Tiled map files (*.tmx *.xml)",
@@ -64,14 +65,14 @@
     "property.type": "bool",
     "recentFiles": [
         "maps/map1.tmx",
+        "TX Props.tsx",
+        "TX Plant.tsx",
         "TX Tileset Wall.tsx",
         "TX Tileset Stone Ground.tsx",
         "TX Tileset Grass.tsx",
         "TX Struct.tsx",
         "TX Shadow.tsx",
-        "TX Shadow Plant.tsx",
-        "TX Props.tsx",
-        "TX Plant.tsx"
+        "TX Shadow Plant.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx"

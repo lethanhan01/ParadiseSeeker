@@ -14,8 +14,8 @@ public class CyanBat extends Monster {
         this.bounds = new Rectangle(x, y, 2f, 2f);
         this.spawnX = x;
         this.spawnY = y;
-        this.spriteWidth = 2f;
-        this.spriteHeight = 2f;
+        this.spriteWidth = 1.2f;
+        this.spriteHeight = 1.2f;
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2f; // Nhỏ hơn Boss

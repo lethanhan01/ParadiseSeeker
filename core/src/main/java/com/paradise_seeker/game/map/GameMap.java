@@ -62,7 +62,7 @@ public class GameMap {
         TILE_HEIGHT = tiledMap.getProperties().get("tileheight", Integer.class);
 
         // Load matching background PNG in world units
-        backgroundTexture = new Texture("tilemaps/TileMaps/maps/test1.png");
+        backgroundTexture = new Texture("tilemaps/TileMaps/maps/map1.png");
 
         gameObjects = new ArrayList<>();
         occupiedAreas = new ArrayList<>();
@@ -281,40 +281,21 @@ public class GameMap {
     }
 
     public void checkCollisions(Player player, HUD hud) {
-        // Still check for collisions with solid objects (if you need this)
+        // Still check for collisions with solid objects (if needed)
         CollisionSystem.checkCollisions(player, collidables);
 
-        for (HPitem item : hpItems) {
-            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                item.onCollision(player);
-                if (hud != null) hud.showNotification("Obtained " + item.getName());
-            }
-        }
-        for (MPitem item : mpItems) {
-            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                item.onCollision(player);
-                if (hud != null) hud.showNotification("Obtained " + item.getName());
-            }
-        }
-        for (ATKitem item : atkItems) {
-            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                item.onCollision(player);
-                if (hud != null) hud.showNotification("Obtained " + item.getName());
-            }
-        }
-        for (Skill1item item : skill1Items) {
-            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                item.onCollision(player);
-                if (hud != null) hud.showNotification("Obtained " + item.getName());
-            }
-        }
-        for (Skill2item item : skill2Items) {
-            if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                item.onCollision(player);
-                if (hud != null) hud.showNotification("Obtained " + item.getName());
+        // Collect all item lists into an array for easy iteration
+        List<? extends Item>[] itemLists = new List[] { hpItems, mpItems, atkItems, skill1Items, skill2Items };
+        for (List<? extends Item> itemList : itemLists) {
+            for (Item item : itemList) {
+                if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                    item.onCollision(player);
+                    if (hud != null) hud.showNotification("> Obtained " + item.getName());
+                }
             }
         }
     }
+
 
     public boolean isBlocked(Rectangle nextBounds) {
         for (Collidable c : collidables) {

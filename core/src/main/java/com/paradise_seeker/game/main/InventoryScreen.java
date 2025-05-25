@@ -17,152 +17,188 @@ public class InventoryScreen implements Screen {
     private final Main game;
     private final GlyphLayout layout;
     private final ShapeRenderer shapeRenderer;
+    private Texture backgroundTexture;
     
-    private int selectedSlotX = 9;
-    private int selectedSlotY = 5;
+    // Changed to use grid coordinates (0-2, 0-2) instead of screen coordinates
+    private int selectedCol = 0;
+    private int selectedRow = 0;
+    
     private boolean inDescriptionArea = false;
+    private static final float BASE_HEIGHT = 720f;
+    private float fontScale = 0.2f;
+    
+    // Grid constants
+    private static final int GRID_ROWS = 3;
+    private static final int GRID_COLS = 3;
 
     public InventoryScreen(Main game, Player player) {
         this.game = game;
         this.player = player;
         this.layout = new GlyphLayout();
         this.shapeRenderer = new ShapeRenderer();
+        this.backgroundTexture = new Texture(Gdx.files.internal("menu/inventory_menu/inventoryscreen1.png"));
+        updateFontScale();
+    }
+
+    private void updateFontScale() {
+        float screenHeight = Gdx.graphics.getHeight();
+        this.fontScale = (screenHeight / BASE_HEIGHT) * 0.02f;
     }
 
     @Override
     public void show() {
+        updateFontScale();
     }
 
     @Override
     public void render(float delta) {
-        // Xử lý đóng inventory
+        // Save the original font scale
+        float originalScaleX = game.font.getData().scaleX;
+        float originalScaleY = game.font.getData().scaleY;
+
+        // Set the dynamic font scale
+        game.font.getData().setScale(fontScale);
+
+        // Handle closing inventory
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
             game.setScreen(game.currentGame);
+            // Restore font scale before returning
+            game.font.getData().setScale(originalScaleX, originalScaleY);
             return;
         }
 
+        // Clear the screen
         ScreenUtils.clear(Color.BLACK);
         game.camera.update();
-        
-        // Vẽ UI
+
+        // Draw background
+        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.begin();
+        game.batch.draw(backgroundTexture, 0, 0, game.viewport.getWorldWidth(), game.viewport.getWorldHeight());
+        game.batch.end();
+
+        // Draw UI
         drawUI();
-        
-        // Xử lý input
+
+        // Handle input
         handleInput();
+
+        // Restore font scale after drawing everything
+        game.font.getData().setScale(originalScaleX, originalScaleY);
     }
 
     private void drawUI() {
-        shapeRenderer.setProjectionMatrix(game.camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        
-        // Vẽ khung stats
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(2, 1, 6, 7);
-        
-        // Vẽ khung inventory
-        shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.rect(9, 5, 6, 3);
-        
-        // Vẽ khung mô tả
-        shapeRenderer.setColor(Color.BLUE);
-        shapeRenderer.rect(9, 1, 6, 3);
-        
-        // Vẽ khung chọn item
-        shapeRenderer.setColor(Color.YELLOW);
-        shapeRenderer.rect(selectedSlotX, selectedSlotY, 1, 1);
-        
-        shapeRenderer.end();
-        
-        // Vẽ text và items
+        // Draw text and items
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        
-        // Vẽ tiêu đề
-        game.font.setColor(Color.RED);
-        drawCenteredText("INVENTORY", game.viewport.getWorldHeight() - 0.5f);
-        
-        // Vẽ stats player
+
+        // Draw player stats
         game.font.setColor(Color.WHITE);
-        drawText("HP: " + player.hp + "/" + Player.MAX_HP, 2.5f, 6.5f);
-        drawText("MP: " + player.mp + "/" + Player.MAX_MP, 2.5f, 5.5f);
-        drawText("ATK: " + player.atk, 2.5f, 4.5f);
-        drawText("Skill 1: " + player.playerSkill1.getdamageMultiplier(), 2.5f, 3.5f);
-        drawText("Skill 2: " + player.playerSkill2.getdamageMultiplier(), 2.5f, 2.5f);
-        
-        // Vẽ các item trong inventory
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 6; col++) {
-                int index = row * 6 + col;
+        float startX = 3.2f;
+        float startY = 7.5f;
+        float lineSpacing = 0.8f;
+        drawText("HP: " + player.hp + "/" + Player.MAX_HP, startX, startY);
+        drawText("MP: " + player.mp + "/" + Player.MAX_MP, startX, startY - lineSpacing);
+        drawText("ATK: " + player.atk, startX, startY - 2 * lineSpacing);
+        drawText("Skill 1 DMG x" + player.playerSkill1.getdamageMultiplier(), startX, startY - 3 * lineSpacing);
+        drawText("Skill 2 DMG x" + player.playerSkill2.getdamageMultiplier(), startX, startY - 4 * lineSpacing);
+
+        // Grid start position
+        float gridStartX = 8.74f;
+        float gridStartY = 2.9f;
+        float slotSize = 1f;
+        float slotSpacing = 0.5f;
+
+        // Draw inventory items as a 3x3 grid
+        for (int row = 0; row < GRID_ROWS; row++) {
+            for (int col = 0; col < GRID_COLS; col++) {
+                int index = row * GRID_COLS + col;
+                
+                float x = gridStartX + col * (slotSize + slotSpacing);
+                float y = gridStartY + (GRID_ROWS - 1 - row) * (slotSize + slotSpacing);
+
                 if (index < player.inventory.size()) {
                     Item item = player.inventory.get(index);
-                    float x = 9 + col;
-                    float y = 5 + (2 - row);
-                    game.batch.draw(item.getTexture(), x, y, 1, 1);
-                    
-                    // Hiển thị số lượng nếu item có thể stack và count > 1
+                    game.batch.draw(item.getTexture(), x, y, slotSize, slotSize);
+
+                    // Draw stack count if applicable
                     if (item.isStackable() && item.getCount() > 1) {
-                        drawText(String.valueOf(item.getCount()), x + 0.7f, y + 0.3f);
+                        drawText(String.valueOf(item.getCount()), x + 0.55f, y + 0.1f);
                     }
                 }
+
+                // Highlight selected slot (draw on top of item)
+                if (selectedCol == col && selectedRow == row) {
+                    game.batch.end(); // End batch to draw shape
+                    
+                    shapeRenderer.setProjectionMatrix(game.camera.combined);
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.rect(x, y, slotSize, slotSize);
+                    shapeRenderer.end();
+                    
+                    game.batch.begin(); // Resume batch
+                }
+                
             }
         }
-        
-        // Vẽ mô tả item được chọn
-        if (getSelectedItem() != null) {
-            Item item = getSelectedItem();
+
+        // Draw selected item description
+        Item item = getSelectedItem();
+        if (item != null) {
             game.font.setColor(Color.WHITE);
-            drawText("Name: " + item.getName(), 9.5f, 3.5f);
-            drawText("Desc: " + item.getDescription(), 9.5f, 2.5f);
-            drawText("Press E to use", 9.5f, 2.0f);
-            drawText("Press Q to drop", 9.5f, 1.5f);
+            drawText("Name: " + item.getName(), 9f, 2.4f);
+            drawText(item.getDescription(), 9f, 1.7f);
+            drawText("[E] Use", 3f, 1.65f);
+            drawText("[Q] Drop", 5f, 1.65f);
         }
-        
+
+        game.batch.end();
+        game.batch.begin();
+        game.font.setColor(Color.WHITE);
+        drawCenteredText("[B] Exit Inventory", 0.4f); // Adjust Y-coordinate as needed
         game.batch.end();
     }
 
     private void handleInput() {
-        // Di chuyển giữa các ô inventory
+        // Move between inventory slots
         if (!inDescriptionArea) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.W)|| Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-                selectedSlotY = Math.min(7, selectedSlotY + 1);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                selectedRow = Math.max(0, selectedRow - 1); // Move up (decrease row)
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.S)|| Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-                selectedSlotY = Math.max(5, selectedSlotY - 1);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                selectedRow = Math.min(GRID_ROWS - 1, selectedRow + 1); // Move down (increase row)
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.A)|| Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-                selectedSlotX = Math.max(9, selectedSlotX - 1);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                selectedCol = Math.max(0, selectedCol - 1); // Move left (decrease column)
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.D)|| Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-                selectedSlotX = Math.min(14, selectedSlotX + 1);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                selectedCol = Math.min(GRID_COLS - 1, selectedCol + 1); // Move right (increase column)
             }
-            
-            // Chuyển sang vùng mô tả
+            // Switch to description area
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 inDescriptionArea = true;
             }
         } else {
-            // Quay lại inventory
+            // Return from description area
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 inDescriptionArea = false;
             }
         }
-        
-        // Sử dụng item
+
+        // Use item
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             useSelectedItem();
         }
-        
-        // Vứt item
+
+        // Drop item
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             dropSelectedItem();
         }
     }
 
     private Item getSelectedItem() {
-        int col = selectedSlotX - 9;
-        int row = 7 - selectedSlotY; // Chuyển đổi từ tọa độ màn hình sang index hàng
-        int index = row * 6 + col;
-        
+        int index = selectedRow * GRID_COLS + selectedCol;
         if (index >= 0 && index < player.inventory.size()) {
             return player.inventory.get(index);
         }
@@ -173,23 +209,21 @@ public class InventoryScreen implements Screen {
         Item item = getSelectedItem();
         if (item != null) {
             item.use(player);
-            
-            // Giảm count và xóa nếu count <= 0
             if (item.isStackable()) {
                 item.setCount(item.getCount() - 1);
                 if (item.getCount() <= 0) {
                     player.inventory.remove(item);
-            	}
-            }else{
-				player.inventory.remove(item);
-			}
+                }
+            } else {
+                player.inventory.remove(item);
+            }
         }
     }
 
     private void dropSelectedItem() {
         Item item = getSelectedItem();
         if (item != null) {
-            // TODO: Thêm logic thả item xuống map
+            // TODO: Add logic to drop item to the map
             player.inventory.remove(item);
         }
     }
@@ -208,6 +242,7 @@ public class InventoryScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         game.viewport.update(width, height, true);
+        updateFontScale();
     }
 
     @Override
@@ -222,5 +257,6 @@ public class InventoryScreen implements Screen {
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+        backgroundTexture.dispose();
     }
 }

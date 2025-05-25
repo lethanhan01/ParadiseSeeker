@@ -16,23 +16,26 @@ import java.util.List;
 import java.util.Random;
 
 public class GameMap {
-    private static final int MAP_WIDTH = 100;
-    private static final int MAP_HEIGHT = 100;
+	protected static final int MAP_WIDTH = 100;
+    protected static final int MAP_HEIGHT = 100;
 
-    private Texture backgroundTexture;
-    private List<Collidable> collidables;
-    private List<GameObject> gameObjects;
-    private List<Rectangle> occupiedAreas;
+    protected Texture backgroundTexture;
+    protected List<Collidable> collidables;
+    protected List<GameObject> gameObjects;
+    protected List<Rectangle> occupiedAreas;
 
-    private List<Monster> monsters;
-    private List<HPitem> hpItems = new ArrayList<>();
-    private List<MPitem> mpItems = new ArrayList<>();
-    private List<ATKitem> atkItems = new ArrayList<>();
-    private List<Skill1item> skill1Items = new ArrayList<>();
-    private List<Skill2item> skill2Items = new ArrayList<>();
+    protected List<Monster> monsters;
+    protected List<HPitem> hpItems = new ArrayList<>();
+    protected List<MPitem> mpItems = new ArrayList<>();
+    protected List<ATKitem> atkItems = new ArrayList<>();
+    protected List<Skill1item> skill1Items = new ArrayList<>();
+    protected List<Skill2item> skill2Items = new ArrayList<>();
+    
+    public Portal portal;
 
-    private float itemSpawnTimer = 0f;
-    private static final float ITEM_SPAWN_INTERVAL = 120f;
+
+    protected float itemSpawnTimer = 0f;
+    protected static final float ITEM_SPAWN_INTERVAL = 120f;
 
     public GameMap(Player player) {
         backgroundTexture = new Texture("images/map/test.png");
@@ -48,6 +51,9 @@ public class GameMap {
         generateObjects();
         generateMonsters(player);
         generateRandomItems(5, 5);
+        portal = new Portal(10, 10); // Tạo cổng ở vị trí (10,10)
+        collidables.add(portal);
+
     }
 
     private void generateObjects() {
@@ -159,6 +165,7 @@ public class GameMap {
         for (Skill2item item : skill2Items) item.render(batch);
 
         for (Monster m : monsters) m.render(batch);
+        portal.render(batch); 
     }
 
     public void update(float deltaTime) {
@@ -185,6 +192,12 @@ public class GameMap {
         for (ATKitem item : atkItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
         for (Skill1item item : skill1Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
         for (Skill2item item : skill2Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+        if (player.getBounds().overlaps(portal.innerBounds)) {
+            portal.onCollision(player);
+        }
+
+
+
     }
 
     public void dispose() {
@@ -259,6 +272,9 @@ public class GameMap {
         float dy = centerY - y;
         return dx * dx + dy * dy <= radius * radius;
     }
+    
+
+
 
     public List<Monster> getMonsters() { return monsters; }
 }

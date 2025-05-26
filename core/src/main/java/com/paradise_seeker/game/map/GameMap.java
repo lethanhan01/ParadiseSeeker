@@ -16,11 +16,11 @@ import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.entity.monster.boss.Boss1;
 import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
-import com.paradise_seeker.game.entity.npc.*;
+import com.paradise_seeker.game.entity.npc.NPC1;
 import com.paradise_seeker.game.entity.object.*;
-import com.paradise_seeker.game.ui.HUD;
 import com.paradise_seeker.game.entity.Monster;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -48,8 +48,6 @@ public class GameMap {
     private List<Skill1item> skill1Items = new ArrayList<>();
     private List<Skill2item> skill2Items = new ArrayList<>();
 	private List<NPC1> npcList = new ArrayList<>(); // Danh sách NPC
-	private List<NPC2> npc2List = new ArrayList<>();
-
     private float itemSpawnTimer = 0f;
     private static final float ITEM_SPAWN_INTERVAL = 120f;
 
@@ -62,7 +60,7 @@ public class GameMap {
         TILE_HEIGHT = tiledMap.getProperties().get("tileheight", Integer.class);
 
         // Load matching background PNG in world units
-        backgroundTexture = new Texture("tilemaps/TileMaps/maps/map1.png");
+        backgroundTexture = new Texture("tilemaps/TileMaps/maps/test1.png");
 
         gameObjects = new ArrayList<>();
         occupiedAreas = new ArrayList<>();
@@ -78,10 +76,8 @@ public class GameMap {
         generateMonsters(player);
         generateRandomItems(5, 5);
         generateNPCs(); // ✅ Thêm dòng này
-        //generateNPC2s(player);
 
-
-        portal = new Portal(15f, 25f);
+        portal = new Portal(10f, 10f);
         // Add the portal to your collision system
         collidables.add(portal);
         // --- Load all "solid" rectangles, scale to world units, no Y flip ---
@@ -100,31 +96,31 @@ public class GameMap {
                         collidables.add(new SolidObject(fixedRect));
                     }
                 }
-            } 
-        }
-    }
-    private void generateNPC2s(Player player) {
-        Random random = new Random();
-        int npc2Count = 1;
-        for (int i = 0; i < npc2Count; i++) {
-            Rectangle bounds = generateNonOverlappingBounds(3f, 3f);
-            if (bounds != null) {
-                NPC2 npc2 = new NPC2(bounds.x, bounds.y, player);
-                npc2List.add(npc2);
-                // Không add vào collidables để không cản Player
-                occupiedAreas.add(new Rectangle(bounds));
             }
         }
     }
-
     private void generateNPCs() {
-        // Place the NPC at the bottom-left corner of the map
-        float npcX = 1f; // Bottom-left X + 1 coordinate
-        float npcY = 1f; // Bottom-left Y + 1 coordinate
-        NPC1 npc = new NPC1(npcX, npcY);
-        npcList.add(npc);
-        collidables.add(npc);
-        occupiedAreas.add(npc.getBounds());
+        Random random = new Random();
+        int npcCount = 2;
+        for (int i = 0; i < npcCount; i++) {
+            Rectangle bounds = generateNonOverlappingBounds(3f, 3f);
+            if (bounds != null) {
+                NPC1 npc = new NPC1(bounds.x, bounds.y);
+             // Gán hội thoại cho NPC
+                npc.setDialogue(Arrays.asList(
+                    "Gipsy: ...À, ta thấy cậu đang gặp khó khăn.",
+                    "Gipsy: 1. HP potion   2. MP potion   3. ATK potion",
+                    "Jack: ##Chọn phần thưởng",
+                    "Jack: Chờ đã, cậu là ai? Tại sao lại giúp tôi?",
+                    "Gipsy: Đôi khi, câu trả lời tốt nhất là không có câu trả lời nào cả..."
+                ));
+
+                npcList.add(npc);    
+                collidables.add(npc);
+
+                occupiedAreas.add(new Rectangle(bounds)); // Đánh dấu vùng đã chiếm
+            }
+        }
     }
 
     private void generateObjects() {
@@ -255,8 +251,6 @@ public class GameMap {
         for (Skill2item item : skill2Items) item.render(batch);
         for (Monster m : monsters) m.render(batch);
         for (NPC1 npc : npcList) npc.render(batch);
-        for (NPC2 npc2 : npc2List) npc2.render(batch);
-
         if (portal != null) portal.render(batch);
 
     }
@@ -265,7 +259,6 @@ public class GameMap {
     	for (NPC1 npc : npcList) {
     	    npc.update(deltaTime);
     	}
-    	for (NPC2 npc2 : npc2List) npc2.update(deltaTime);
 
         for (Monster m : monsters) m.update(deltaTime);
         hpItems.removeIf(item -> !item.isActive());
@@ -280,23 +273,14 @@ public class GameMap {
         }
     }
 
-    public void checkCollisions(Player player, HUD hud) {
-        // Still check for collisions with solid objects (if needed)
+    public void checkCollisions(Player player) {
         CollisionSystem.checkCollisions(player, collidables);
-
-        // Collect all item lists into an array for easy iteration
-        List<? extends Item>[] itemLists = new List[] { hpItems, mpItems, atkItems, skill1Items, skill2Items };
-        for (List<? extends Item> itemList : itemLists) {
-            for (Item item : itemList) {
-                if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                    item.onCollision(player);
-                    if (hud != null) hud.showNotification("> Obtained " + item.getName());
-                }
-            }
-        }
+        for (HPitem item : hpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+        for (MPitem item : mpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+        for (ATKitem item : atkItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+        for (Skill1item item : skill1Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+        for (Skill2item item : skill2Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
     }
-
-
     public boolean isBlocked(Rectangle nextBounds) {
         for (Collidable c : collidables) {
             if (c.getBounds().overlaps(nextBounds)) {

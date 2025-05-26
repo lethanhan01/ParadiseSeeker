@@ -190,7 +190,7 @@ public class Player extends Character {
         if (mp > MAX_MP) {
             mp = MAX_MP; // Cap mana at MAX_MP
         }
-        System.out.println("Mana: " + mp + ", DeltaTime: " + deltaTime); // Debug log
+       // System.out.println("Mana: " + mp + ", DeltaTime: " + deltaTime); // Debug log
     }
 
 

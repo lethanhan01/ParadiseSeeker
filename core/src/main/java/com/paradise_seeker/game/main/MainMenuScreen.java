@@ -18,25 +18,28 @@ public class MainMenuScreen implements Screen {
     Texture background;
     Texture[] selectedButtonTextures;
     Texture characterIcon;
-
+    Texture leftIcon;
+    Texture rightIcon;
     public MainMenuScreen(final Main game) {
         this.game = game;
         touchPos = new Vector2();
 
         // Use your title PNG here
-        titleTexture = new Texture(Gdx.files.internal("menu/start_menu/main_menu/test.png"));
+        titleTexture = new Texture(Gdx.files.internal("menu/start_menu/main_menu/psk2.png"));
         titleTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        background = new Texture("menu/start_menu/main_menu/bg_7.png");
+        background = new Texture("menu/start_menu/main_menu/bgnew.png");
 
-        characterIcon = new Texture(Gdx.files.internal("images/Entity/characters/player/char_shielded_static_up.png"));
-        characterIcon.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        
+       // characterIcon = new Texture(Gdx.files.internal("images/Entity/characters/player/char_shielded_static_up.png"));
+        //characterIcon.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        leftIcon = new Texture(Gdx.files.internal("menu/start_menu/main_menu/arrleft.png"));
+        rightIcon = new Texture(Gdx.files.internal("menu/start_menu/main_menu/arr.png"));
+
 
         buttonTextures = new Texture[] {
             new Texture("menu/start_menu/main_menu/newgame1.png"),
             new Texture("menu/start_menu/main_menu/loadgame1.png"),
-            new Texture("menu/start_menu/main_menu/settings1.png"),
-            new Texture("menu/start_menu/main_menu/exit1.png")
+            new Texture("menu/start_menu/main_menu/settings1n.png"),
+            new Texture("menu/start_menu/main_menu/exit1n.png")
         };
         selectedButtonTextures = new Texture[] {
             new Texture("menu/start_menu/main_menu/newgame_test.png"),
@@ -65,26 +68,36 @@ public class MainMenuScreen implements Screen {
         game.batch.draw(background, 0, 0, viewportWidth, viewportHeight);
 
         // 2. Draw the title image at the top center
-        float titleWidth = 10.5f;   // Adjust as needed for your image
-        float titleHeight = 4.8f;  // Adjust as needed for your image
+        float titleWidth = 11.7f;   // Adjust as needed for your image
+        float titleHeight = 5.5f;  // Adjust as needed for your image
         float xTitle = (viewportWidth - titleWidth) / 2f;
         float yTitle = viewportHeight - titleHeight - 0.4f;
         game.batch.draw(titleTexture, xTitle, yTitle, titleWidth, titleHeight);
+        
+     // Draw left and right icons
+        float iconWidth = 1.5f; // Adjust size as needed
+        float iconHeight = 0.4f;
+        float xLeftIcon = xTitle - iconWidth; // Add margin
+        float xRightIcon = xTitle + titleWidth; // Add margin
+        float yIcons = yTitle + (titleHeight - iconHeight) / 2f; // Center vertically
+        game.batch.draw(leftIcon, xLeftIcon, yIcons, iconWidth, iconHeight);
+        game.batch.draw(rightIcon, xRightIcon, yIcons, iconWidth, iconHeight);
 
-        // 3. Draw the menu buttons under the title
-        float buttonWidth = 3f;
-        float buttonHeight = 0.75f;
-        float xButton = (viewportWidth - buttonWidth) / 2f;
+        // Draw the menu buttons
+        float buttonWidth = viewportWidth * 0.23f * 0.8f;
+        float buttonHeight = viewportHeight * 0.1f * 0.8f;
+        float xButton = (viewportWidth - buttonWidth) / 2f; // Center buttons horizontally
+        
 
         // Buttons start below the title image
-        float yStart = yTitle - buttonHeight - 0.01f;
+        float yStart = yTitle - buttonHeight +1f;
 
         for (int i = 0; i < buttonTextures.length; i++) {
-            float yButton = yStart - i * (buttonHeight + 0.2f);
+            float yButton = yStart - i * (buttonHeight + 0.15f); // Space between buttons
             Texture buttonTex = (i == selectedIndex) ? selectedButtonTextures[i] : buttonTextures[i];
             game.batch.draw(buttonTex, xButton, yButton, buttonWidth, buttonHeight);
 
-            // Draw selector arrow 
+            // Draw selector arrow
             if (i == selectedIndex) {
                 game.font.setColor(Color.WHITE);
                 // Draw ">" on the left
@@ -170,10 +183,14 @@ public class MainMenuScreen implements Screen {
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
+
     @Override
     public void dispose() {
-       titleTexture.dispose();
-       for (Texture t : buttonTextures) t.dispose();
-       for (Texture t : selectedButtonTextures) t.dispose();
+        titleTexture.dispose();
+        leftIcon.dispose();
+        rightIcon.dispose();
+        for (Texture t : buttonTextures) t.dispose();
+        for (Texture t : selectedButtonTextures) t.dispose();
     }
+
 }

@@ -35,7 +35,7 @@ public class GameMap {
     public float getMapHeight() {
         return MAP_HEIGHT;
     }
-    private Portal portal;
+    public Portal portal;
     private Texture backgroundTexture;
     private List<Collidable> collidables;
     private List<GameObject> gameObjects;
@@ -77,9 +77,7 @@ public class GameMap {
         generateRandomItems(5, 5);
         generateNPCs(); // ✅ Thêm dòng này
 
-        portal = new Portal(10f, 10f);
-        // Add the portal to your collision system
-        collidables.add(portal);
+        portal = new Portal(15f, 25f);
         // --- Load all "solid" rectangles, scale to world units, no Y flip ---
         for (MapLayer layer : tiledMap.getLayers()) {
             for (MapObject obj : layer.getObjects()) {

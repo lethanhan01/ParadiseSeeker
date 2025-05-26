@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.paradise_seeker.game.map.AnotherGameMap;
 import com.paradise_seeker.game.map.GameMap;
 import com.paradise_seeker.game.ui.DialogueBox;
 import com.paradise_seeker.game.ui.HUD;
@@ -38,6 +39,9 @@ public class GameScreen implements Screen {
     private OrthographicCamera gameCamera;
     private OrthographicCamera hudCamera;
     private ShapeRenderer shapeRenderer;
+    private AnotherGameMap anotherGameMap;
+    private boolean isInGameMap = true;  // Bắt đầu ở GameMap
+
     public static List<LaserBeam> activeProjectiles = new ArrayList<>();
 
     // Camera will show 16x10 world units (tiles) by default
@@ -296,6 +300,21 @@ public class GameScreen implements Screen {
             
         }
 
+        if (isInGameMap) {
+            gameMap.update(delta);
+            gameMap.checkCollisions(player);
+        } else {
+            anotherGameMap.update(delta);
+            anotherGameMap.checkCollisions(player);
+        }
+        if (isInGameMap && gameMap.portal != null && gameMap.portal.getBounds().overlaps(player.getBounds())) {
+            gameMap.portal.onCollision(player);
+            switchToAnotherGameMap();
+        } else if (!isInGameMap && anotherGameMap.portal != null && anotherGameMap.portal.getBounds().overlaps(player.getBounds())) {
+            anotherGameMap.portal.onCollision(player);
+            switchToGameMap();
+        }
+
         }
 
 
@@ -326,4 +345,14 @@ public class GameScreen implements Screen {
         hud.dispose();
         gameMap.dispose();
     }
+    private void switchToAnotherGameMap() {
+        anotherGameMap = new AnotherGameMap(player);
+        isInGameMap = false;
+        System.out.println("➡️ Chuyển sang AnotherGameMap");
+    }
+
+    private void switchToGameMap() {
+        System.out.println("⬅️ Quay lại GameMap");
+    }
+
 }

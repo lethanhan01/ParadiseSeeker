@@ -74,7 +74,7 @@ public class HUD {
         spriteBatch.draw(mpBarFrames[frameIndexmp], PADDING * 0.95f, screenHeight - PADDING - scaledBarHeight * 1.8f, scaledBarWidth, scaledBarHeight);
 
         float baseHeight = 570f;
-        float fontScale = screenHeight / baseHeight;
+        float fontScale = Math.max(screenHeight / baseHeight, 0.1f); 
 
         // -- Save old scale, set new scale (because font is shared!) --
         float oldScaleX = font.getData().scaleX;

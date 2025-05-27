@@ -3,18 +3,36 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/map2.tmx",
+    "activeFile": "",
     "expandedProjectPaths": [
+        "maps",
+        "map2-tilesets",
         ".",
-        "maps"
+        "map5-tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "0x72_DungeonTilesetII_v1.7.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "16x16 dungeon ii wall reconfig v04 spritesheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "Hills.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "Minifantasy_ForgottenPlainsProps.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "Minifantasy_ForgottenPlainsTiles.tsx": {
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "Minifantasy_ForgottenPlainsTilesShadows.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -54,53 +72,155 @@
             "scaleInDock": 0.5,
             "scaleInEditor": 1
         },
+        "atlas_floor-16x16.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "atlas_floor.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "atlas_walls_high-16x32.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "atlas_walls_low-16x16.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "dd_waterfall_sheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1-tilesets/TX Plant.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1-tilesets/TX Props.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1-tilesets/TX Shadow Plant.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1-tilesets/TX Shadow.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1-tilesets/TX Struct.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1-tilesets/TX Tileset Grass.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1-tilesets/TX Tileset Stone Ground.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1-tilesets/TX Tileset Wall.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map2-tilesets/Minifantasy_ForgottenPlainsTilesShadows.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map3-tilesets/0x72_DungeonTilesetII_v1.7.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map3-tilesets/16x16 dungeon ii wall reconfig v04 spritesheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map3-tilesets/atlas_floor-16x16.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map3-tilesets/atlas_floor.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map3-tilesets/atlas_walls_high-16x32.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map3-tilesets/atlas_walls_low-16x16.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map4-tilesets/dd_waterfall_sheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map4-tilesets/tf_darkdimension_sheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map5-tilesets/throneroom1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "maps/map1.tmx": {
             "scale": 1,
             "selectedLayer": 10,
             "viewCenter": {
-                "x": 633,
-                "y": 567.5
+                "x": 492,
+                "y": 250.5
             }
         },
         "maps/map2.tmx": {
             "scale": 0.41918749999999994,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 799.1650514387956,
-                "y": 800.3578350976593
+                "x": 821.8279409572091,
+                "y": 843.2980468167589
             }
         },
         "tf_darkdimension_sheet.tsx": {
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 0.75
+        },
+        "throneroom1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 0.5
         }
     },
     "last.exportedFilePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/tilemaps/TileMaps",
-    "last.externalTilesetPath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/tilemaps/TileMaps",
-    "last.imagePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/zipped/zipped/Sprout Lands - Sprites - Basic pack/Sprout Lands - Sprites - Basic pack/Tilesets",
+    "last.externalTilesetPath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/tilemaps/TileMaps/map2-tilesets",
+    "last.imagePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/GameGraphics/assetpack",
     "map.height": 50,
     "map.lastUsedExportFilter": "Tiled map files (*.tmx *.xml)",
     "map.lastUsedFormat": "tmx",
     "map.width": 50,
     "openFiles": [
-        "maps/map2.tmx",
-        "Hills.tsx"
     ],
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "Hills.tsx",
         "maps/map2.tmx",
-        "Overworld_Tileset.tsx",
-        "tf_darkdimension_sheet.tsx",
-        "Minifantasy_ForgottenPlainsTiles.tsx",
         "maps/map1.tmx",
-        "TX Plant.tsx",
-        "TX Props.tsx",
-        "TX Tileset Wall.tsx",
-        "TX Tileset Stone Ground.tsx",
-        "TX Tileset Grass.tsx",
-        "TX Struct.tsx"
+        "map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx",
+        "map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx",
+        "map5-tilesets/throneroom1.tsx",
+        "map4-tilesets/tf_darkdimension_sheet.tsx",
+        "map4-tilesets/dd_waterfall_sheet.tsx",
+        "map3-tilesets/atlas_walls_low-16x16.tsx",
+        "map3-tilesets/atlas_walls_high-16x32.tsx",
+        "map3-tilesets/atlas_floor-16x16.tsx",
+        "map3-tilesets/atlas_floor.tsx",
+        "map3-tilesets/16x16 dungeon ii wall reconfig v04 spritesheet.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx"

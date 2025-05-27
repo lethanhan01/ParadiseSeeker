@@ -1,7 +1,6 @@
 package com.paradise_seeker.game.entity.npc;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,26 +19,26 @@ public class NPC1 implements Collidable {
     private Animation<TextureRegion> chestOpenedAnimation;
     private Animation<TextureRegion> currentAnimation;
     private TextureRegion currentFrame;
-    
 
     private float stateTime;
-
     private Rectangle bounds;
     private float spriteWidth = 3f;
     private float spriteHeight = 3f;
 
+    // --- State flags ---
     private boolean isChestOpened = false;
     private boolean isOpeningChest = false;
     private boolean isTalking = false;
     private boolean hasTalked = false;
 
-    public boolean hasTalked() {
-        return hasTalked;
+    // Getters and setters for state
+    public boolean hasTalked() { return hasTalked; }
+    public void setHasTalked(boolean value) { 
+        this.hasTalked = value; 
     }
+    public boolean isChestOpened() { return isChestOpened; }
+    public boolean isOpeningChest() { return isOpeningChest; }
 
-    public void setHasTalked(boolean value) {
-        this.hasTalked = value;
-    }
     public NPC1(float x, float y) {
         loadIdleAnimation();
         loadTalkAnimation();
@@ -56,9 +55,13 @@ public class NPC1 implements Collidable {
         List<TextureRegion> frames = new ArrayList<>();
         for (int i = 120; i <= 130; i++) {
             String path = "images/Entity/characters/NPCs/npc1/act3/npc" + i + ".png";
-            Texture texture = new Texture(Gdx.files.internal(path));
-            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-            frames.add(new TextureRegion(texture));
+            try {
+                Texture texture = new Texture(Gdx.files.internal(path));
+                texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                frames.add(new TextureRegion(texture));
+            } catch (Exception e) {
+                // Handle missing textures silently
+            }
         }
         idleAnimation = new Animation<>(0.2f, frames.toArray(new TextureRegion[0]));
         idleAnimation.setPlayMode(Animation.PlayMode.LOOP);
@@ -68,24 +71,29 @@ public class NPC1 implements Collidable {
         List<TextureRegion> frames = new ArrayList<>();
         for (int i = 10; i <= 19; i++) {
             String path = "images/Entity/characters/NPCs/npc1/act1/npc" + i + ".png";
-            Texture texture = new Texture(Gdx.files.internal(path));
-            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-            frames.add(new TextureRegion(texture));
+            try {
+                Texture texture = new Texture(Gdx.files.internal(path));
+                texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                frames.add(new TextureRegion(texture));
+            } catch (Exception e) {
+                // Handle missing textures silently
+            }
         }
         talkAnimation = new Animation<>(0.2f, frames.toArray(new TextureRegion[0]));
         talkAnimation.setPlayMode(Animation.PlayMode.LOOP);
-    }
-    public boolean isChestOpened() {
-        return isChestOpened;
     }
 
     private void loadOpenChestAnimation() {
         List<TextureRegion> frames = new ArrayList<>();
         for (int i = 131; i <= 137; i++) {
             String path = "images/Entity/characters/NPCs/npc1/act4/npc" + i + ".png";
-            Texture texture = new Texture(Gdx.files.internal(path));
-            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-            frames.add(new TextureRegion(texture));
+            try {
+                Texture texture = new Texture(Gdx.files.internal(path));
+                texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                frames.add(new TextureRegion(texture));
+            } catch (Exception e) {
+                // Handle missing textures silently
+            }
         }
         openChestAnimation = new Animation<>(0.2f, frames.toArray(new TextureRegion[0]));
         openChestAnimation.setPlayMode(Animation.PlayMode.NORMAL);
@@ -95,94 +103,115 @@ public class NPC1 implements Collidable {
         List<TextureRegion> frames = new ArrayList<>();
         for (int i = 140; i <= 145; i++) {
             String path = "images/Entity/characters/NPCs/npc1/act5/npc" + i + ".png";
-            Texture texture = new Texture(Gdx.files.internal(path));
-            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-            frames.add(new TextureRegion(texture));
+            try {
+                Texture texture = new Texture(Gdx.files.internal(path));
+                texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                frames.add(new TextureRegion(texture));
+            } catch (Exception e) {
+                // Handle missing textures silently
+            }
         }
         chestOpenedAnimation = new Animation<>(0.2f, frames.toArray(new TextureRegion[0]));
         chestOpenedAnimation.setPlayMode(Animation.PlayMode.LOOP);
     }
 
     public void update(float deltaTime) {
-        if (isChestOpened) {
-            stateTime += deltaTime;
-            currentFrame = currentAnimation.getKeyFrame(stateTime);
-            return;
-        }
-
         stateTime += deltaTime;
         currentFrame = currentAnimation.getKeyFrame(stateTime);
 
+        // Handle chest opening animation completion
         if (isOpeningChest && openChestAnimation.isAnimationFinished(stateTime)) {
             currentAnimation = chestOpenedAnimation;
             stateTime = 0f;
             isChestOpened = true;
+            isOpeningChest = false;
+            currentFrame = chestOpenedAnimation.getKeyFrame(0f);
         }
     }
 
-
-    // Hàm để Player gọi khi va chạm
     public void setTalking(boolean talking) {
-        if (isChestOpened || isOpeningChest) return; // Đang mở rương hoặc đã mở rương thì không đổi animation nữa
         if (isTalking != talking) {
             isTalking = talking;
-            currentAnimation = isTalking ? talkAnimation : idleAnimation;
-            stateTime = 0f;
+            
+            // Don't change animation if currently opening chest
+            if (!isOpeningChest) {
+                if (talking) {
+                    currentAnimation = talkAnimation;
+                } else if (isChestOpened) {
+                    currentAnimation = chestOpenedAnimation;
+                } else {
+                    currentAnimation = idleAnimation;
+                }
+                stateTime = 0f;
+            }
         }
     }
-    
- // Thêm vào NPC1
+
     public void openChest() {
-        if (isChestOpened || isOpeningChest) return;
+        if (isChestOpened || isOpeningChest) {
+            return;
+        }
+        
         currentAnimation = openChestAnimation;
         stateTime = 0f;
         isOpeningChest = true;
-        isChestOpened = true; // ✅ thêm dòng này
+        isTalking = false; // Stop talking when opening chest
     }
 
+    public boolean isChestOpenAndFinished() {
+        return isChestOpened && !isOpeningChest;
+    }
 
     public void render(SpriteBatch batch) {
-        batch.draw(currentFrame, bounds.x, bounds.y, spriteWidth, spriteHeight);
+        if (currentFrame != null) {
+            batch.draw(currentFrame, bounds.x, bounds.y, spriteWidth, spriteHeight);
+        }
     }
 
-    public Rectangle getBounds() {
-        return bounds;
+    public Rectangle getBounds() { 
+        return bounds; 
     }
+
+    // ======= Dialogue Logic =======
+    private List<String> dialogueLines = new ArrayList<>();
+    private int currentLineIndex = 0;
+
+    public void setDialogue(List<String> lines) {
+        this.dialogueLines = new ArrayList<>(lines);
+        this.currentLineIndex = 0;
+    }
+
+    public String getCurrentLine() {
+        if (dialogueLines.isEmpty()) {
+            return "";
+        }
+        return dialogueLines.get(currentLineIndex);
+    }
+
+    public boolean hasNextLine() {
+        return currentLineIndex < dialogueLines.size() - 1;
+    }
+
+    public void nextLine() {
+        if (hasNextLine()) {
+            currentLineIndex++;
+        }
+    }
+
+    public void resetDialogue() {
+        currentLineIndex = 0;
+    }
+
+    public int getCurrentLineIndex() { 
+        return currentLineIndex; 
+    }
+
     public boolean shouldShowOptions() {
-        return getCurrentLineIndex() == 2; // Câu số 3
+        return getCurrentLineIndex() == 1 && !hasTalked;
     }
 
-	@Override
-	public void onCollision(Player player) {
-		// TODO Auto-generated method stub
-		
-	}
-	// ======================= HỘP THOẠI =========================
-	private List<String> dialogueLines = new ArrayList<>();
-	private int currentLineIndex = 0;
-
-	public void setDialogue(List<String> lines) {
-	    this.dialogueLines = lines;
-	    this.currentLineIndex = 0;
-	}
-
-	public String getCurrentLine() {
-	    if (dialogueLines.isEmpty()) return "";
-	    return dialogueLines.get(currentLineIndex);
-	}
-
-	public boolean hasNextLine() {
-	    return currentLineIndex < dialogueLines.size() - 1;
-	}
-
-	public void nextLine() {
-	    if (hasNextLine()) currentLineIndex++;
-	}
-
-	public void resetDialogue() {
-	    currentLineIndex = 0;
-	}
-	public int getCurrentLineIndex() {
-	    return currentLineIndex;
-	}
+    @Override
+    public void onCollision(Player player) {
+        // Interaction handled in GameScreen
+    }
 }

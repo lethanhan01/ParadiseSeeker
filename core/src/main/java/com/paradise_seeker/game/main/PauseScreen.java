@@ -11,7 +11,7 @@ public class PauseScreen implements Screen {
 
     final Main game;
     GlyphLayout layout;
-    String[] menuItems = {"PAUSING","CONTINUE", "SETTINGS", "RETURN TO MAIN MENU"};
+    String[] menuItems = {"- Pausing -", "Continue Game", "Settinsgs", "Return to Main Menu"};
     int selectedIndex = 1; 
     public PauseScreen(Main game) {
         this.game = game;

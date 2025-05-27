@@ -27,7 +27,7 @@ public class DialogueUI {
         dialogueLabel.setWrap(true);
         window.add(dialogueLabel).width(380).row();
 
-        closeButton = new TextButton("Tiếp tục", skin);
+        closeButton = new TextButton("Continue", skin);
         closeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 window.setVisible(false);

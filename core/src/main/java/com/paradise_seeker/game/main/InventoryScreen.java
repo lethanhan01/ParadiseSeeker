@@ -24,7 +24,7 @@ public class InventoryScreen implements Screen {
     private int selectedRow = 0;
     
     private boolean inDescriptionArea = false;
-    private static final float BASE_HEIGHT = 720f;
+    private static final float BASE_HEIGHT = 1400f;
     private float fontScale = 0.2f;
     
     // Grid constants
@@ -43,6 +43,8 @@ public class InventoryScreen implements Screen {
     private void updateFontScale() {
         float screenHeight = Gdx.graphics.getHeight();
         this.fontScale = (screenHeight / BASE_HEIGHT) * 0.02f;
+        // CLAMP fontScale to a small positive value to avoid zero or negative scales
+        this.fontScale = Math.max(this.fontScale, 0.015f);
     }
 
     @Override
@@ -52,40 +54,34 @@ public class InventoryScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Save the original font scale
+        // Always update font scale before use (handles resize/minimize on-the-fly)
+        updateFontScale();
+
         float originalScaleX = game.font.getData().scaleX;
         float originalScaleY = game.font.getData().scaleY;
-
-        // Set the dynamic font scale
         game.font.getData().setScale(fontScale);
 
-        // Handle closing inventory
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
             game.setScreen(game.currentGame);
-            // Restore font scale before returning
             game.font.getData().setScale(originalScaleX, originalScaleY);
             return;
         }
 
-        // Clear the screen
         ScreenUtils.clear(Color.BLACK);
         game.camera.update();
 
-        // Draw background
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0, 0, game.viewport.getWorldWidth(), game.viewport.getWorldHeight());
         game.batch.end();
 
-        // Draw UI
         drawUI();
-
-        // Handle input
         handleInput();
 
-        // Restore font scale after drawing everything
+        // Restore original font scale at the end
         game.font.getData().setScale(originalScaleX, originalScaleY);
     }
+
 
     private void drawUI() {
         // Draw text and items

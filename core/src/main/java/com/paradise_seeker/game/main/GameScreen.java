@@ -253,6 +253,7 @@ public class GameScreen implements Screen {
         game.batch.begin();
         float baseHeight = 720f;
         float fontScale = Gdx.graphics.getHeight() / baseHeight;
+        fontScale = Math.max(fontScale, 0.05f);
         dialogueBox.render(game.batch, fontScale);
         game.batch.end();
 
@@ -279,6 +280,7 @@ public class GameScreen implements Screen {
 
             float oldScaleX = game.font.getData().scaleX;
             float oldScaleY = game.font.getData().scaleY;
+            fontScale = Math.max(fontScale, 0.05f);
             game.font.getData().setScale(fontScale);
 
             for (int i = 0; i < options.length; i++) {

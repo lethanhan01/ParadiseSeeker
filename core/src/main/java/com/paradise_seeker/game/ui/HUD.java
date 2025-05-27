@@ -73,35 +73,42 @@ public class HUD {
         spriteBatch.draw(hpBarFrames[frameIndexhp], PADDING, screenHeight - PADDING - scaledBarHeight, scaledBarWidth, scaledBarHeight);
         spriteBatch.draw(mpBarFrames[frameIndexmp], PADDING * 0.95f, screenHeight - PADDING - scaledBarHeight * 1.8f, scaledBarWidth, scaledBarHeight);
 
-        float baseHeight = 570f;
-        float fontScale = Math.max(screenHeight / baseHeight, 0.1f); 
 
-        // -- Save old scale, set new scale (because font is shared!) --
+
+     // -- Save old scale, set new scale (because font is shared!) --
         float oldScaleX = font.getData().scaleX;
         float oldScaleY = font.getData().scaleY;
-        font.getData().setScale(fontScale);
 
-        // Show notification below MP bar
-        if (font != null && spriteBatch != null && notificationMessage != null) {
-            if (notificationTimer > 0f && !notificationMessage.isEmpty()) {
-                float notificationY = screenHeight - PADDING - (scaledBarHeight * 2.7f) - (screenHeight * 0.07f);
-                font.draw(spriteBatch, notificationMessage, PADDING, notificationY);
-                notificationTimer -= delta * 0.00005f;
-                if (notificationTimer <= 0f) {
-                    notificationMessage = "";
-                    notificationTimer = 0f;
+        // Compute safe font scale
+        float baseHeight = 570f;
+        float fontScale = Math.max(screenHeight / baseHeight, 0.05f); // never < 0.05
+
+        try {
+            font.getData().setScale(fontScale);
+
+            // Show notification below MP bar
+            if (font != null && spriteBatch != null && notificationMessage != null) {
+                if (notificationTimer > 0f && !notificationMessage.isEmpty()) {
+                    float notificationY = screenHeight - PADDING - (scaledBarHeight * 2.7f) - (screenHeight * 0.07f);
+                    font.draw(spriteBatch, notificationMessage, PADDING, notificationY);
+                    notificationTimer -= delta;
+                    if (notificationTimer <= 0f) {
+                        notificationMessage = "";
+                        notificationTimer = 0f;
+                    }
                 }
             }
-        }
 
-        // Show interact message lower than notification
-        if (player.showInteractMessage) {
-            float messageY = screenHeight - PADDING - (scaledBarHeight * 2.7f) - (screenHeight * 0.17f);
-            font.draw(spriteBatch, "> Press F to interact", PADDING, messageY);
-        }
+            // Show interact message lower than notification
+            if (player.showInteractMessage) {
+                float messageY = screenHeight - PADDING - (scaledBarHeight * 2.7f) - (screenHeight * 0.17f);
+                font.draw(spriteBatch, "> Press F to interact", PADDING, messageY);
+            }
 
-        // Restore previous font scale!
-        font.getData().setScale(oldScaleX, oldScaleY);
+        } finally {
+            // Always restore previous font scale
+            font.getData().setScale(oldScaleX, oldScaleY);
+        }
 
         // Button rendering (unchanged)
         inventoryButtonWidth = screenWidth * 0.03f * 1.5f;

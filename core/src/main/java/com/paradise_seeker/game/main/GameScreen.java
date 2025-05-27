@@ -182,7 +182,10 @@ public class GameScreen implements Screen {
 
         // Game logic - only when not in dialogue or waiting for chest
         if (!dialogueBox.isVisible() && !showDialogueOptions && !waitingForChestToOpen) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) pause();
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            	game.setScreen(new PauseScreen(game)); 
+                music.pause(); 
+            }
             if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
                 if (game.inventoryScreen == null) game.inventoryScreen = new InventoryScreen(game, player);
                 game.setScreen(game.inventoryScreen);
@@ -345,8 +348,7 @@ public class GameScreen implements Screen {
 
     @Override 
     public void pause() { 
-        game.setScreen(new PauseScreen(game)); 
-        music.pause(); 
+        
     }
     
     @Override 

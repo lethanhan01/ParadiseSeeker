@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DialogueBox {
     private Texture background;
@@ -38,33 +39,44 @@ public class DialogueBox {
         return visible;
     }
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, float fontScale) {
         if (!visible) return;
 
-        // Vẽ khung nền hộp thoại
         batch.draw(background, x, y, width, height);
-
-        // Vẽ văn bản nhiều dòng
         font.setColor(Color.WHITE);
-        GlyphLayout layout = new GlyphLayout();
+
+        // Save old scale, set new
+        float oldScaleX = font.getData().scaleX;
+        float oldScaleY = font.getData().scaleY;
+        font.getData().setScale(fontScale);
+
         float textX = x + 20;
-        float textY = y + height - 25;
+        float textY = y + height - 25 * fontScale;
         float lineHeight = font.getLineHeight();
-        float maxWidth = width - 40;
+        float maxWidth = (width - 40) / fontScale; // wrap at correct width
 
         String[] lines = wrapText(text, font, maxWidth);
+        GlyphLayout layout = new GlyphLayout();
         for (String line : lines) {
             layout.setText(font, line);
             font.draw(batch, layout, textX, textY);
-            textY -= lineHeight + 4;
+            textY -= lineHeight + 4 * fontScale;
         }
+
+        // Restore previous font scale
+        font.getData().setScale(oldScaleX, oldScaleY);
+    }
+
+    // Optionally keep this for backward compatibility (calls with default scale 1.0f)
+    public void render(SpriteBatch batch) {
+        render(batch, 1.0f);
     }
 
     private String[] wrapText(String text, BitmapFont font, float maxWidth) {
         GlyphLayout layout = new GlyphLayout();
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
-        java.util.List<String> lines = new java.util.ArrayList<>();
+        List<String> lines = new ArrayList<>();
 
         for (String word : words) {
             String testLine = line.length() == 0 ? word : line + " " + word;

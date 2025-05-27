@@ -3,13 +3,25 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/map1.tmx",
+    "activeFile": "maps/map2.tmx",
     "expandedProjectPaths": [
         ".",
         "maps"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "Hills.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Minifantasy_ForgottenPlainsTiles.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Overworld_Tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "TX Plant.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -49,30 +61,46 @@
                 "x": 633,
                 "y": 567.5
             }
+        },
+        "maps/map2.tmx": {
+            "scale": 0.41918749999999994,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 799.1650514387956,
+                "y": 800.3578350976593
+            }
+        },
+        "tf_darkdimension_sheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         }
     },
     "last.exportedFilePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/tilemaps/TileMaps",
     "last.externalTilesetPath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/tilemaps/TileMaps",
-    "last.imagePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/GameGraphics/assetpack/Pixel Art Top Down - Basic v1.1.2/Texture",
+    "last.imagePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/zipped/zipped/Sprout Lands - Sprites - Basic pack/Sprout Lands - Sprites - Basic pack/Tilesets",
     "map.height": 50,
     "map.lastUsedExportFilter": "Tiled map files (*.tmx *.xml)",
     "map.lastUsedFormat": "tmx",
     "map.width": 50,
     "openFiles": [
-        "maps/map1.tmx"
+        "maps/map2.tmx",
+        "Hills.tsx"
     ],
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "Hills.tsx",
+        "maps/map2.tmx",
+        "Overworld_Tileset.tsx",
+        "tf_darkdimension_sheet.tsx",
+        "Minifantasy_ForgottenPlainsTiles.tsx",
         "maps/map1.tmx",
-        "TX Props.tsx",
         "TX Plant.tsx",
+        "TX Props.tsx",
         "TX Tileset Wall.tsx",
         "TX Tileset Stone Ground.tsx",
         "TX Tileset Grass.tsx",
-        "TX Struct.tsx",
-        "TX Shadow.tsx",
-        "TX Shadow Plant.tsx"
+        "TX Struct.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx"

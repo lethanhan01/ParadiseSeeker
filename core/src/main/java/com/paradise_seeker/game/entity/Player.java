@@ -640,7 +640,7 @@ public class Player extends Character {
             }
         }
     }
-    public void pushBackFrom(Rectangle source) {
+    /*public void pushBackFrom(Rectangle source) {
         float dx = bounds.x - source.x;
         float dy = bounds.y - source.y;
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
@@ -652,6 +652,7 @@ public class Player extends Character {
         bounds.x += (dx / distance) * pushAmount;
         bounds.y += (dy / distance) * pushAmount;
     }
+    */
     public void addItemToInventory(Item newItem) {
         if (newItem == null || !newItem.isActive()) return;
 

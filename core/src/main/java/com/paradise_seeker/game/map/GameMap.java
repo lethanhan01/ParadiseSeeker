@@ -18,6 +18,7 @@ import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
 import com.paradise_seeker.game.entity.npc.NPC1;
 import com.paradise_seeker.game.entity.object.*;
+import com.paradise_seeker.game.ui.HUD;
 import com.paradise_seeker.game.entity.Monster;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +61,7 @@ public class GameMap {
         TILE_HEIGHT = tiledMap.getProperties().get("tileheight", Integer.class);
 
         // Load matching background PNG in world units
-        backgroundTexture = new Texture("tilemaps/TileMaps/maps/test1.png");
+        backgroundTexture = new Texture("tilemaps/TileMaps/maps/map1.png");
 
         gameObjects = new ArrayList<>();
         occupiedAreas = new ArrayList<>();
@@ -106,11 +107,11 @@ public class GameMap {
                 NPC1 npc = new NPC1(bounds.x, bounds.y);
              // Gán hội thoại cho NPC
                 npc.setDialogue(Arrays.asList(
-                    "Gipsy: ...À, ta thấy cậu đang gặp khó khăn.",
-                    "Gipsy: 1. HP potion   2. MP potion   3. ATK potion",
-                    "Jack: ##Chọn phần thưởng",
-                    "Jack: Chờ đã, cậu là ai? Tại sao lại giúp tôi?",
-                    "Gipsy: Đôi khi, câu trả lời tốt nhất là không có câu trả lời nào cả..."
+                    "Gipsy: \n...I see you need help, young adventurer.",
+                    "Gipsy: \nNow pick one item of your choice.\nAn HP potion, an MP potion, and an ATK potion.",
+                    "Jack: \nOne potion? This better be useful...",
+                    "Jack: \nBut wait, who are you? Why are you even here?",
+                    "Gipsy: \nSometimes, the best answer is that there is no \nanswer. Just pick one item and be on your way."
                 ));
 
                 npcList.add(npc);    
@@ -119,6 +120,16 @@ public class GameMap {
                 occupiedAreas.add(new Rectangle(bounds)); // Đánh dấu vùng đã chiếm
             }
         }
+    }
+ // Drops a generic item (of type Item) on the map at the given position
+    public void dropItem(Item item) {
+        if (item instanceof HPitem) {
+            hpItems.add((HPitem) item);
+        } else if (item instanceof MPitem) {
+            mpItems.add((MPitem) item);
+        } else if (item instanceof ATKitem) {
+            atkItems.add((ATKitem) item);
+        } // Extend for other item types as needed
     }
 
     private void generateObjects() {
@@ -271,14 +282,23 @@ public class GameMap {
         }
     }
 
-    public void checkCollisions(Player player) {
+    public void checkCollisions(Player player, HUD hud) {
         CollisionSystem.checkCollisions(player, collidables);
-        for (HPitem item : hpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
-        for (MPitem item : mpItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
-        for (ATKitem item : atkItems) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
-        for (Skill1item item : skill1Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
-        for (Skill2item item : skill2Items) if (item.isActive() && item.getBounds().overlaps(player.getBounds())) item.onCollision(player);
+
+        List<List<? extends Item>> allItemLists = Arrays.asList(
+            hpItems, mpItems, atkItems, skill1Items, skill2Items
+        );
+
+        for (List<? extends Item> itemList : allItemLists) {
+            for (Item item : itemList) {
+                if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
+                    item.onCollision(player);
+                    if (hud != null) hud.showNotification("> Picked up: " + item.getName());
+                }
+            }
+        }
     }
+
     public boolean isBlocked(Rectangle nextBounds) {
         for (Collidable c : collidables) {
             if (c.getBounds().overlaps(nextBounds)) {

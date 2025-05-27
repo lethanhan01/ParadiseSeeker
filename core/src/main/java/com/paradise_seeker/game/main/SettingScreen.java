@@ -137,7 +137,7 @@ public class SettingScreen implements Screen {
             if (selectedIndex >= menuItems.length) selectedIndex = 1;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.A)|| Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             if (selectedIndex == 2) {
                 musicVolume = Math.max(0f, musicVolume - 0.1f);
                 if (game.currentGame != null)
@@ -149,7 +149,7 @@ public class SettingScreen implements Screen {
             }
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.D)|| Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
             if (selectedIndex == 2) {
                 musicVolume = Math.min(1f, musicVolume + 0.1f);
                 if (game.currentGame != null)
@@ -163,21 +163,21 @@ public class SettingScreen implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             switch (selectedIndex) {
-                case 1: toggleFullscreen(); break;
-                case 2: MusicVol(); break;
-                case 3: SEVol(); break;
-                case 4:
+                case 1: toggleFullscreen(); break; 								//fullscreen
+                case 2: break; 													// Music
+                case 3: break; 													// SE
+                case 4: 														// Control
                     if (game.controlScreen == null)
                         game.controlScreen = new ControlScreen(game);
                     game.setScreen(game.controlScreen);
                     break;
-                case 5:
+                case 5:															//Back to the game
                     if (game.currentGame != null)
                         game.setScreen(game.currentGame);
                     else
                         game.setScreen(game.mainMenu);
                     break;
-                case 6: game.setScreen(game.mainMenu); break;
+                case 6: game.setScreen(game.mainMenu); break;					// Back to main menu
             }
         }
     }
@@ -189,15 +189,6 @@ public class SettingScreen implements Screen {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         }
     }
-
-    private void MusicVol() {
-        // Optional: Lưu lại giá trị musicVolume hoặc play preview
-    }
-
-    private void SEVol() {
-        // Optional: Lưu lại giá trị seVolume hoặc play SE sound preview
-    }
-
     @Override public void resize(int width, int height) {
         game.viewport.update(width, height, true);
     }

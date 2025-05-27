@@ -91,7 +91,7 @@ public class HUD {
                 if (notificationTimer > 0f && !notificationMessage.isEmpty()) {
                     float notificationY = screenHeight - PADDING - (scaledBarHeight * 2.7f) - (screenHeight * 0.07f);
                     font.draw(spriteBatch, notificationMessage, PADDING, notificationY);
-                    notificationTimer -= delta;
+                    notificationTimer -= delta*0.0001f; // Adjust delta multiplier for desired speed
                     if (notificationTimer <= 0f) {
                         notificationMessage = "";
                         notificationTimer = 0f;

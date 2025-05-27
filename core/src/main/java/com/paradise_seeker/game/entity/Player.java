@@ -247,6 +247,14 @@ public class Player extends Character {
 
     }
 
+    public boolean hasItem(Item item) {
+        for (Item invItem : inventory) {
+            if (invItem.isStackable() && invItem.getName().equals(item.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     // Xử lý tất cả hành vi người chơi dựa trên phím bấm

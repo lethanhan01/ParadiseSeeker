@@ -62,12 +62,12 @@ public class ControlScreen implements Screen {
 			font.draw(game.batch, right, xRight, y);
 		}
 		font.setColor(Color.RED);
-		layout.setText(font, "CONTROLS");
+		layout.setText(font, "- Controls -");
         float x = (viewportWidth - layout.width) / 2f;
 		font.draw(game.batch, layout, x, viewportHeight);
 		// Hint để quay lại
 		font.setColor(Color.YELLOW);
-		font.draw(game.batch, "Press ESCAPE to return", xLeft, 0.5f);
+		font.draw(game.batch, "[ESC] Return", xLeft, 0.5f);
 
 		game.batch.end();
 

@@ -75,8 +75,8 @@ public class GameMap {
 
         //generateObjects();
         generateMonsters(player);
-        generateRandomItems(5, 5);
-        generateNPCs(); // ✅ Thêm dòng này
+        generateRandomItems(15, 15);
+        generateNPCs(); // 
 
         portal = new Portal(15f, 25f);
         // --- Load all "solid" rectangles, scale to world units, no Y flip ---
@@ -292,11 +292,32 @@ public class GameMap {
         for (List<? extends Item> itemList : allItemLists) {
             for (Item item : itemList) {
                 if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
-                    item.onCollision(player);
-                    if (hud != null) hud.showNotification("> Picked up: " + item.getName());
+                    boolean canStack = false;
+                    boolean hasStackWithSpace = false;
+
+                    if (item.isStackable()) {
+                        for (Item invItem : player.inventory) {
+                            if (invItem.canStackWith(item) && invItem.getCount() < invItem.getMaxStackSize()) {
+                                hasStackWithSpace = true;
+                                break;
+                            }
+                        }
+                        canStack = hasStackWithSpace;
+                    }
+
+                    boolean isFull = player.inventory.size() >= 9;
+
+                    // Only show full if no room and cannot stack anymore
+                    if (!canStack && isFull) {
+                        if (hud != null) hud.showNotification("> Inventory is full!");
+                    } else {
+                        item.onCollision(player);
+                        if (hud != null) hud.showNotification("> Picked up: " + item.getName());
+                    }
                 }
             }
         }
+
     }
 
     public boolean isBlocked(Rectangle nextBounds) {

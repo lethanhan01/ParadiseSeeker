@@ -33,7 +33,7 @@ public class Player extends Character {
     private List<Smoke> smokes = new ArrayList<>();
     private Animation<TextureRegion> smokeAnim;
     public boolean showInteractMessage = false;
-    
+
 	private float speedMultiplier = 1f;         // Hệ số tốc độ khi đi qua object
 	private Vector2 lastPosition = new Vector2(); // Ghi nhớ vị trí trước khi di chuyển
 
@@ -45,7 +45,7 @@ public class Player extends Character {
  // Thêm biến để theo dõi NPC gần nhất
     private NPC1 nearestNPC = null;
 
-    
+
     public ArrayList<Item> inventory = new ArrayList<>(); // Kho đồ của người chơi
     public int inventorySize = 18; // Kích thước kho đồ
 
@@ -185,12 +185,12 @@ public class Player extends Character {
 
     public void regenMana(float deltaTime) {
         if (mp < MAX_MP) {
-            mp += 45 * deltaTime; // Regenerate 45 mana per deltaTime
+            mp += 120 * deltaTime; // Regenerate 45 mana per deltaTime
         }
         if (mp > MAX_MP) {
             mp = MAX_MP; // Cap mana at MAX_MP
         }
-        //System.out.println("Mana: " + mp + ", DeltaTime: " + deltaTime); // Debug log
+       // System.out.println("Mana: " + mp + ", DeltaTime: " + deltaTime); // Debug log
     }
 
 
@@ -445,7 +445,7 @@ public class Player extends Character {
             TextureRegion frame = smokeAnim.getKeyFrame(s.stateTime, false);
             batch.draw(frame, s.x, s.y, bounds.width, bounds.height);
         }
-        
+
 
 
     }

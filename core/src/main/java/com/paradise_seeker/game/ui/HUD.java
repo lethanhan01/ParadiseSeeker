@@ -57,6 +57,7 @@ public class HUD {
     }
 
     public void render(float delta) {
+    	
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
         float scaledBarWidth = screenWidth * 0.45f;
@@ -81,13 +82,15 @@ public class HUD {
         font.getData().setScale(fontScale);
 
         // Show notification below MP bar
-        if (notificationTimer > 0f && !notificationMessage.isEmpty()) {
-            float notificationY = screenHeight - PADDING - (scaledBarHeight * 2.7f) - (screenHeight * 0.07f);
-            font.draw(spriteBatch, notificationMessage, PADDING, notificationY);
-            notificationTimer -= delta*0.00005f;
-            if (notificationTimer <= 0f) {
-                notificationMessage = "";
-                notificationTimer = 0f;
+        if (font != null && spriteBatch != null && notificationMessage != null) {
+            if (notificationTimer > 0f && !notificationMessage.isEmpty()) {
+                float notificationY = screenHeight - PADDING - (scaledBarHeight * 2.7f) - (screenHeight * 0.07f);
+                font.draw(spriteBatch, notificationMessage, PADDING, notificationY);
+                notificationTimer -= delta * 0.00005f;
+                if (notificationTimer <= 0f) {
+                    notificationMessage = "";
+                    notificationTimer = 0f;
+                }
             }
         }
 

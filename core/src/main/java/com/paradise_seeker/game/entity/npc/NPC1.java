@@ -20,6 +20,7 @@ public class NPC1 implements Collidable {
     private Animation<TextureRegion> chestOpenedAnimation;
     private Animation<TextureRegion> currentAnimation;
     private TextureRegion currentFrame;
+    
 
     private float stateTime;
 
@@ -30,7 +31,15 @@ public class NPC1 implements Collidable {
     private boolean isChestOpened = false;
     private boolean isOpeningChest = false;
     private boolean isTalking = false;
+    private boolean hasTalked = false;
 
+    public boolean hasTalked() {
+        return hasTalked;
+    }
+
+    public void setHasTalked(boolean value) {
+        this.hasTalked = value;
+    }
     public NPC1(float x, float y) {
         loadIdleAnimation();
         loadTalkAnimation();
@@ -40,7 +49,7 @@ public class NPC1 implements Collidable {
         currentAnimation = idleAnimation;
         currentFrame = currentAnimation.getKeyFrame(0f);
         stateTime = 0f;
-        bounds = new Rectangle(x, y, spriteWidth, spriteHeight-1f);
+        bounds = new Rectangle(x + 0.2f, y + 0.2f, 2.6f, 2.6f);
     }
 
     private void loadIdleAnimation() {
@@ -65,6 +74,9 @@ public class NPC1 implements Collidable {
         }
         talkAnimation = new Animation<>(0.2f, frames.toArray(new TextureRegion[0]));
         talkAnimation.setPlayMode(Animation.PlayMode.LOOP);
+    }
+    public boolean isChestOpened() {
+        return isChestOpened;
     }
 
     private void loadOpenChestAnimation() {
@@ -125,6 +137,7 @@ public class NPC1 implements Collidable {
         currentAnimation = openChestAnimation;
         stateTime = 0f;
         isOpeningChest = true;
+        isChestOpened = true; // ✅ thêm dòng này
     }
 
 
@@ -135,11 +148,41 @@ public class NPC1 implements Collidable {
     public Rectangle getBounds() {
         return bounds;
     }
+    public boolean shouldShowOptions() {
+        return getCurrentLineIndex() == 2; // Câu số 3
+    }
 
 	@Override
 	public void onCollision(Player player) {
 		// TODO Auto-generated method stub
 		
 	}
-    
+	// ======================= HỘP THOẠI =========================
+	private List<String> dialogueLines = new ArrayList<>();
+	private int currentLineIndex = 0;
+
+	public void setDialogue(List<String> lines) {
+	    this.dialogueLines = lines;
+	    this.currentLineIndex = 0;
+	}
+
+	public String getCurrentLine() {
+	    if (dialogueLines.isEmpty()) return "";
+	    return dialogueLines.get(currentLineIndex);
+	}
+
+	public boolean hasNextLine() {
+	    return currentLineIndex < dialogueLines.size() - 1;
+	}
+
+	public void nextLine() {
+	    if (hasNextLine()) currentLineIndex++;
+	}
+
+	public void resetDialogue() {
+	    currentLineIndex = 0;
+	}
+	public int getCurrentLineIndex() {
+	    return currentLineIndex;
+	}
 }

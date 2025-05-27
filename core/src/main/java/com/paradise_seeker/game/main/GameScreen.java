@@ -92,7 +92,7 @@ public class GameScreen implements Screen {
 
         music = Gdx.audio.newMusic(Gdx.files.internal("music/map2.mp3"));
         music.setLooping(true);
-        music.setVolume(0.5f);
+        music.setVolume(game.settingMenu.setVolume);
     }
 
     @Override

@@ -24,7 +24,6 @@ public class Skill1item extends Item {
     
     public void use(Player player) {
     	player.playerSkill1.setDamageMultiplier(this.damageMultiplier); // Nhân 2 damage skill1
-    	count--;
 	}
 
 

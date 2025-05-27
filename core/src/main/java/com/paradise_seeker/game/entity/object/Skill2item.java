@@ -24,7 +24,6 @@ public class Skill2item extends Item  {
 
     public void use(Player player) {
 		player.playerSkill2.setDamageMultiplier(this.damageMultiplier); // Nhân 2 damage skill2
-		count--;
 	}
     public boolean canStackWith(Item other) {
 		if (!(other instanceof Skill2item)) return false;

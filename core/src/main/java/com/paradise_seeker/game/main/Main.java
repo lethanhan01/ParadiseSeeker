@@ -22,6 +22,7 @@ public class Main extends Game {
     public MainMenuScreen mainMenu = null;
     public SettingScreen settingMenu = null;
     public InventoryScreen inventoryScreen = null;
+    public ControlScreen controlScreen = null;
 
     @Override
     public void create() {

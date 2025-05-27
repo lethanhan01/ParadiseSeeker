@@ -23,7 +23,6 @@ public class HPitem extends Item {
     }
     public void use(Player player) {
         player.hp = Math.min(Player.MAX_HP, player.hp + healAmount);
-        count--;
     }
     public boolean canStackWith(Item other) {
         if (!(other instanceof HPitem)) return false;

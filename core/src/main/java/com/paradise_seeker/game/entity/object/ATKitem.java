@@ -23,7 +23,7 @@ public class ATKitem extends Item {
     }
     public void use(Player player) {
 		player.atk += atkBoost;
-		count--;
+
 	}
 
 	public boolean canStackWith(Item other) {

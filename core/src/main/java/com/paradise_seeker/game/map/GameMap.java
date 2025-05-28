@@ -75,7 +75,7 @@ public class GameMap {
 
         //generateObjects();
         generateMonsters(player);
-        generateRandomItems(15, 15);
+        generateRandomItems(5, 5);
         generateNPCs(); // 
 
         portal = new Portal(15f, 25f);

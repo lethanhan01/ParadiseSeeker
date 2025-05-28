@@ -185,7 +185,7 @@ public class Player extends Character {
 
     public void regenMana(float deltaTime) {
         if (mp < MAX_MP) {
-            mp += 120 * deltaTime; // Regenerate 45 mana per deltaTime
+            mp += 45 * deltaTime; // Regenerate 45 mana per deltaTime
         }
         if (mp > MAX_MP) {
             mp = MAX_MP; // Cap mana at MAX_MP

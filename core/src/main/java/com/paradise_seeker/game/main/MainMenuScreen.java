@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.audio.Music;
 
 public class MainMenuScreen implements Screen {
 
@@ -20,10 +21,14 @@ public class MainMenuScreen implements Screen {
     Texture characterIcon;
     Texture leftIcon;
     Texture rightIcon;
+ 
+    Music menuMusic;
     public MainMenuScreen(final Main game) {
         this.game = game;
         touchPos = new Vector2();
-
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("music/menutheme.mp3"));
+        menuMusic.setLooping(true);
+        menuMusic.setVolume(game.settingMenu.setVolume);
         // Use your title PNG here
         titleTexture = new Texture(Gdx.files.internal("menu/start_menu/main_menu/psk2.png"));
         titleTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -50,7 +55,9 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+        menuMusic.play();
+    }
 
     @Override
     public void render(float delta) {
@@ -182,7 +189,11 @@ public class MainMenuScreen implements Screen {
 
     @Override public void pause() {}
     @Override public void resume() {}
-    @Override public void hide() {}
+    @Override
+    public void hide() {
+        // Stop the music when this screen is no longer shown
+        menuMusic.stop();
+    }
 
     @Override
     public void dispose() {
@@ -191,6 +202,7 @@ public class MainMenuScreen implements Screen {
         rightIcon.dispose();
         for (Texture t : buttonTextures) t.dispose();
         for (Texture t : selectedButtonTextures) t.dispose();
+        menuMusic.dispose();
     }
 
 }

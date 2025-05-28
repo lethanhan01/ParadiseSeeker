@@ -3,12 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "maps/map2.tmx",
     "expandedProjectPaths": [
-        "maps",
         "map2-tilesets",
-        ".",
-        "map5-tilesets"
+        "map3-tilesets",
+        "maps",
+        "map5-tilesets",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -125,11 +126,11 @@
             "scaleInEditor": 1
         },
         "map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 0.75,
             "scaleInEditor": 1
         },
         "map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 0.75,
             "scaleInEditor": 1
         },
         "map2-tilesets/Minifantasy_ForgottenPlainsTilesShadows.tsx": {
@@ -169,23 +170,31 @@
             "scaleInEditor": 1
         },
         "map5-tilesets/throneroom1.tsx": {
-            "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInDock": 0.75,
+            "scaleInEditor": 0.5
         },
         "maps/map1.tmx": {
             "scale": 1,
             "selectedLayer": 10,
             "viewCenter": {
-                "x": 492,
-                "y": 250.5
+                "x": 480,
+                "y": 480.5
             }
         },
         "maps/map2.tmx": {
-            "scale": 0.41918749999999994,
-            "selectedLayer": 1,
+            "scale": 0.5,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 821.8279409572091,
-                "y": 843.2980468167589
+                "x": 808,
+                "y": 897
+            }
+        },
+        "maps/map5.tmx": {
+            "scale": 0.4666875,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 799.2500334806482,
+                "y": 800.3214142225793
             }
         },
         "tf_darkdimension_sheet.tsx": {
@@ -198,29 +207,32 @@
         }
     },
     "last.exportedFilePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/tilemaps/TileMaps",
-    "last.externalTilesetPath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/tilemaps/TileMaps/map2-tilesets",
+    "last.externalTilesetPath": "C:/Users/An/Documents/Project/assets/tilemaps/TileMaps/map2-tilesets",
     "last.imagePath": "C:/Users/NAME/Documents/GitHub/ParadiseSeeker/assets/GameGraphics/assetpack",
     "map.height": 50,
     "map.lastUsedExportFilter": "Tiled map files (*.tmx *.xml)",
     "map.lastUsedFormat": "tmx",
     "map.width": 50,
     "openFiles": [
+        "maps/map5.tmx",
+        "maps/map2.tmx",
+        "maps/map1.tmx"
     ],
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "maps/map2.tmx",
+        "maps/map5.tmx",
         "maps/map1.tmx",
+        "maps/map2.tmx",
         "map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx",
+        "map2-tilesets/Minifantasy_ForgottenPlainsTilesShadows.tsx",
         "map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx",
         "map5-tilesets/throneroom1.tsx",
+        "map3-tilesets/0x72_DungeonTilesetII_v1.7.tsx",
         "map4-tilesets/tf_darkdimension_sheet.tsx",
         "map4-tilesets/dd_waterfall_sheet.tsx",
         "map3-tilesets/atlas_walls_low-16x16.tsx",
-        "map3-tilesets/atlas_walls_high-16x32.tsx",
-        "map3-tilesets/atlas_floor-16x16.tsx",
-        "map3-tilesets/atlas_floor.tsx",
-        "map3-tilesets/16x16 dungeon ii wall reconfig v04 spritesheet.tsx"
+        "map3-tilesets/atlas_walls_high-16x32.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx"

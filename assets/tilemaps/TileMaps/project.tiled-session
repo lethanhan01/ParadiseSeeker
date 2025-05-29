@@ -3,13 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/map2.tmx",
+    "activeFile": "maps/map4.tmx",
     "expandedProjectPaths": [
         "map2-tilesets",
         "map3-tilesets",
-        "maps",
-        "map5-tilesets",
-        "."
+        ".",
+        "map4-tilesets",
+        "maps"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -182,11 +182,19 @@
             }
         },
         "maps/map2.tmx": {
-            "scale": 0.5,
+            "scale": 0.33,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 808,
-                "y": 897
+                "x": 978.7878787878788,
+                "y": 913.6363636363635
+            }
+        },
+        "maps/map4.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 792,
+                "y": 743
             }
         },
         "maps/map5.tmx": {
@@ -214,16 +222,16 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 50,
     "openFiles": [
-        "maps/map5.tmx",
-        "maps/map2.tmx",
-        "maps/map1.tmx"
+        "maps/map4.tmx",
+        "maps/map2.tmx"
     ],
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "maps/map5.tmx",
-        "maps/map1.tmx",
         "maps/map2.tmx",
+        "maps/map4.tmx",
+        "maps/map1.tmx",
+        "maps/map5.tmx",
         "map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx",
         "map2-tilesets/Minifantasy_ForgottenPlainsTilesShadows.tsx",
         "map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx",
@@ -231,8 +239,7 @@
         "map3-tilesets/0x72_DungeonTilesetII_v1.7.tsx",
         "map4-tilesets/tf_darkdimension_sheet.tsx",
         "map4-tilesets/dd_waterfall_sheet.tsx",
-        "map3-tilesets/atlas_walls_low-16x16.tsx",
-        "map3-tilesets/atlas_walls_high-16x32.tsx"
+        "map3-tilesets/atlas_walls_low-16x16.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx"

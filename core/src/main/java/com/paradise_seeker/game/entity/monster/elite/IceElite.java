@@ -21,6 +21,12 @@ public class IceElite extends Monster {
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2.8f;
+        updateBounds();
+
+    }
+    @Override
+    protected float getScaleMultiplier() {
+        return 5f;
     }
 
     @Override

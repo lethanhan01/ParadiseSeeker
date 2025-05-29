@@ -41,7 +41,10 @@ public class GameMap {
     public List<Collidable> collidables;
     private List<GameObject> gameObjects;
     private List<Rectangle> occupiedAreas;
-
+    protected String mapName = "Forgotten Ruins";
+    public String getMapName() {
+        return mapName;
+    }
     private List<Monster> monsters;
     private List<HPitem> hpItems = new ArrayList<>();
     private List<MPitem> mpItems = new ArrayList<>();
@@ -132,25 +135,7 @@ public class GameMap {
         } // Extend for other item types as needed
     }
 
-    private void generateObjects() {
-        Random random = new Random();
-        for (int i = 0; i < 20; i++) {
-            Rectangle bounds = generateNonOverlappingBounds(2, 2);
-            if (bounds != null) {
-                GameObject obj;
-                switch (i % 5) {
-                    case 0: obj = new Tree(bounds.x, bounds.y); break;
-                    case 1: obj = new Forest(bounds.x, bounds.y); break;
-                    case 2: obj = new WaterLake(bounds.x, bounds.y); break;
-                    case 3: obj = new LavaLake(bounds.x, bounds.y); break;
-                    default: obj = new RockMountain(bounds.x, bounds.y); break;
-                }
-                gameObjects.add(obj);
-                occupiedAreas.add(obj.getBounds());
-                collidables.add(obj);
-            }
-        }
-    }
+    
 
     public List<NPC1> getNPCs() {
         return npcList; // npcList là danh sách NPC bạn đã lưu trong map
@@ -305,7 +290,7 @@ public class GameMap {
                         canStack = hasStackWithSpace;
                     }
 
-                    boolean isFull = player.inventory.size() >= 9;
+                    boolean isFull = player.inventory.size() >= 18;
 
                     // Only show full if no room and cannot stack anymore
                     if (!canStack && isFull) {

@@ -20,7 +20,12 @@ public class YellowBat extends Monster {
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2f; // Nhỏ hơn Boss
+        updateBounds();
 
+    }
+    @Override
+    protected float getScaleMultiplier() {
+        return 2f;
     }
 
     @Override

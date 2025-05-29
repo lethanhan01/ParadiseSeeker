@@ -28,7 +28,19 @@ public class GameMapManager {
         currentMap = maps.get(0);
         player.setGameMap(currentMap); // Gán map đầu tiên cho player
     }
+    
+    // Danh sách các đường dẫn nhạc tương ứng với từng map
+    private final String[] mapMusicPaths = {
+            "music/map1.mp3", // for GameMap
+            "music/map2.mp3", // for GameMap2
+            "music/map5.mp3"  // for GameMap5 
+        };
 
+    public String getCurrentMapMusic() {
+        return mapMusicPaths[currentMapIndex];
+        }
+    
+        
     public GameMap getCurrentMap() {
         return currentMap;
     }

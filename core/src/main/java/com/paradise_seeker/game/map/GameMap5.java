@@ -10,7 +10,7 @@ public class GameMap5 extends GameMap {
 
     public GameMap5(Player player) {
         super(player);
-
+        this.mapName = "Paradise King's Throne Room";
         // Load TiledMap cho GameMap2
         TiledMap tiledMap = new TmxMapLoader().load("tilemaps/TileMaps/maps/map5.tmx");
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class);
@@ -22,6 +22,6 @@ public class GameMap5 extends GameMap {
         loadCollidables(tiledMap);
 
         // Đặt portal cho map2
-        portal = new Portal(20f, 10f);
+        portal = new Portal(23.5f, 42f);
     }
 }

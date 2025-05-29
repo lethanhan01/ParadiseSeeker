@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/map3.tmx",
+    "activeFile": "maps/map4.tmx",
     "expandedProjectPaths": [
-        "map3-tilesets",
+        "maps",
         ".",
-        "maps"
+        "map3-tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -176,14 +176,14 @@
             "selectedLayer": 10,
             "viewCenter": {
                 "x": 424,
-                "y": 480
+                "y": 480.5
             }
         },
         "maps/map2.tmx": {
             "scale": 0.5,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 807,
+                "x": 806,
                 "y": 829
             }
         },
@@ -191,16 +191,24 @@
             "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 893,
+                "x": 894,
                 "y": 811
+            }
+        },
+        "maps/map4.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 750,
+                "y": 1053
             }
         },
         "maps/map5.tmx": {
             "scale": 0.4666875,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 798.178652738717,
-                "y": 800.3214142225794
+                "x": 797.1072719967859,
+                "y": 800.3214142225793
             }
         },
         "tf_darkdimension_sheet.tsx": {
@@ -220,23 +228,23 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 50,
     "openFiles": [
-        "maps/map3.tmx"
+        "maps/map4.tmx"
     ],
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "maps/map3.tmx",
-        "maps/map5.tmx",
+        "maps/map4.tmx",
         "maps/map2.tmx",
         "maps/map1.tmx",
+        "maps/map5.tmx",
+        "maps/map3.tmx",
         "map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx",
         "map2-tilesets/Minifantasy_ForgottenPlainsTilesShadows.tsx",
         "map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx",
         "map5-tilesets/throneroom1.tsx",
         "map3-tilesets/0x72_DungeonTilesetII_v1.7.tsx",
         "map4-tilesets/tf_darkdimension_sheet.tsx",
-        "map4-tilesets/dd_waterfall_sheet.tsx",
-        "map3-tilesets/atlas_walls_low-16x16.tsx"
+        "map4-tilesets/dd_waterfall_sheet.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx"

@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.ArrayList;
 import java.util.List;
 import com.paradise_seeker.game.main.GameMapManager;
+import com.paradise_seeker.game.map.GameMap2;
 
 public class GameScreen implements Screen {
     final Main game;
@@ -265,29 +266,94 @@ public class GameScreen implements Screen {
             game.font.getData().setScale(oldScaleX, oldScaleY);
             hud.spriteBatch.end();
         }
+     // Check portals
+        if (mapManager.getCurrentMap() instanceof GameMap2) {
+            GameMap2 currentMap2 = (GameMap2) mapManager.getCurrentMap();
 
-        if (mapManager.getCurrentMap().portal != null &&
-        	    mapManager.getCurrentMap().portal.getBounds().overlaps(player.getBounds())) {
+            // Check startPortal (quay về map 1)
+            if (currentMap2.startPortal != null && currentMap2.startPortal.getBounds().overlaps(player.getBounds())) {
+                currentMap2.startPortal.onCollision(player);
+                mapManager.switchToPreviousMap();
+                player.setGameMap(mapManager.getCurrentMap());
 
-        	    mapManager.getCurrentMap().portal.onCollision(player);
-        	    mapManager.switchToNextMap();
-        	    player.setGameMap(mapManager.getCurrentMap());
-        	    player.bounds.x = mapManager.getCurrentMap().getMapWidth() / 2f;
-        	    player.bounds.y = mapManager.getCurrentMap().getMapHeight() / 2f;
+                // Từ Map2 → Map1: Player ở (14f, 25f)
+                player.bounds.x = 13f;
+                player.bounds.y = 25f;
 
-        	    // MUSIC SWITCH LOGIC
-        	    if (music != null) {
-        	        music.stop();
-        	        music.dispose();
-        	    }
-        	    String musicPath = mapManager.getCurrentMapMusic();
-        	    music = Gdx.audio.newMusic(Gdx.files.internal(musicPath));
-        	    music.setLooping(true);
-        	    music.setVolume(game.settingMenu.setVolume); // or your global volume
-        	    music.play();
-        	    hud.showMapNotification(mapManager.getCurrentMap().getMapName());
+                // MUSIC SWITCH LOGIC
+                if (music != null) {
+                    music.stop();
+                    music.dispose();
+                }
+                String musicPath = mapManager.getCurrentMapMusic();
+                music = Gdx.audio.newMusic(Gdx.files.internal(musicPath));
+                music.setLooping(true);
+                music.setVolume(game.settingMenu.setVolume);
+                music.play();
+                hud.showMapNotification(mapManager.getCurrentMap().getMapName());
+            }
 
-        	}
+            // Check portal (qua map 3)
+            if (currentMap2.portal != null && currentMap2.portal.getBounds().overlaps(player.getBounds())) {
+                currentMap2.portal.onCollision(player);
+                mapManager.switchToNextMap();
+                player.setGameMap(mapManager.getCurrentMap());
+
+                if (mapManager.getCurrentMap().getMapName().equals("Paradise King's Throne Room")) {
+                    // Từ Map2 → Map3: Player ở giữa map
+                    float centerX = mapManager.getCurrentMap().MAP_WIDTH / 2f;
+                    float centerY = mapManager.getCurrentMap().MAP_HEIGHT / 2f;
+                    player.bounds.x = centerX;
+                    player.bounds.y = centerY;
+                }
+
+                // MUSIC SWITCH LOGIC
+                if (music != null) {
+                    music.stop();
+                    music.dispose();
+                }
+                String musicPath = mapManager.getCurrentMapMusic();
+                music = Gdx.audio.newMusic(Gdx.files.internal(musicPath));
+                music.setLooping(true);
+                music.setVolume(game.settingMenu.setVolume);
+                music.play();
+                hud.showMapNotification(mapManager.getCurrentMap().getMapName());
+            }
+
+        } else {
+            // Đây là phần cho map1 và map3
+            if (mapManager.getCurrentMap().portal != null && mapManager.getCurrentMap().portal.getBounds().overlaps(player.getBounds())) {
+                mapManager.getCurrentMap().portal.onCollision(player);
+                mapManager.switchToNextMap();
+                player.setGameMap(mapManager.getCurrentMap());
+
+                if (mapManager.getCurrentMap() instanceof GameMap2) {
+                    // Từ Map1 → Map2: Player ở (5f, 10f)
+                    player.bounds.x = 5f;
+                    player.bounds.y = 10f;
+                } else if (mapManager.getCurrentMap().getMapName().equals("Paradise King's Throne Room")) {
+                    // Từ Map3 → Map2: Player ở (43f, 31f)
+                    player.bounds.x = 40f;
+                    player.bounds.y = 31f;
+                } else {
+                    player.bounds.x = 5f;
+                    player.bounds.y = 5f;
+                }
+
+                // MUSIC SWITCH LOGIC
+                if (music != null) {
+                    music.stop();
+                    music.dispose();
+                }
+                String musicPath = mapManager.getCurrentMapMusic();
+                music = Gdx.audio.newMusic(Gdx.files.internal(musicPath));
+                music.setLooping(true);
+                music.setVolume(game.settingMenu.setVolume);
+                music.play();
+                hud.showMapNotification(mapManager.getCurrentMap().getMapName());
+            }
+        }
+
 
     }
 

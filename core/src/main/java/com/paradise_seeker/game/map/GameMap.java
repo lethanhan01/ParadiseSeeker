@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Random;
 
 public class GameMap {
-    protected int MAP_WIDTH;      // In world units (tiles)
-    protected int MAP_HEIGHT;     // In world units (tiles)
+    public int MAP_WIDTH;      // In world units (tiles)
+    public int MAP_HEIGHT;     // In world units (tiles)
     protected int TILE_WIDTH;     // In pixels
     protected int TILE_HEIGHT;    // In pixels
     public float getMapWidth() {
@@ -410,5 +410,9 @@ public class GameMap {
             }
         }
     }
+    public Portal getStartPortal() {
+        return null;
+    }
+
 
 }

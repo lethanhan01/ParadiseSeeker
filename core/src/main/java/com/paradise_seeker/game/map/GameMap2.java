@@ -3,10 +3,12 @@ package com.paradise_seeker.game.map;
 import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.entity.object.Portal;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 public class GameMap2 extends GameMap {
+	public Portal startPortal;  // Biến thành viên, dùng chung trong class
 
     public GameMap2(Player player) {
         super(player);
@@ -22,6 +24,20 @@ public class GameMap2 extends GameMap {
         loadCollidables(tiledMap);
 
         // Đặt portal cho map2
+        startPortal = new Portal(2f, 10f);
         portal = new Portal(44f, 31f);
+
     }
+    @Override
+    public Portal getStartPortal() {
+        return startPortal;
+    }
+    @Override
+    public void render(SpriteBatch batch) {
+        super.render(batch); // Vẽ map và các portal mặc định
+        if (startPortal != null) {
+            startPortal.render(batch); // Thêm vẽ startPortal
+        }
+    }
+
 }

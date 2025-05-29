@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Random;
 
 public class GameMap {
-    private int MAP_WIDTH;      // In world units (tiles)
-    private int MAP_HEIGHT;     // In world units (tiles)
-    private int TILE_WIDTH;     // In pixels
-    private int TILE_HEIGHT;    // In pixels
+    protected int MAP_WIDTH;      // In world units (tiles)
+    protected int MAP_HEIGHT;     // In world units (tiles)
+    protected int TILE_WIDTH;     // In pixels
+    protected int TILE_HEIGHT;    // In pixels
     public float getMapWidth() {
         return MAP_WIDTH;
     }
@@ -37,8 +37,8 @@ public class GameMap {
         return MAP_HEIGHT;
     }
     public Portal portal;
-    private Texture backgroundTexture;
-    private List<Collidable> collidables;
+    protected Texture backgroundTexture;
+    public List<Collidable> collidables;
     private List<GameObject> gameObjects;
     private List<Rectangle> occupiedAreas;
 
@@ -406,4 +406,24 @@ public class GameMap {
     }
 
     public List<Monster> getMonsters() { return monsters; }
+    protected void loadCollidables(TiledMap tiledMap) {
+        collidables.clear(); // Xóa collidables cũ trước khi load map mới
+        for (MapLayer layer : tiledMap.getLayers()) {
+            for (MapObject obj : layer.getObjects()) {
+                if (obj instanceof RectangleMapObject) {
+                    Object solidProp = obj.getProperties().get("solid");
+                    if (solidProp instanceof Boolean && ((Boolean) solidProp)) {
+                        Rectangle rect = ((RectangleMapObject) obj).getRectangle();
+                        float worldX = rect.x / (float) TILE_WIDTH;
+                        float worldY = rect.y / (float) TILE_HEIGHT;
+                        float worldWidth = rect.width / (float) TILE_WIDTH;
+                        float worldHeight = rect.height / (float) TILE_HEIGHT;
+                        Rectangle fixedRect = new Rectangle(worldX, worldY, worldWidth, worldHeight);
+                        collidables.add(new SolidObject(fixedRect));
+                    }
+                }
+            }
+        }
+    }
+
 }

@@ -5,9 +5,12 @@
     },
     "activeFile": "maps/map3.tmx",
     "expandedProjectPaths": [
-        "maps",
+        "map4-tilesets",
+        ".",
         "map3-tilesets",
-        "."
+        "maps"
+
+
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -18,6 +21,79 @@
         "16x16 dungeon ii wall reconfig v04 spritesheet.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilemaps/Beginning Fields.tmx": {
+            "scale": 1.1667187499999998,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 319.7000133922594,
+                "y": 320.1285656890318
+            }
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilemaps/Rules/RockSlopes_Rules.tmx": {
+            "scale": 0.5622740963855422,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 640.2571313780635,
+                "y": 664.266773804741
+            }
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Animation_Campfire.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Animation_Flowers_Red.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Animation_Flowers_White.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Atlas_Buildings.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Atlas_Props.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Atlas_Rocks.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Atlas_Trees_Bushes.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Objects_Buildings.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Objects_Props.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Objects_Rocks.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Objects_Trees.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Tileset_Ground.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Tileset_RockSlope.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Tileset_RockSlope_Simple.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Tileset_Water.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Tilesets_Road.tsx": {
+            "scaleInDock": 1
         },
         "Hills.tsx": {
             "scaleInDock": 1,
@@ -159,11 +235,23 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "map4-tilesets/Animation_Campfire.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map4-tilesets/Animation_Flowers_Red.tsx": {
+            "scaleInDock": 1
+        },
+        "map4-tilesets/Objects_Buildings.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
         "map4-tilesets/dd_waterfall_sheet.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "map4-tilesets/tf_darkdimension_sheet.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -181,10 +269,10 @@
         },
         "maps/map2.tmx": {
             "scale": 0.5,
-            "selectedLayer": 7,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 806,
-                "y": 829
+                "x": 796,
+                "y": 867
             }
         },
         "maps/map3.tmx": {
@@ -197,10 +285,12 @@
         },
         "maps/map4.tmx": {
             "scale": 0.5,
-            "selectedLayer": 1,
+            "selectedLayer": 10,
             "viewCenter": {
-                "x": 749,
-                "y": 1053
+
+                "x": 736,
+                "y": 799
+
             }
         },
         "maps/map5.tmx": {
@@ -235,16 +325,19 @@
     "recentFiles": [
         "maps/map3.tmx",
         "maps/map4.tmx",
-        "maps/map2.tmx",
-        "maps/map1.tmx",
+
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Tileset_Water.tsx",
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Objects_Buildings.tsx",
+        "maps/map3.tmx",
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Atlas_Buildings.tsx",
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Animation_Flowers_Red.tsx",
         "maps/map5.tmx",
-        "map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx",
-        "map2-tilesets/Minifantasy_ForgottenPlainsTilesShadows.tsx",
-        "map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx",
-        "map5-tilesets/throneroom1.tsx",
-        "map3-tilesets/0x72_DungeonTilesetII_v1.7.tsx",
-        "map4-tilesets/tf_darkdimension_sheet.tsx",
-        "map4-tilesets/dd_waterfall_sheet.tsx"
+        "maps/map1.tmx",
+        "maps/map2.tmx",
+        "map4-tilesets/Animation_Campfire.tsx",
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilemaps/Beginning Fields.tmx",
+        "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilemaps/Rules/RockSlopes_Rules.tmx"
+
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx"

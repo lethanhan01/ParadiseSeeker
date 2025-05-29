@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/map4.tmx",
+    "activeFile": "maps/map3.tmx",
     "expandedProjectPaths": [
         "maps",
-        ".",
-        "map3-tilesets"
+        "map3-tilesets",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -140,7 +140,7 @@
             "scaleInEditor": 1
         },
         "map3-tilesets/16x16 dungeon ii wall reconfig v04 spritesheet.tsx": {
-            "scaleInDock": 0.75,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "map3-tilesets/atlas_floor-16x16.tsx": {
@@ -189,17 +189,17 @@
         },
         "maps/map3.tmx": {
             "scale": 0.5,
-            "selectedLayer": 1,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 894,
-                "y": 811
+                "x": 943,
+                "y": 731
             }
         },
         "maps/map4.tmx": {
             "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 750,
+                "x": 749,
                 "y": 1053
             }
         },
@@ -228,16 +228,16 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 50,
     "openFiles": [
-        "maps/map4.tmx"
+        "maps/map3.tmx"
     ],
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "maps/map3.tmx",
         "maps/map4.tmx",
         "maps/map2.tmx",
         "maps/map1.tmx",
         "maps/map5.tmx",
-        "maps/map3.tmx",
         "map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx",
         "map2-tilesets/Minifantasy_ForgottenPlainsTilesShadows.tsx",
         "map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx",

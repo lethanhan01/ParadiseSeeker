@@ -12,11 +12,12 @@ public class FlyingCreep extends Monster {
 
     public FlyingCreep(float x, float y) {
         super(x, y, 35, 2.8f, 10, 0f); // HP, speed, cleaveDamage, offset
-        this.bounds = new Rectangle(x, y, 1.8f, 1.8f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 1.8f;
         this.spriteHeight = 1.8f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2.0f;

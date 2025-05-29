@@ -11,11 +11,12 @@ import com.paradise_seeker.game.entity.Monster;
 public class CyanBat extends Monster {
     public CyanBat(float x, float y) {
         super(x, y, 40, 2.5f, 10,0f); // HP, speed, cleaveDamage
-        this.bounds = new Rectangle(x, y, 2f, 2f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 1.2f;
         this.spriteHeight = 1.2f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2f; // Nhỏ hơn Boss

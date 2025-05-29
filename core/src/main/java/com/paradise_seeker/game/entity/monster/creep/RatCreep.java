@@ -12,11 +12,12 @@ public class RatCreep extends Monster {
 
     public RatCreep(float x, float y) {
         super(x, y, 30, 2f, 8, 0f); // HP, speed, cleaveDamage, offset
-        this.bounds = new Rectangle(x, y, 1.5f, 1.5f); // Rat nhỏ hơn CyanBat
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 1.5f;
         this.spriteHeight = 1.5f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 1.5f;

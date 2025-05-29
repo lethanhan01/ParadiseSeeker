@@ -8,18 +8,18 @@ import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Monster;
 
 public class Boss1 extends Monster {
-    public Boss1(float x, float y) {
-        super(x, y, 100, 1.5f, 20,3f); // HP, speed, cleaveDamage
-        this.bounds = new Rectangle(x, y, 3f, 5f);
-        this.spawnX = x;
-        this.spawnY = y;
-        this.spriteWidth = 10f;
-        this.spriteHeight = 6f;
-        loadAnimations();
-        this.currentFrame = walkRight.getKeyFrame(0f);
-        this.cleaveRange = 5f; // Gán riêng tại đây
+	public Boss1(float x, float y) {
+	    super(x, y, 100, 1.5f, 20, 3f); // HP, speed, cleaveDamage
+	    this.spriteWidth = 10f;
+	    this.spriteHeight = 6f;
+	    updateBounds(); // Đồng bộ lại bounds
+	    this.spawnX = x;
+	    this.spawnY = y;
+	    loadAnimations();
+	    this.currentFrame = walkRight.getKeyFrame(0f);
+	    this.cleaveRange = 5f;
+	}
 
-    }
 
     @Override
     protected void loadAnimations() {

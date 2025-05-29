@@ -11,11 +11,12 @@ import com.paradise_seeker.game.entity.Monster;
 public class YellowBat extends Monster {
     public YellowBat(float x, float y) {
         super(x, y, 45, 2.8f, 10,0f);
-        this.bounds = new Rectangle(x, y, 2f, 2f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 2f;
         this.spriteHeight = 2f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2f; // Nhỏ hơn Boss

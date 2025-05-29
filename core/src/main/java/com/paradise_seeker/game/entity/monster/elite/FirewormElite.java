@@ -12,11 +12,12 @@ public class FirewormElite extends Monster {
 
     public FirewormElite(float x, float y) {
         super(x, y, 100, 1.5f, 20, 0f); // HP, speed, cleaveDamage, offset
-        this.bounds = new Rectangle(x, y, 3.0f, 3.0f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 3.0f;
         this.spriteHeight = 3.0f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 3.0f;

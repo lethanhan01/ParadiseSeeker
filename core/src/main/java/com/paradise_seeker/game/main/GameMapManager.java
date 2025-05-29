@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.map.GameMap;
 import com.paradise_seeker.game.map.GameMap2;
+import com.paradise_seeker.game.map.GameMap3;
 import com.paradise_seeker.game.map.GameMap5;
 import com.paradise_seeker.game.ui.HUD;
 
@@ -22,7 +23,8 @@ public class GameMapManager {
         // Khởi tạo các map và thêm vào danh sách
         maps.add(new GameMap(player));   // Map 1
         maps.add(new GameMap2(player));  // Map 2
-        maps.add(new GameMap5(player));  // Map 3
+        maps.add(new GameMap3(player));  // Map 4
+        maps.add(new GameMap5(player));  // Map 5
 
         // Bắt đầu với map đầu tiên
         currentMap = maps.get(0);
@@ -33,6 +35,7 @@ public class GameMapManager {
     private final String[] mapMusicPaths = {
             "music/map1.mp3", // for GameMap
             "music/map2.mp3", // for GameMap2
+            "music/map5.mp3",  // for GameMap5 
             "music/map5.mp3"  // for GameMap5 
         };
 

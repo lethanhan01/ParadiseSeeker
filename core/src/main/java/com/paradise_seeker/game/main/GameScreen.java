@@ -191,6 +191,12 @@ public class GameScreen implements Screen {
             handleZoomInput();
             player.update(delta);
             mapManager.update(delta);
+            
+            Chest chest = mapManager.getCurrentMap().getChest();
+                if (player.getBounds().overlaps(chest.getBounds())) {
+                    chest.onPlayerCollision(player);
+                }
+            
             mapManager.getCurrentMap().checkCollisions(player, hud);
 
             for (int i = activeProjectiles.size() - 1; i >= 0; i--) {

@@ -1,6 +1,7 @@
 package com.paradise_seeker.game.map;
 
 import com.paradise_seeker.game.entity.Player;
+import com.paradise_seeker.game.entity.object.Chest;
 import com.paradise_seeker.game.entity.object.Portal;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,6 +27,10 @@ public class GameMap2 extends GameMap {
         // Đặt portal cho map2
         startPortal = new Portal(2f, 10f);
         portal = new Portal(44f, 31f);
+
+
+
+        chest = new Chest(30f, 12f);
 
     }
     @Override

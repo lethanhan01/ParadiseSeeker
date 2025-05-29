@@ -37,6 +37,7 @@ public class GameMap {
         return MAP_HEIGHT;
     }
     public Portal portal;
+	public Chest chest; // Khởi tạo chest nếu cần
     protected Texture backgroundTexture;
     public List<Collidable> collidables;
     private List<GameObject> gameObjects;
@@ -80,6 +81,7 @@ public class GameMap {
         generateMonsters(player);
         generateRandomItems(5, 5);
         generateNPCs(); // 
+        chest = new Chest(13f, 25f); // Khởi tạo chest nếu cần
 
         portal = new Portal(15f, 25f);
         // --- Load all "solid" rectangles, scale to world units, no Y flip ---
@@ -246,6 +248,7 @@ public class GameMap {
         for (Monster m : monsters) m.render(batch);
         for (NPC1 npc : npcList) npc.render(batch);
         if (portal != null) portal.render(batch);
+        if (chest != null) chest.render(batch); // Render chest if needed
 
     }
 
@@ -265,6 +268,7 @@ public class GameMap {
             spawnRandomItem();
             itemSpawnTimer = 0f;
         }
+        chest.update(deltaTime); // Cập nhật trạng thái của chest nếu cần
     }
 
     public void checkCollisions(Player player, HUD hud) {
@@ -410,9 +414,14 @@ public class GameMap {
             }
         }
     }
+
     public Portal getStartPortal() {
         return null;
     }
 
+
+    public Chest getChest() {
+		return chest; // Trả về chest nếu cần
+	}
 
 }

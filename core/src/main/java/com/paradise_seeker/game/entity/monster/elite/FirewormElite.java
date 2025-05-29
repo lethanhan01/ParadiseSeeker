@@ -21,8 +21,15 @@ public class FirewormElite extends Monster {
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 3.0f;
+        updateBounds();
+
+    }
+    @Override
+    protected float getScaleMultiplier() {
+        return 5f;
     }
 
+    
     @Override
     protected void loadAnimations() {
         // Walk (9 frame, index 0)

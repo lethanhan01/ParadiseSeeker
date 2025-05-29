@@ -21,7 +21,14 @@ public class FlyingCreep extends Monster {
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2.0f;
+        updateBounds();
+
     }
+    @Override
+    protected float getScaleMultiplier() {
+        return 2f;
+    }
+
 
     @Override
     protected void loadAnimations() {

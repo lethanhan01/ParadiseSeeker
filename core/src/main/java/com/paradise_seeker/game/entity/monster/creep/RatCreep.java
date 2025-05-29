@@ -21,6 +21,12 @@ public class RatCreep extends Monster {
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 1.5f;
+        updateBounds();
+
+    }
+    @Override
+    protected float getScaleMultiplier() {
+        return 2f;
     }
 
     @Override

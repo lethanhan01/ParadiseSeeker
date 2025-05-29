@@ -308,7 +308,7 @@ public class GameMap {
                         canStack = hasStackWithSpace;
                     }
 
-                    boolean isFull = player.inventory.size() >= 9;
+                    boolean isFull = player.inventory.size() >= 18;
 
                     // Only show full if no room and cannot stack anymore
                     if (!canStack && isFull) {

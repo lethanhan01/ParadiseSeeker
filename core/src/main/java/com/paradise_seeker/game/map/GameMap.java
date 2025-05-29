@@ -135,25 +135,7 @@ public class GameMap {
         } // Extend for other item types as needed
     }
 
-    private void generateObjects() {
-        Random random = new Random();
-        for (int i = 0; i < 20; i++) {
-            Rectangle bounds = generateNonOverlappingBounds(2, 2);
-            if (bounds != null) {
-                GameObject obj;
-                switch (i % 5) {
-                    case 0: obj = new Tree(bounds.x, bounds.y); break;
-                    case 1: obj = new Forest(bounds.x, bounds.y); break;
-                    case 2: obj = new WaterLake(bounds.x, bounds.y); break;
-                    case 3: obj = new LavaLake(bounds.x, bounds.y); break;
-                    default: obj = new RockMountain(bounds.x, bounds.y); break;
-                }
-                gameObjects.add(obj);
-                occupiedAreas.add(obj.getBounds());
-                collidables.add(obj);
-            }
-        }
-    }
+    
 
     public List<NPC1> getNPCs() {
         return npcList; // npcList là danh sách NPC bạn đã lưu trong map

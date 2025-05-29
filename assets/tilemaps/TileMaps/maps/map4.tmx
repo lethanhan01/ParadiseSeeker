@@ -2,9 +2,6 @@
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="15" nextobjectid="1">
  <tileset firstgid="1" source="../map4-tilesets/dd_waterfall_sheet.tsx"/>
  <tileset firstgid="157" source="../map4-tilesets/tf_darkdimension_sheet.tsx"/>
- <tileset firstgid="766" source="../map4-tilesets/Animation_Campfire.tsx"/>
- <tileset firstgid="784" source="../map4-tilesets/Animation_Flowers_Red.tsx"/>
- <tileset firstgid="836" source="../map4-tilesets/Objects_Buildings.tsx"/>
  <layer id="1" name="background" width="50" height="50" locked="1">
   <data encoding="csv">
 593,594,595,596,597,598,599,600,593,594,595,596,597,598,599,600,593,594,595,596,597,598,599,593,594,595,596,597,598,599,593,594,595,596,597,598,599,600,593,594,595,596,593,594,595,596,597,598,599,600,

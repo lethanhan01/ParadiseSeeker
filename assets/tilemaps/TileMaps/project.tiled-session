@@ -3,12 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/map4.tmx",
+    "activeFile": "maps/map3.tmx",
     "expandedProjectPaths": [
-        "map2-tilesets",
         "map3-tilesets",
         ".",
-        "map4-tilesets",
         "maps"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -142,7 +140,7 @@
             "scaleInEditor": 1
         },
         "map3-tilesets/16x16 dungeon ii wall reconfig v04 spritesheet.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 0.75,
             "scaleInEditor": 1
         },
         "map3-tilesets/atlas_floor-16x16.tsx": {
@@ -170,39 +168,39 @@
             "scaleInEditor": 1
         },
         "map5-tilesets/throneroom1.tsx": {
-            "scaleInDock": 0.75,
+            "scaleInDock": 0.33,
             "scaleInEditor": 0.5
         },
         "maps/map1.tmx": {
             "scale": 1,
             "selectedLayer": 10,
             "viewCenter": {
-                "x": 480,
-                "y": 480.5
+                "x": 424,
+                "y": 480
             }
         },
         "maps/map2.tmx": {
-            "scale": 0.33,
-            "selectedLayer": 6,
+            "scale": 0.5,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 978.7878787878788,
-                "y": 913.6363636363635
+                "x": 807,
+                "y": 829
             }
         },
-        "maps/map4.tmx": {
+        "maps/map3.tmx": {
             "scale": 0.5,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 792,
-                "y": 743
+                "x": 893,
+                "y": 811
             }
         },
         "maps/map5.tmx": {
             "scale": 0.4666875,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 799.2500334806482,
-                "y": 800.3214142225793
+                "x": 798.178652738717,
+                "y": 800.3214142225794
             }
         },
         "tf_darkdimension_sheet.tsx": {
@@ -222,16 +220,15 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 50,
     "openFiles": [
-        "maps/map4.tmx",
-        "maps/map2.tmx"
+        "maps/map3.tmx"
     ],
     "project": "project.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "maps/map2.tmx",
-        "maps/map4.tmx",
-        "maps/map1.tmx",
+        "maps/map3.tmx",
         "maps/map5.tmx",
+        "maps/map2.tmx",
+        "maps/map1.tmx",
         "map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx",
         "map2-tilesets/Minifantasy_ForgottenPlainsTilesShadows.tsx",
         "map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx",

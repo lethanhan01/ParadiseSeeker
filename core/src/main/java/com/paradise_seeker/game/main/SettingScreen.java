@@ -16,7 +16,7 @@ public class SettingScreen implements Screen {
     String[] menuItems = {"Full Screen", "Music", "Control", "Back", "Return to Menu"};
     int selectedIndex = 0;
 
-    float setVolume = 0.5f;
+    public static float setVolume = 0.5f;
     Texture background;
 
     float musicVolume = setVolume;

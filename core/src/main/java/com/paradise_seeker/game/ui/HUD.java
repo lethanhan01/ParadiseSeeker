@@ -5,13 +5,24 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.paradise_seeker.game.entity.Player;
 
 public class HUD {
+	
     private String notificationMessage = "";
     private float notificationTimer = 0f;
     private static final float NOTIFICATION_DISPLAY_TIME = 2.2f; // seconds
+
+    private String mapNotification = "";
+    private float mapNotificationTimer = 0f;
+    private static final float MAP_NOTIFICATION_TIME = 2.2f; // seconds
+
+    public void showMapNotification(String message) {
+        this.mapNotification = message;
+        this.mapNotificationTimer = MAP_NOTIFICATION_TIME;
+    }
 
     public ShapeRenderer shapeRenderer;
     public SpriteBatch spriteBatch;
@@ -67,13 +78,43 @@ public class HUD {
 
         int frameIndexhp = Math.round((1 - hpPercent) * 73);
         int frameIndexmp = Math.round((1 - mpPercent) * 73);
-
+        
         spriteBatch.begin();
+        
 
         spriteBatch.draw(hpBarFrames[frameIndexhp], PADDING, screenHeight - PADDING - scaledBarHeight, scaledBarWidth, scaledBarHeight);
         spriteBatch.draw(mpBarFrames[frameIndexmp], PADDING * 0.95f, screenHeight - PADDING - scaledBarHeight * 1.8f, scaledBarWidth, scaledBarHeight);
 
+        if (font != null && spriteBatch != null && mapNotification != null) {
+            if (mapNotificationTimer > 0f && !mapNotification.isEmpty()) {
+                // Save the old scale values
+                float oldScaleX = font.getData().scaleX;
+                float oldScaleY = font.getData().scaleY;
 
+                // --- Set a safe, readable scale ---
+                // For responsive sizing, use screen height. Never set below 0.1f!
+                float desiredScale = screenHeight / 350f; // or any formula you want
+                float safeScale = Math.max(desiredScale, 0.2f); // never below this
+
+                font.getData().setScale(safeScale);
+
+                // Now draw the centered map notification
+                GlyphLayout layout = new GlyphLayout(font, mapNotification);
+                float notificationX = (screenWidth - layout.width) / 2f;
+                float notificationY = screenHeight - PADDING - (scaledBarHeight * 2.5f);
+
+                font.draw(spriteBatch, mapNotification, notificationX, notificationY);
+
+                // Restore the old scale values to avoid breaking other HUD text
+                font.getData().setScale(oldScaleX, oldScaleY);
+
+                mapNotificationTimer -= delta*0.00005f; // Adjust delta multiplier for desired speed
+                if (mapNotificationTimer <= 0f) {
+                    mapNotification = "";
+                    mapNotificationTimer = 0f;
+                }
+            }
+        }
 
      // -- Save old scale, set new scale (because font is shared!) --
         float oldScaleX = font.getData().scaleX;

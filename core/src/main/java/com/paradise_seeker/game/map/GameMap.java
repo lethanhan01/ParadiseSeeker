@@ -41,7 +41,10 @@ public class GameMap {
     public List<Collidable> collidables;
     private List<GameObject> gameObjects;
     private List<Rectangle> occupiedAreas;
-
+    protected String mapName = "Forgotten Ruins";
+    public String getMapName() {
+        return mapName;
+    }
     private List<Monster> monsters;
     private List<HPitem> hpItems = new ArrayList<>();
     private List<MPitem> mpItems = new ArrayList<>();

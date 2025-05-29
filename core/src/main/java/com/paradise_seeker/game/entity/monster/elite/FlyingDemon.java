@@ -68,6 +68,12 @@ public class FlyingDemon extends Monster {
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2.5f;
+        updateBounds();
+
+    }
+    @Override
+    protected float getScaleMultiplier() {
+        return 5f;
     }
 
     @Override

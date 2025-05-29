@@ -18,6 +18,8 @@ public class Boss1 extends Monster {
 	    loadAnimations();
 	    this.currentFrame = walkRight.getKeyFrame(0f);
 	    this.cleaveRange = 5f;
+	    updateBounds();
+
 	}
 
 
@@ -73,6 +75,10 @@ public class Boss1 extends Monster {
         return new Animation<>(frameDuration, frames);
     }
 
-    
+    @Override
+    protected float getScaleMultiplier() {
+        return 10f;
+    }
+
 
 }

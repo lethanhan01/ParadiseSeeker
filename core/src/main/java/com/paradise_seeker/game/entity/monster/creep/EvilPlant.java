@@ -20,7 +20,12 @@ public class EvilPlant extends Monster {
         loadAnimations();
         this.currentFrame = idleLeft.getKeyFrame(0f);
         this.cleaveRange = 2.5f; // Nhỏ hơn Boss
+        updateBounds();
 
+    }
+    @Override
+    protected float getScaleMultiplier() {
+        return 2f;
     }
 
     @Override

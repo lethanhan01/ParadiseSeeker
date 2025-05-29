@@ -21,7 +21,14 @@ public class DevilCreep extends Monster {
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2.5f;
+        updateBounds();
+
     }
+    @Override
+    protected float getScaleMultiplier() {
+        return 2f;
+    }
+
 
     protected void loadAnimations() {
         // Cleave (attack) - 16 frame (đúng)

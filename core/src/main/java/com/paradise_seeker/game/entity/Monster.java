@@ -70,6 +70,8 @@ public abstract class Monster implements Renderable, Collidable {
         this.bounds = new Rectangle(x, y, spriteWidth, spriteHeight);
 
     }
+    
+
 
 
     public Rectangle getBounds() {
@@ -186,24 +188,41 @@ public abstract class Monster implements Renderable, Collidable {
         else currentFrame = (facingRight ? walkRight : walkLeft).getKeyFrame(stateTime, true);
 
         if (player != null) facingRight = player.bounds.x > bounds.x;
+
+        // Tính kích thước vẽ
+        float scale = getScaleMultiplier();
+        float playerArea = player.bounds.width * player.bounds.height;
+
+        float frameAspect = currentFrame.getRegionWidth() / (float) currentFrame.getRegionHeight();
+
+        float drawWidth, drawHeight;
+        if (frameAspect >= 1f) { // Ngang
+            drawWidth = player.bounds.width * scale;
+            drawHeight = drawWidth / frameAspect;
+        } else { // Dọc
+            drawHeight = player.bounds.height * scale;
+            drawWidth = drawHeight * frameAspect;
+        }
+
+        // Căn giữa
+        float drawX = bounds.x + bounds.width / 2 - drawWidth / 2;
+        float drawY = bounds.y + bounds.height / 2 - drawHeight / 2 + OFFSET;
+
+        // HP bar
         float hpPercent = Math.max(0, Math.min(hp / (float) MAX_HP, 1f));
         int frameIndex = Math.round((1 - hpPercent) * 29);
-
-        float drawX = bounds.x - (spriteWidth - bounds.width) / 2f;
-        float drawY = bounds.y + OFFSET  - (spriteHeight - bounds.height) / 2f;
         float hpBarX = bounds.x + (bounds.width - HP_BAR_WIDTH) / 2f;
         float hpBarY = bounds.y + bounds.height + HP_BAR_Y_OFFSET;
 
-        // Vẽ thanh HP (frameIndex từ mảng hpBarFrames)
-        batch.draw(
-            hpBarFrames[frameIndex], 
-            hpBarX, 
-            hpBarY, 
-            HP_BAR_WIDTH, 
-            HP_BAR_HEIGHT
-        );
-        batch.draw(currentFrame, drawX, drawY, spriteWidth, spriteHeight);
+        batch.draw(hpBarFrames[frameIndex], hpBarX, hpBarY, HP_BAR_WIDTH, HP_BAR_HEIGHT);
+        batch.draw(currentFrame, drawX, drawY, drawWidth, drawHeight);
     }
+
+
+    protected float getScaleMultiplier() {
+        return 1f; // Mặc định
+    }
+
 
     public void onDeath() {
         isDead = true;

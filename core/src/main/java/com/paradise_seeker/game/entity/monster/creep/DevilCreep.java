@@ -12,11 +12,12 @@ public class DevilCreep extends Monster {
 
     public DevilCreep(float x, float y) {
         super(x, y, 50, 1.8f, 12, 0f); // HP, speed, cleaveDamage, offset
-        this.bounds = new Rectangle(x, y, 2.2f, 2.2f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 2.2f;
         this.spriteHeight = 2.2f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2.5f;

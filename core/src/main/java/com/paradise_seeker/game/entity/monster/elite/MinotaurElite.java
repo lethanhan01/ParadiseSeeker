@@ -12,11 +12,12 @@ public class MinotaurElite extends Monster {
 
     public MinotaurElite(float x, float y) {
         super(x, y, 70, 1.6f, 15, 0f); // HP, speed, cleaveDamage, offset
-        this.bounds = new Rectangle(x, y, 2.8f, 2.8f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 2.8f;
         this.spriteHeight = 2.8f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2.5f;

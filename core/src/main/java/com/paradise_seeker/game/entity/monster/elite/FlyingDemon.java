@@ -59,11 +59,12 @@ public class FlyingDemon extends Monster {
 
     public FlyingDemon(float x, float y) {
         super(x, y, 80, 2.2f, 12, 0f); // HP, speed, cleaveDamage, offset
-        this.bounds = new Rectangle(x, y, 2.5f, 2.5f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 2.5f;
         this.spriteHeight = 2.5f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2.5f;

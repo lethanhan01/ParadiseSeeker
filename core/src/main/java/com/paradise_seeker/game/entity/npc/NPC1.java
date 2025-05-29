@@ -45,11 +45,16 @@ public class NPC1 implements Collidable {
         loadOpenChestAnimation();
         loadChestOpenedAnimation();
 
+        this.spriteWidth = 3f;
+        this.spriteHeight = 3f;
+
+        this.bounds = new Rectangle(x, y, spriteWidth, spriteHeight); // Bổ sung ngay đây
+
         currentAnimation = idleAnimation;
         currentFrame = currentAnimation.getKeyFrame(0f);
         stateTime = 0f;
-        bounds = new Rectangle(x + 0.2f, y + 0.2f, 2.6f, 2.6f);
     }
+
 
     private void loadIdleAnimation() {
         List<TextureRegion> frames = new ArrayList<>();
@@ -98,6 +103,12 @@ public class NPC1 implements Collidable {
         openChestAnimation = new Animation<>(0.2f, frames.toArray(new TextureRegion[0]));
         openChestAnimation.setPlayMode(Animation.PlayMode.NORMAL);
     }
+    public void updateBounds() {
+        if (bounds != null) {
+            bounds.setSize(spriteWidth, spriteHeight);
+        }
+    }
+
 
     private void loadChestOpenedAnimation() {
         List<TextureRegion> frames = new ArrayList<>();

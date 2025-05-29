@@ -12,11 +12,12 @@ public class IceElite extends Monster {
 
     public IceElite(float x, float y) {
         super(x, y, 90, 1.5f, 18, 0f); // HP, speed, cleaveDamage, offset
-        this.bounds = new Rectangle(x, y, 3.0f, 3.0f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 3.0f;
         this.spriteHeight = 3.0f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = walkRight.getKeyFrame(0f);
         this.cleaveRange = 2.8f;

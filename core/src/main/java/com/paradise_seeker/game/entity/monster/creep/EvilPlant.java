@@ -11,11 +11,12 @@ import com.paradise_seeker.game.entity.Monster;
 public class EvilPlant extends Monster {
     public EvilPlant(float x, float y) {
     	super(x, y, 50, 1.2f, 12, 0.5f); // hp, speed, cleavedamage, offset
-    	this.bounds = new Rectangle(x, y, 2f, 2f);
         this.spawnX = x;
         this.spawnY = y;
         this.spriteWidth = 4f;
         this.spriteHeight = 4f;
+        updateBounds(); // Đồng bộ lại bounds
+
         loadAnimations();
         this.currentFrame = idleLeft.getKeyFrame(0f);
         this.cleaveRange = 2.5f; // Nhỏ hơn Boss

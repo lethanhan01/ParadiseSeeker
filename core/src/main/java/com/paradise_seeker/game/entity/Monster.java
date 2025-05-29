@@ -67,6 +67,8 @@ public abstract class Monster implements Renderable, Collidable {
             String filename = String.format("ui/HP_bar_monster/hpm/Hp_monster%02d.png", i);
             hpBarFrames[i] = new Texture(Gdx.files.internal(filename));
         }
+        this.bounds = new Rectangle(x, y, spriteWidth, spriteHeight);
+
     }
 
 
@@ -76,6 +78,9 @@ public abstract class Monster implements Renderable, Collidable {
 
     public boolean isDead() {
         return isDead;
+    }
+    public void updateBounds() {
+        bounds.setSize(spriteWidth, spriteHeight);
     }
 
     public void update(float deltaTime) {

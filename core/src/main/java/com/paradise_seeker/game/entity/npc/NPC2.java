@@ -25,14 +25,27 @@ public class NPC2 {
 
     private Map<String, Animation<TextureRegion>> rightAnimations = new HashMap<>();
     private Map<String, Animation<TextureRegion>> leftAnimations = new HashMap<>();
+    private float spriteWidth = 5.5f;
+    private float spriteHeight = 5.5f;
 
+    
     public NPC2(float x, float y, Player player) {
-        this.bounds = new Rectangle(x, y, 5.5f, 5.5f);
+        this.spriteWidth = 5.5f;
+        this.spriteHeight = 5.5f;
+        updateBounds();
+
         this.player = player;
         this.speed = player.speed;
 
         loadAnimations();
     }
+
+    public void updateBounds() {
+        if (bounds != null) {
+            bounds.setSize(spriteWidth, spriteHeight);
+        }
+    }
+
 
     private void loadAnimations() {
         String basePathRight = "images/Entity/characters/NPCs/npc2 - Copy/trai/";

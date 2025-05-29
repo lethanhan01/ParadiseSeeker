@@ -88,15 +88,19 @@ public class GameScreen implements Screen {
         this.hudCamera = new OrthographicCamera();
         this.hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/map2.mp3"));
-        music.setLooping(true);
-        music.setVolume(game.settingMenu.setVolume);
+        
     }
 
     @Override
     public void show() {
+        if (music != null) music.stop();
+        String musicPath = mapManager.getCurrentMapMusic();
+        music = Gdx.audio.newMusic(Gdx.files.internal(musicPath));
+        music.setLooping(true);
+        music.setVolume(game.settingMenu.setVolume);
         music.play();
     }
+
 
     @Override
     public void render(float delta) {
@@ -262,13 +266,29 @@ public class GameScreen implements Screen {
             hud.spriteBatch.end();
         }
 
-        if (mapManager.getCurrentMap().portal != null && mapManager.getCurrentMap().portal.getBounds().overlaps(player.getBounds())) {
-            mapManager.getCurrentMap().portal.onCollision(player);
-            mapManager.switchToNextMap();
-            player.setGameMap(mapManager.getCurrentMap());
-            player.bounds.x = mapManager.getCurrentMap().getMapWidth() / 2f;
-            player.bounds.y = mapManager.getCurrentMap().getMapHeight() / 2f;
-        }
+        if (mapManager.getCurrentMap().portal != null &&
+        	    mapManager.getCurrentMap().portal.getBounds().overlaps(player.getBounds())) {
+
+        	    mapManager.getCurrentMap().portal.onCollision(player);
+        	    mapManager.switchToNextMap();
+        	    player.setGameMap(mapManager.getCurrentMap());
+        	    player.bounds.x = mapManager.getCurrentMap().getMapWidth() / 2f;
+        	    player.bounds.y = mapManager.getCurrentMap().getMapHeight() / 2f;
+
+        	    // MUSIC SWITCH LOGIC
+        	    if (music != null) {
+        	        music.stop();
+        	        music.dispose();
+        	    }
+        	    String musicPath = mapManager.getCurrentMapMusic();
+        	    music = Gdx.audio.newMusic(Gdx.files.internal(musicPath));
+        	    music.setLooping(true);
+        	    music.setVolume(game.settingMenu.setVolume); // or your global volume
+        	    music.play();
+        	    hud.showMapNotification(mapManager.getCurrentMap().getMapName());
+
+        	}
+
     }
 
     private void finishNpcInteraction() {
@@ -320,7 +340,7 @@ public class GameScreen implements Screen {
     @Override public void resume() {}
     @Override public void hide() {}
     @Override public void dispose() {
-        music.dispose();
+    	if (music != null) music.dispose();
         hud.dispose();
         dialogueBg.dispose();
     }

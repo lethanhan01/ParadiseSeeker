@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="17" nextobjectid="110">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="119">
  <editorsettings>
   <export target="../map1.tmx" format="tmx"/>
  </editorsettings>
@@ -748,5 +748,52 @@
  </objectgroup>
  <objectgroup id="16" name="touchbook" visible="0">
   <object id="95" x="296" y="418.667" width="16" height="17.3333"/>
+ </objectgroup>
+ <objectgroup id="17" name="Spawns">
+  <object id="110" x="493" y="774">
+   <properties>
+    <property name="class" value="CyanBat"/>
+    <property name="type" value="monster"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="112" x="495" y="142">
+   <properties>
+    <property name="type" value="portal"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="113" x="216" y="427">
+   <properties>
+    <property name="class" value="YellowBat"/>
+    <property name="type" value="monster"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="114" x="761" y="792">
+   <properties>
+    <property name="type" value="chest"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="115" x="687" y="429">
+   <properties>
+    <property name="type" value="npc1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="116" x="142" y="216">
+   <properties>
+    <property name="class" value="EvilPlant"/>
+    <property name="type" value="monster"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="118" x="631" y="742">
+   <properties>
+    <property name="type" value="player"/>
+   </properties>
+   <point/>
+  </object>
  </objectgroup>
 </map>

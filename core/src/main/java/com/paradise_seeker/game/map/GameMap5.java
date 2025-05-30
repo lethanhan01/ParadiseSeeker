@@ -1,27 +1,22 @@
 package com.paradise_seeker.game.map;
 
-import com.paradise_seeker.game.entity.Player;
-import com.paradise_seeker.game.entity.object.Portal;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-
 public class GameMap5 extends GameMap {
-
-    public GameMap5(Player player) {
-        super(player);
+    public GameMap5() {
+        super();
         this.mapName = "Paradise King's Throne Room";
-        // Load TiledMap cho GameMap2
-        TiledMap tiledMap = new TmxMapLoader().load("tilemaps/TileMaps/maps/map5.tmx");
-        MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class);
-        MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class);
-        TILE_WIDTH = tiledMap.getProperties().get("tilewidth", Integer.class);
-        TILE_HEIGHT = tiledMap.getProperties().get("tileheight", Integer.class);
+        // Example for custom objects, if you want:
+        // this.portal = new Portal(...);
+        // this.startPortal = new Portal(...);
+        // this.chest = new Chest(...);
+    }
 
-        backgroundTexture = new Texture("tilemaps/TileMaps/maps/map5.png");
-        loadCollidables(tiledMap);
+    @Override
+    protected String getMapTmxPath() {
+        return "tilemaps/TileMaps/maps/map5.tmx";
+    }
 
-        // Đặt portal cho map2
-        portal = new Portal(23.5f, 42f);
+    @Override
+    protected String getMapBackgroundPath() {
+        return "tilemaps/TileMaps/maps/map5.png";
     }
 }

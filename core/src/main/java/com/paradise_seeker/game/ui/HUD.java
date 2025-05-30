@@ -130,6 +130,7 @@ public class HUD {
             if (player.getCollectAllFragments() == 3) {
                 // Vẽ 1 ảnh mới (mảnh đã ghép)
                 spriteBatch.draw(fragmentTextures[3], fragmentX, fragmentY, fragmentSize, fragmentSize);
+                
             } else {
                 // Vẽ từng mảnh riêng
                 for (int i = 0; i < player.getCollectAllFragments(); i++) {

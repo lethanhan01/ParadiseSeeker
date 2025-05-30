@@ -13,7 +13,7 @@ public class HUD {
 	
     private String notificationMessage = "";
     private float notificationTimer = 0f;
-    private static final float NOTIFICATION_DISPLAY_TIME = 2.2f; // seconds
+    private static final float NOTIFICATION_DISPLAY_TIME = 3.6f; // seconds
 
     private String mapNotification = "";
     private float mapNotificationTimer = 0f;

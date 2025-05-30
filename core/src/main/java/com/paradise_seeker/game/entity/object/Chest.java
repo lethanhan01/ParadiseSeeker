@@ -125,4 +125,7 @@ public class Chest extends GameObject{
 		// You can add more logic here, like giving items to the player
 	}
 
+	public Array<Item> getItems() {
+		return items;
+	}
 }

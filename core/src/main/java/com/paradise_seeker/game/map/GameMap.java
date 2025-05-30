@@ -48,6 +48,7 @@ public abstract class GameMap {
 
     private float itemSpawnTimer = 0f;
     private static final float ITEM_SPAWN_INTERVAL = 120f;
+    
 
     // Subclass must provide these
     protected abstract String getMapTmxPath();
@@ -110,6 +111,10 @@ public abstract class GameMap {
 
                 case "chest":
                     chest = new Chest(worldX, worldY);
+                    chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag1.png", 1));
+                    chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag2.png", 2));
+                    chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag3.png", 3));
+
                     break;
 
                 case "npc":

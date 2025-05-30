@@ -31,7 +31,8 @@ public class Chest extends GameObject{
         this.innerBounds = new Rectangle(x, y, 1f, 1f); // Vùng trigger nhỏ hơn
         items = Array.with(
         	    new Skill1item(x, y, 1f, "items/buff/potion12.png"), // Thêm các item vào kho
-        	    new Skill2item(x, y, 1f, "items/buff/potion13.png")
+        	    new Skill2item(x, y, 1f, "items/buff/potion13.png"),
+        	    new ATKitem(x, y, 1f, "items/atkbuff_potion/potion15.png", 15)
         	);
         loadAnimation();
     }

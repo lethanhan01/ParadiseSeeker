@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.paradise_seeker.game.entity.Player;
-import com.paradise_seeker.game.entity.object.Fragment;
-import com.paradise_seeker.game.entity.object.Item;
+import com.paradise_seeker.game.entity.object.item.Fragment;
+import com.paradise_seeker.game.entity.object.item.Item;
 
 public class InventoryScreen implements Screen {
     private final Player player;

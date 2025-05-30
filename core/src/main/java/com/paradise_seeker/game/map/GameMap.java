@@ -17,6 +17,13 @@ import com.paradise_seeker.game.entity.MonsterFactory;
 import com.paradise_seeker.game.entity.Monster;
 import com.paradise_seeker.game.entity.npc.NPC1;
 import com.paradise_seeker.game.entity.object.*;
+import com.paradise_seeker.game.entity.object.item.ATKitem;
+import com.paradise_seeker.game.entity.object.item.Fragment;
+import com.paradise_seeker.game.entity.object.item.HPitem;
+import com.paradise_seeker.game.entity.object.item.Item;
+import com.paradise_seeker.game.entity.object.item.MPitem;
+import com.paradise_seeker.game.entity.object.item.Skill1item;
+import com.paradise_seeker.game.entity.object.item.Skill2item;
 import com.paradise_seeker.game.ui.HUD;
 import java.util.*;
 
@@ -113,7 +120,7 @@ public abstract class GameMap {
                 	//test chest
                     chest = new Chest(worldX, worldY);
                     chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag1.png", 1));
-                    chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag2.png", 2));
+     //               chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag2.png", 2));
      //               chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag3.png", 3));
 
                     break;

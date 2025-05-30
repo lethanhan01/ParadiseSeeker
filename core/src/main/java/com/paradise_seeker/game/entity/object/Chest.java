@@ -105,7 +105,7 @@ public class Chest extends GameObject{
 	public Rectangle getBounds() {
 		return innerBounds;  // Sử dụng vùng trigger thật khi kiểm tra va chạm
 	}
-	
+
 	public void onPlayerCollision(Player player) {
 		// Handle player collision with the chest
 		player.blockMovement();
@@ -113,11 +113,11 @@ public class Chest extends GameObject{
 			return; // Chest is already opened or animation is finished
 		}
 		for (Item item : items) {
-	        player.addItemToInventory(item); 
+	        player.addItemToInventory(item);
 	        item.setActive(false);
 	    }
-		System.out.println("Player collided with chest!");
-		
+		//System.out.println("Player collided with chest!");
+
 		if (!isOpened) {
 			open();
 		}

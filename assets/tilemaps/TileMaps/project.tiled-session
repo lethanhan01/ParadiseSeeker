@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/map5.tmx",
+    "activeFile": "maps/map2.tmx",
     "expandedProjectPaths": [
-        "map3-tilesets",
         "maps",
-        ".",
-        "map4-tilesets"
+        "map4-tilesets",
+        "map3-tilesets",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -268,8 +268,8 @@
             "scale": 1,
             "selectedLayer": 13,
             "viewCenter": {
-                "x": 141.5,
-                "y": 215.5
+                "x": 744,
+                "y": 332.5
             }
         },
         "maps/map2.tmx": {
@@ -279,7 +279,7 @@
             "scale": 0.5,
             "selectedLayer": 8,
             "viewCenter": {
-                "x": 55,
+                "x": 54,
                 "y": 1231
             }
         },
@@ -303,8 +303,8 @@
             "scale": 0.4666875,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 796.0358912548546,
-                "y": 800.3214142225794
+                "x": 794.9645105129237,
+                "y": 800.3214142225793
             }
         },
         "tf_darkdimension_sheet.tsx": {
@@ -325,15 +325,15 @@
     "map.width": 50,
     "openFiles": [
         "maps/map1.tmx",
-        "maps/map5.tmx"
+        "maps/map2.tmx"
     ],
     "project": "project.tiled-project",
     "property.type": "string",
     "recentFiles": [
         "maps/map1.tmx",
+        "maps/map2.tmx",
         "maps/map5.tmx",
         "maps/map3.tmx",
-        "maps/map2.tmx",
         "maps/map4.tmx",
         "map4-tilesets/dd_waterfall_sheet.tsx",
         "map4-tilesets/Objects_Buildings.tsx",

@@ -1,4 +1,4 @@
-package com.paradise_seeker.game.entity.object;
+package com.paradise_seeker.game.entity.object.item;
 
 import com.paradise_seeker.game.entity.Player;
 

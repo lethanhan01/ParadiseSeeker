@@ -15,8 +15,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.paradise_seeker.game.entity.npc.NPC1;
-import com.paradise_seeker.game.entity.object.Fragment;
-import com.paradise_seeker.game.entity.object.Item;
+import com.paradise_seeker.game.entity.object.item.Fragment;
+import com.paradise_seeker.game.entity.object.item.Item;
 // Import các kỹ năng người chơi
 import com.paradise_seeker.game.entity.skill.*;
 import com.paradise_seeker.game.map.GameMap;

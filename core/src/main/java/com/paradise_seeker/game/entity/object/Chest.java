@@ -9,6 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.utils.Array;
 import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.Player;
+import com.paradise_seeker.game.entity.object.item.ATKitem;
+import com.paradise_seeker.game.entity.object.item.Item;
+import com.paradise_seeker.game.entity.object.item.Skill1item;
+import com.paradise_seeker.game.entity.object.item.Skill2item;
 import com.badlogic.gdx.Gdx;
 
 public class Chest extends GameObject{
@@ -117,7 +121,7 @@ public class Chest extends GameObject{
 	        player.addItemToInventory(item); 
 	        item.setActive(false);
 	    }
-		System.out.println("Player collided with chest!");
+		//System.out.println("Player collided with chest!");
 		
 		if (!isOpened) {
 			open();

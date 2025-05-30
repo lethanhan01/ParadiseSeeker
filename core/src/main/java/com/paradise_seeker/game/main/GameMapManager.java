@@ -19,6 +19,7 @@ public class GameMapManager {
         "music/map1.mp3", // Map 1
         "music/map2.mp3", // Map 2
         "music/map3.mp3", // Map 3
+        "music/map4.mp3", // Map 4
         "music/map5.mp3"  // Map 5
     };
 
@@ -29,6 +30,7 @@ public class GameMapManager {
         maps.add(new GameMap1());  // Map 1
         maps.add(new GameMap2());  // Map 2
         maps.add(new GameMap3());  // Map 3
+        maps.add(new GameMap4());  // Map 4
         maps.add(new GameMap5());  // Map 5
 
         // Start with the first map

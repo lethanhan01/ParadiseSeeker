@@ -15,6 +15,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.paradise_seeker.game.entity.object.*;
+import com.paradise_seeker.game.entity.object.item.ATKitem;
+import com.paradise_seeker.game.entity.object.item.HPitem;
+import com.paradise_seeker.game.entity.object.item.Item;
+import com.paradise_seeker.game.entity.object.item.MPitem;
 import com.paradise_seeker.game.ui.DialogueBox;
 import com.paradise_seeker.game.ui.HUD;
 import com.paradise_seeker.game.entity.skill.LaserBeam;
@@ -216,7 +220,7 @@ public class GameScreen implements Screen {
 		Chest chest = mapManager.getCurrentMap().getChest();
 		if (chest != null && player.getBounds().overlaps(chest.getBounds())) {
 			if (!chest.isOpened()) 
-				hud.showNotification("Press F to open the chest");
+				hud.showNotification("[F] Open Chest?");
 		
 			
 			if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {

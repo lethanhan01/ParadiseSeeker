@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/map4.tmx",
+    "activeFile": "maps/map5.tmx",
     "expandedProjectPaths": [
+        "map3-tilesets",
         "maps",
-        "map4-tilesets",
         ".",
-        "map3-tilesets"
+        "map4-tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -262,26 +262,32 @@
             "scaleInEditor": 0.5
         },
         "maps/map1.tmx": {
+            "expandedObjectLayers": [
+                17
+            ],
             "scale": 1,
-            "selectedLayer": 10,
+            "selectedLayer": 13,
             "viewCenter": {
-                "x": 424,
-                "y": 480.5
+                "x": 141.5,
+                "y": 215.5
             }
         },
         "maps/map2.tmx": {
+            "expandedObjectLayers": [
+                9
+            ],
             "scale": 0.5,
-            "selectedLayer": 0,
+            "selectedLayer": 8,
             "viewCenter": {
-                "x": 796,
-                "y": 867
+                "x": 55,
+                "y": 1231
             }
         },
         "maps/map3.tmx": {
             "scale": 0.5,
-            "selectedLayer": 4,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 943,
+                "x": 795,
                 "y": 731
             }
         },
@@ -295,10 +301,10 @@
         },
         "maps/map5.tmx": {
             "scale": 0.4666875,
-            "selectedLayer": 1,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 797.1072719967859,
-                "y": 800.3214142225793
+                "x": 796.0358912548546,
+                "y": 800.3214142225794
             }
         },
         "tf_darkdimension_sheet.tsx": {
@@ -318,22 +324,23 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 50,
     "openFiles": [
-        "maps/map4.tmx"
+        "maps/map1.tmx",
+        "maps/map5.tmx"
     ],
     "project": "project.tiled-project",
-    "property.type": "bool",
+    "property.type": "string",
     "recentFiles": [
+        "maps/map1.tmx",
+        "maps/map5.tmx",
+        "maps/map3.tmx",
+        "maps/map2.tmx",
         "maps/map4.tmx",
         "map4-tilesets/dd_waterfall_sheet.tsx",
         "map4-tilesets/Objects_Buildings.tsx",
-        "maps/map3.tmx",
         "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Tileset_Water.tsx",
         "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Objects_Buildings.tsx",
         "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Atlas_Buildings.tsx",
         "C:/Users/An/Documents/assets/The Fan-tasy Tileset (Free) 1.5.1/The Fan-tasy Tileset (Free)/Tiled/Tilesets/Animation_Flowers_Red.tsx",
-        "maps/map5.tmx",
-        "maps/map1.tmx",
-        "maps/map2.tmx",
         "map4-tilesets/Animation_Campfire.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",

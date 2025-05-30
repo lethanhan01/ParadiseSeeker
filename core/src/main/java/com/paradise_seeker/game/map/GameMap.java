@@ -13,228 +13,142 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.paradise_seeker.game.entity.Collidable;
 import com.paradise_seeker.game.entity.CollisionSystem;
 import com.paradise_seeker.game.entity.Player;
-import com.paradise_seeker.game.entity.monster.boss.Boss1;
-import com.paradise_seeker.game.entity.monster.creep.*;
-import com.paradise_seeker.game.entity.monster.elite.*;
+import com.paradise_seeker.game.entity.MonsterFactory;
+import com.paradise_seeker.game.entity.Monster;
 import com.paradise_seeker.game.entity.npc.NPC1;
 import com.paradise_seeker.game.entity.object.*;
 import com.paradise_seeker.game.ui.HUD;
-import com.paradise_seeker.game.entity.Monster;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class GameMap {
-    public int MAP_WIDTH;      // In world units (tiles)
-    public int MAP_HEIGHT;     // In world units (tiles)
-    protected int TILE_WIDTH;     // In pixels
-    protected int TILE_HEIGHT;    // In pixels
-    public float getMapWidth() {
-        return MAP_WIDTH;
-    }
-    public float getMapHeight() {
-        return MAP_HEIGHT;
-    }
-    public Portal portal;
-	public Chest chest; // Khởi tạo chest nếu cần
+public abstract class GameMap {
+    public int MAP_WIDTH;
+    public int MAP_HEIGHT;
+    protected int TILE_WIDTH;
+    protected int TILE_HEIGHT;
+    protected String mapName = "Unknown Map";
+    public String getMapName() { return mapName; }
+
+    protected TiledMap tiledMap;
     protected Texture backgroundTexture;
-    public List<Collidable> collidables;
-    private List<GameObject> gameObjects;
-    private List<Rectangle> occupiedAreas;
-    protected String mapName = "Forgotten Ruins";
-    public String getMapName() {
-        return mapName;
-    }
-    private List<Monster> monsters;
+
+    public Portal portal, startPortal;
+    public Chest chest;
+    public List<Collidable> collidables = new ArrayList<>();
+    public List<NPC1> npcList = new ArrayList<>();
+    public List<Monster> monsters = new ArrayList<>();
+    private List<GameObject> gameObjects = new ArrayList<>();
+    private List<Rectangle> occupiedAreas = new ArrayList<>();
+
+    // Items
     private List<HPitem> hpItems = new ArrayList<>();
     private List<MPitem> mpItems = new ArrayList<>();
     private List<ATKitem> atkItems = new ArrayList<>();
     private List<Skill1item> skill1Items = new ArrayList<>();
     private List<Skill2item> skill2Items = new ArrayList<>();
-	private List<NPC1> npcList = new ArrayList<>(); // Danh sách NPC
+
     private float itemSpawnTimer = 0f;
     private static final float ITEM_SPAWN_INTERVAL = 120f;
 
-    public GameMap(Player player) {
-        // --- Load Tiled map and get real size ---
-        TiledMap tiledMap = new TmxMapLoader().load("tilemaps/TileMaps/maps/map1.tmx");
+    // Subclass must provide these
+    protected abstract String getMapTmxPath();
+    protected abstract String getMapBackgroundPath();
+
+    public GameMap() {
+        // 1. Load map and background
+        tiledMap = new TmxMapLoader().load(getMapTmxPath());
+        backgroundTexture = new Texture(getMapBackgroundPath());
+
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class);
         MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class);
         TILE_WIDTH = tiledMap.getProperties().get("tilewidth", Integer.class);
         TILE_HEIGHT = tiledMap.getProperties().get("tileheight", Integer.class);
 
-        // Load matching background PNG in world units
-        backgroundTexture = new Texture("tilemaps/TileMaps/maps/map1.png");
+        // Do NOT call loadSpawnPoints here!
+        loadCollidables(tiledMap);
+    }
 
-        gameObjects = new ArrayList<>();
-        occupiedAreas = new ArrayList<>();
-        monsters = new ArrayList<>();
-        collidables = new ArrayList<>();
+    public void loadSpawnPoints(Player player) {
+        MapLayer spawnsLayer = tiledMap.getLayers().get("Spawns");
+        if (spawnsLayer == null) return;
 
-        // Player starts at map center (world units)
-        player.bounds.x = MAP_WIDTH / 2f;
-        player.bounds.y = MAP_HEIGHT / 2f;
-        occupiedAreas.add(new Rectangle(player.bounds));
+        for (MapObject obj : spawnsLayer.getObjects()) {
+            String type = (String) obj.getProperties().get("type");
+            if (type == null) continue;
+            Float px = obj.getProperties().get("x", Float.class);
+            Float py = obj.getProperties().get("y", Float.class);
+            if (px == null || py == null) continue;
+            float worldX = px / TILE_WIDTH;
+            float worldY = py / TILE_HEIGHT;
 
-        //generateObjects();
-        generateMonsters(player);
-        generateRandomItems(5, 5);
-        generateNPCs(); // 
-        chest = new Chest(13f, 25f); // Khởi tạo chest nếu cần
+            switch (type) {
+                case "player":
+                    player.bounds.x = worldX;
+                    player.bounds.y = worldY;
+                    break;
 
-        portal = new Portal(15f, 25f);
-        // --- Load all "solid" rectangles, scale to world units, no Y flip ---
+                case "monster": {
+                    String className = (String) obj.getProperties().get("class");
+                    if (className != null) {
+                        Monster monster = MonsterFactory.create(className, worldX, worldY, player);
+                        if (monster != null) {
+                            monsters.add(monster);
+                            collidables.add(monster);
+                        }
+                    }
+                    break;
+                }
+
+                case "portal":
+                    // Main portal (exit/entrance)
+                    portal = new Portal(worldX, worldY);
+                    break;
+
+                case "portal_start":
+                    // For maps with a "start" portal (e.g., two-way portal)
+                    startPortal = new Portal(worldX, worldY);
+                    break;
+
+                case "chest":
+                    chest = new Chest(worldX, worldY);
+                    break;
+
+                case "npc":
+                    String npcClass = (String) obj.getProperties().get("class");
+                    NPC1 npc;
+                    if (npcClass != null && npcClass.equals("npc1")) {
+                        // If you have different NPC subclasses, handle here.
+                        // npc = new SpecialNPC(worldX, worldY);
+                        npc = new NPC1(worldX, worldY); // Fallback
+                    } else {
+                        npc = new NPC1(worldX, worldY);
+                    }
+                    npcList.add(npc);
+                    collidables.add(npc);
+                    break;
+
+                // You can add more types as needed!
+                // case "item": ...
+            }
+        }
+    }
+
+
+    protected void loadCollidables(TiledMap tiledMap) {
         for (MapLayer layer : tiledMap.getLayers()) {
             for (MapObject obj : layer.getObjects()) {
                 if (obj instanceof RectangleMapObject) {
                     Object solidProp = obj.getProperties().get("solid");
-                    if (solidProp instanceof Boolean && ((Boolean) solidProp)) {
+                    if (solidProp instanceof Boolean && (Boolean) solidProp) {
                         Rectangle rect = ((RectangleMapObject) obj).getRectangle();
-                        float worldX = rect.x / (float) TILE_WIDTH;
-                        float worldY = rect.y / (float) TILE_HEIGHT;
-                        float worldWidth = rect.width / (float) TILE_WIDTH;
-                        float worldHeight = rect.height / (float) TILE_HEIGHT;
-                        Rectangle fixedRect = new Rectangle(worldX, worldY, worldWidth, worldHeight);
-                        //System.out.println("Loaded solid (world units, no Y flip): " + fixedRect);
-                        collidables.add(new SolidObject(fixedRect));
+                        float worldX = rect.x / TILE_WIDTH;
+                        float worldY = rect.y / TILE_HEIGHT;
+                        float worldWidth = rect.width / TILE_WIDTH;
+                        float worldHeight = rect.height / TILE_HEIGHT;
+                        collidables.add(new SolidObject(new Rectangle(worldX, worldY, worldWidth, worldHeight)));
                     }
                 }
             }
         }
-    }
-    private void generateNPCs() {
-        Random random = new Random();
-        int npcCount = 2;
-        for (int i = 0; i < npcCount; i++) {
-            Rectangle bounds = generateNonOverlappingBounds(3f, 3f);
-            if (bounds != null) {
-                NPC1 npc = new NPC1(bounds.x, bounds.y);
-             // Gán hội thoại cho NPC
-                npc.setDialogue(Arrays.asList(
-                    "Gipsy: \n...I see you need help, young adventurer.",
-                    "Gipsy: \nNow pick one item of your choice.\nAn HP potion, an MP potion, and an ATK potion.",
-                    "Jack: \nOne potion? This better be useful...",
-                    "Jack: \nBut wait, who are you? Why are you even here?",
-                    "Gipsy: \nSometimes, the best answer is that there is no \nanswer. Just pick one item and be on your way."
-                ));
-
-                npcList.add(npc);    
-                collidables.add(npc);
-
-                occupiedAreas.add(new Rectangle(bounds)); // Đánh dấu vùng đã chiếm
-            }
-        }
-    }
- // Drops a generic item (of type Item) on the map at the given position
-    public void dropItem(Item item) {
-        if (item instanceof HPitem) {
-            hpItems.add((HPitem) item);
-        } else if (item instanceof MPitem) {
-            mpItems.add((MPitem) item);
-        } else if (item instanceof ATKitem) {
-            atkItems.add((ATKitem) item);
-        } // Extend for other item types as needed
-    }
-
-    
-
-    public List<NPC1> getNPCs() {
-        return npcList; // npcList là danh sách NPC bạn đã lưu trong map
-    }
-
-/*    private void generateMonsters(Player player) {
-        int bossCount = 1;
-        int normalMonsterCount = 3;
-        for (int i = 0; i < bossCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(4, 4);
-            if (b != null) spawnMonster(new Boss1(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(3, 3);
-            if (b != null) spawnMonster(new CyanBat(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(3, 3);
-            if (b != null) spawnMonster(new DevilCreep(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(3, 3);
-            if (b != null) spawnMonster(new EvilPlant(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(3, 3);
-            if (b != null) spawnMonster(new YellowBat(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(3, 3);
-            if (b != null) spawnMonster(new RatCreep(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(3, 3);
-            if (b != null) spawnMonster(new FlyingCreep(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(3, 3);
-            if (b != null) spawnMonster(new FlyingDemon(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(4, 4);
-            if (b != null) spawnMonster(new FirewormElite(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(4, 4);
-            if (b != null) spawnMonster(new IceElite(b.x, b.y), player);
-        }
-        for (int i = 0; i < normalMonsterCount; i++) {
-            Rectangle b = generateNonOverlappingBounds(4, 4);
-            if (b != null) spawnMonster(new MinotaurElite(b.x, b.y), player);
-        }
-    	
-    }*/
-    
-    private void generateMonsters(Player player) {
-        Rectangle b;
-
-        // Only 3 creeps of your choice
-        b = generateNonOverlappingBounds(3, 3);
-        if (b != null) spawnMonster(new CyanBat(b.x, b.y), player);
-
-        b = generateNonOverlappingBounds(3, 3);
-        if (b != null) spawnMonster(new DevilCreep(b.x, b.y), player);
-
-        b = generateNonOverlappingBounds(3, 3);
-        if (b != null) spawnMonster(new RatCreep(b.x, b.y), player);
-
-        // No bosses, no other creeps
-    }
-
-
-    private void spawnMonster(Monster monster, Player player) {
-        monster.player = player;
-        monsters.add(monster);
-        collidables.add(monster);
-        occupiedAreas.add(monster.getBounds());
-    }
-
-    private Rectangle generateNonOverlappingBounds(float width, float height) {
-        Random rand = new Random();
-        for (int attempts = 0; attempts < 1000; attempts++) {
-            float x = rand.nextFloat() * (MAP_WIDTH - width);
-            float y = rand.nextFloat() * (MAP_HEIGHT - height);
-            Rectangle newBounds = new Rectangle(x, y, width, height);
-            boolean overlaps = false;
-            for (Rectangle occ : occupiedAreas) {
-                if (occ.overlaps(newBounds)) {
-                    overlaps = true;
-                    break;
-                }
-            }
-            if (!overlaps) {
-                return newBounds;
-            }
-        }
-        return null;
     }
 
     public void render(SpriteBatch batch) {
@@ -248,15 +162,12 @@ public class GameMap {
         for (Monster m : monsters) m.render(batch);
         for (NPC1 npc : npcList) npc.render(batch);
         if (portal != null) portal.render(batch);
-        if (chest != null) chest.render(batch); // Render chest if needed
-
+        if (startPortal != null) startPortal.render(batch);
+        if (chest != null) chest.render(batch);
     }
 
     public void update(float deltaTime) {
-    	for (NPC1 npc : npcList) {
-    	    npc.update(deltaTime);
-    	}
-
+        for (NPC1 npc : npcList) npc.update(deltaTime);
         for (Monster m : monsters) m.update(deltaTime);
         hpItems.removeIf(item -> !item.isActive());
         mpItems.removeIf(item -> !item.isActive());
@@ -268,22 +179,19 @@ public class GameMap {
             spawnRandomItem();
             itemSpawnTimer = 0f;
         }
-        chest.update(deltaTime); // Cập nhật trạng thái của chest nếu cần
+        if (chest != null) chest.update(deltaTime);
     }
 
     public void checkCollisions(Player player, HUD hud) {
         CollisionSystem.checkCollisions(player, collidables);
-
         List<List<? extends Item>> allItemLists = Arrays.asList(
             hpItems, mpItems, atkItems, skill1Items, skill2Items
         );
-
         for (List<? extends Item> itemList : allItemLists) {
             for (Item item : itemList) {
                 if (item.isActive() && item.getBounds().overlaps(player.getBounds())) {
                     boolean canStack = false;
                     boolean hasStackWithSpace = false;
-
                     if (item.isStackable()) {
                         for (Item invItem : player.inventory) {
                             if (invItem.canStackWith(item) && invItem.getCount() < invItem.getMaxStackSize()) {
@@ -293,10 +201,7 @@ public class GameMap {
                         }
                         canStack = hasStackWithSpace;
                     }
-
                     boolean isFull = player.inventory.size() >= 18;
-
-                    // Only show full if no room and cannot stack anymore
                     if (!canStack && isFull) {
                         if (hud != null) hud.showNotification("> Inventory is full!");
                     } else {
@@ -306,17 +211,15 @@ public class GameMap {
                 }
             }
         }
-
     }
 
     public boolean isBlocked(Rectangle nextBounds) {
         for (Collidable c : collidables) {
-            if (c.getBounds().overlaps(nextBounds)) {
-                return true;
-            }
+            if (c.getBounds().overlaps(nextBounds)) return true;
         }
         return false;
     }
+
     public void renderSolids(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
@@ -326,11 +229,42 @@ public class GameMap {
         }
         shapeRenderer.end();
     }
+
     public void dispose() {
         backgroundTexture.dispose();
         for (GameObject obj : gameObjects) obj.dispose();
     }
 
+    public void dropItem(Item item) {
+        if (item instanceof HPitem) hpItems.add((HPitem) item);
+        else if (item instanceof MPitem) mpItems.add((MPitem) item);
+        else if (item instanceof ATKitem) atkItems.add((ATKitem) item);
+        // Extend for other item types as needed
+    }
+
+    public void damageMonstersInRange(float x, float y, float radius, int damage) {
+        for (Monster m : monsters) {
+            if (!m.isDead() && isInRange(x, y, m.getBounds(), radius)) m.takeDamage(damage);
+        }
+    }
+
+    private boolean isInRange(float x, float y, Rectangle bounds, float radius) {
+        float centerX = bounds.x + bounds.width / 2;
+        float centerY = bounds.y + bounds.height / 2;
+        float dx = centerX - x;
+        float dy = centerY - y;
+        return dx * dx + dy * dy <= radius * radius;
+    }
+
+    public List<NPC1> getNPCs() { return npcList; }
+    public List<Monster> getMonsters() { return monsters; }
+    public float getMapWidth() { return MAP_WIDTH; }
+    public float getMapHeight() { return MAP_HEIGHT; }
+    public Portal getStartPortal() { return startPortal; }
+    public Portal getPortal() { return portal; }
+    public Chest getChest() { return chest; }
+
+    // === Random item generator (if you want to keep it) ===
     private void generateRandomItems(int hpCount, int mpCount) {
         Random rand = new Random();
         String[] hpTextures = {"items/potion/potion3.png", "items/potion/potion4.png", "items/potion/potion5.png"};
@@ -379,49 +313,4 @@ public class GameMap {
             skill2Items.add(new Skill2item(rand.nextFloat() * MAP_WIDTH, rand.nextFloat() * MAP_HEIGHT, 1, "items/buff/potion13.png"));
         }
     }
-
-    public void damageMonstersInRange(float x, float y, float radius, int damage) {
-        for (Monster m : monsters) {
-            if (!m.isDead() && isInRange(x, y, m.getBounds(), radius)) m.takeDamage(damage);
-        }
-    }
-
-    private boolean isInRange(float x, float y, Rectangle bounds, float radius) {
-        float centerX = bounds.x + bounds.width / 2;
-        float centerY = bounds.y + bounds.height / 2;
-        float dx = centerX - x;
-        float dy = centerY - y;
-        return dx * dx + dy * dy <= radius * radius;
-    }
-
-    public List<Monster> getMonsters() { return monsters; }
-    protected void loadCollidables(TiledMap tiledMap) {
-        collidables.clear(); // Xóa collidables cũ trước khi load map mới
-        for (MapLayer layer : tiledMap.getLayers()) {
-            for (MapObject obj : layer.getObjects()) {
-                if (obj instanceof RectangleMapObject) {
-                    Object solidProp = obj.getProperties().get("solid");
-                    if (solidProp instanceof Boolean && ((Boolean) solidProp)) {
-                        Rectangle rect = ((RectangleMapObject) obj).getRectangle();
-                        float worldX = rect.x / (float) TILE_WIDTH;
-                        float worldY = rect.y / (float) TILE_HEIGHT;
-                        float worldWidth = rect.width / (float) TILE_WIDTH;
-                        float worldHeight = rect.height / (float) TILE_HEIGHT;
-                        Rectangle fixedRect = new Rectangle(worldX, worldY, worldWidth, worldHeight);
-                        collidables.add(new SolidObject(fixedRect));
-                    }
-                }
-            }
-        }
-    }
-
-    public Portal getStartPortal() {
-        return null;
-    }
-
-
-    public Chest getChest() {
-		return chest; // Trả về chest nếu cần
-	}
-
 }

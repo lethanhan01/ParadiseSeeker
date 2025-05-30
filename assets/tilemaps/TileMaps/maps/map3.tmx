@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="115">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="120">
  <tileset firstgid="1" source="../map3-tilesets/0x72_DungeonTilesetII_v1.7.tsx"/>
  <tileset firstgid="1025" source="../map3-tilesets/16x16 dungeon ii wall reconfig v04 spritesheet.tsx"/>
  <tileset firstgid="1217" source="../map3-tilesets/atlas_floor.tsx"/>
@@ -221,7 +221,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="6" name="solid">
+ <objectgroup id="6" name="solid" visible="0">
   <object id="1" name="solid" x="41.3333" y="41.3333" width="1020" height="13.3333">
    <properties>
     <property name="solid" type="bool" value="true"/>
@@ -548,7 +548,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="7" name="traps">
+ <objectgroup id="7" name="traps" visible="0">
   <object id="66" name="traps" x="1092" y="128" width="94" height="62">
    <properties>
     <property name="traps" type="bool" value="true"/>
@@ -778,6 +778,40 @@
    <properties>
     <property name="traps" type="bool" value="true"/>
    </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="8" name="Spawns">
+  <object id="115" x="792" y="824">
+   <properties>
+    <property name="type" value="player"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="116" x="1410" y="672">
+   <properties>
+    <property name="class" value="IceElite"/>
+    <property name="type" value="monster"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="117" x="124" y="548">
+   <properties>
+    <property name="class" value="FlyingDemon"/>
+    <property name="type" value="monster"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="118" x="1342" y="1554">
+   <properties>
+    <property name="type" value="portal"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="119" x="804" y="660">
+   <properties>
+    <property name="type" value="portal_start"/>
+   </properties>
+   <point/>
   </object>
  </objectgroup>
 </map>

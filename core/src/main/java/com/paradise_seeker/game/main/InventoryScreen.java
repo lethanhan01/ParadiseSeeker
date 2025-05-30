@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.paradise_seeker.game.entity.Player;
+import com.paradise_seeker.game.entity.object.Fragment;
 import com.paradise_seeker.game.entity.object.Item;
 
 public class InventoryScreen implements Screen {
@@ -203,7 +204,7 @@ public class InventoryScreen implements Screen {
 
     private void useSelectedItem() {
         Item item = getSelectedItem();
-        if (item != null) {
+        if (item != null && !(item instanceof Fragment)) {
             item.use(player);
             if (item.isStackable()) {
                 item.setCount(item.getCount() - 1);
@@ -218,7 +219,7 @@ public class InventoryScreen implements Screen {
 
     private void dropSelectedItem() {
         Item item = getSelectedItem();
-        if (item != null) {
+        if (item != null && !(item instanceof Fragment)) {
             // TODO: Add logic to drop item to the map
             player.inventory.remove(item);
         }

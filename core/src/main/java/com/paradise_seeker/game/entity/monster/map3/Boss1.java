@@ -1,4 +1,4 @@
-package com.paradise_seeker.game.entity.monster.boss;
+package com.paradise_seeker.game.entity.monster.map3;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -79,6 +79,4 @@ public class Boss1 extends Monster {
     protected float getScaleMultiplier() {
         return 10f;
     }
-
-
 }

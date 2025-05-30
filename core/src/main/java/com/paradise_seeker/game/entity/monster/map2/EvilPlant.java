@@ -1,4 +1,4 @@
-package com.paradise_seeker.game.entity.monster.creep;
+package com.paradise_seeker.game.entity.monster.map2;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,18 +8,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Monster;
 
-public class YellowBat extends Monster {
-    public YellowBat(float x, float y) {
-        super(x, y, 45, 2.8f, 10,0f);
+public class EvilPlant extends Monster {
+    public EvilPlant(float x, float y) {
+    	super(x, y, 50, 1.2f, 12, 0.5f); // hp, speed, cleavedamage, offset
         this.spawnX = x;
         this.spawnY = y;
-        this.spriteWidth = 2f;
-        this.spriteHeight = 2f;
+        this.spriteWidth = 4f;
+        this.spriteHeight = 4f;
         updateBounds(); // Đồng bộ lại bounds
 
         loadAnimations();
-        this.currentFrame = walkRight.getKeyFrame(0f);
-        this.cleaveRange = 2f; // Nhỏ hơn Boss
+        this.currentFrame = idleLeft.getKeyFrame(0f);
+        this.cleaveRange = 2.5f; // Nhỏ hơn Boss
         updateBounds();
 
     }
@@ -30,20 +30,20 @@ public class YellowBat extends Monster {
 
     @Override
     protected void loadAnimations() {
-        walkRight = loadAnimation("images/Entity/characters/monsters/creep/map2/yellow_bat/right/fly/", "fly", 7, ".png", 1);
-        walkLeft  = loadAnimation("images/Entity/characters/monsters/creep/map2/yellow_bat/left/fly/", "fly", 7, ".png", 1);
+        walkLeft = loadAnimation("images/Entity/characters/monsters/creep/map2/evil_plant/idle/", "idle", 8, ".png", 1);
+        walkRight = walkLeft; // Không có ảnh walk riêng nên dùng idle
 
+        idleLeft = walkLeft;
         idleRight = walkRight;
-        idleLeft  = walkLeft;
 
-        cleaveRight = loadAnimation("images/Entity/characters/monsters/creep/map2/yellow_bat/right/atk/", "attack", 10, ".png", 1);
-        cleaveLeft  = loadAnimation("images/Entity/characters/monsters/creep/map2/yellow_bat/left/atk/", "attack", 10, ".png", 1);
+        cleaveRight = loadAnimation("images/Entity/characters/monsters/creep/map2/evil_plant/atkleft/", "attack_left", 8, ".png", 1);
+        cleaveLeft = loadAnimation("images/Entity/characters/monsters/creep/map2/evil_plant/atkright/", "attack_right", 8, ".png", 1);
 
-        takeHitRight = loadAnimation("images/Entity/characters/monsters/creep/map2/yellow_bat/right/hit/", "hit", 3, ".png", 1);
-        takeHitLeft  = loadAnimation("images/Entity/characters/monsters/creep/map2/yellow_bat/left/hit/", "hit", 3, ".png", 1);
+        takeHitLeft = loadAnimation("images/Entity/characters/monsters/creep/map2/evil_plant/hit/", "hit", 3, ".png", 1);
+        takeHitRight = takeHitLeft;
 
+        deathLeft = idleLeft;
         deathRight = idleRight;
-        deathLeft  = idleLeft;
     }
 
     @Override

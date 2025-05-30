@@ -1,4 +1,4 @@
-package com.paradise_seeker.game.entity.monster.elite;
+package com.paradise_seeker.game.entity.monster.map4;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

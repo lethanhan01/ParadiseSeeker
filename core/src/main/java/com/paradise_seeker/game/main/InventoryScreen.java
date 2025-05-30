@@ -19,6 +19,7 @@ public class InventoryScreen implements Screen {
     private final GlyphLayout layout;
     private final ShapeRenderer shapeRenderer;
     private Texture backgroundTexture;
+    // Flag to collect all fragments
     
     // Changed to use grid coordinates (0-2, 0-2) instead of screen coordinates
     private int selectedCol = 0;
@@ -235,6 +236,8 @@ public class InventoryScreen implements Screen {
         float x = (game.viewport.getWorldWidth() - layout.width) / 2;
         game.font.draw(game.batch, layout, x, y);
     }
+    
+    
 
     @Override
     public void resize(int width, int height) {

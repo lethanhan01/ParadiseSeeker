@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.paradise_seeker.game.entity.Player;
+import com.paradise_seeker.game.entity.object.Fragment;
 import com.paradise_seeker.game.entity.object.Item;
 
 public class InventoryScreen implements Screen {
@@ -18,6 +19,7 @@ public class InventoryScreen implements Screen {
     private final GlyphLayout layout;
     private final ShapeRenderer shapeRenderer;
     private Texture backgroundTexture;
+    // Flag to collect all fragments
     
     // Changed to use grid coordinates (0-2, 0-2) instead of screen coordinates
     private int selectedCol = 0;
@@ -203,7 +205,7 @@ public class InventoryScreen implements Screen {
 
     private void useSelectedItem() {
         Item item = getSelectedItem();
-        if (item != null) {
+        if (item != null && !(item instanceof Fragment)) {
             item.use(player);
             if (item.isStackable()) {
                 item.setCount(item.getCount() - 1);
@@ -218,7 +220,7 @@ public class InventoryScreen implements Screen {
 
     private void dropSelectedItem() {
         Item item = getSelectedItem();
-        if (item != null) {
+        if (item != null && !(item instanceof Fragment)) {
             // TODO: Add logic to drop item to the map
             player.inventory.remove(item);
         }
@@ -234,6 +236,8 @@ public class InventoryScreen implements Screen {
         float x = (game.viewport.getWorldWidth() - layout.width) / 2;
         game.font.draw(game.batch, layout, x, y);
     }
+    
+    
 
     @Override
     public void resize(int width, int height) {

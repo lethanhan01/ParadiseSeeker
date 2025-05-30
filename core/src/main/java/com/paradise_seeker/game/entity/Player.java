@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.paradise_seeker.game.entity.npc.NPC1;
+import com.paradise_seeker.game.entity.object.Fragment;
 import com.paradise_seeker.game.entity.object.Item;
 // Import các kỹ năng người chơi
 import com.paradise_seeker.game.entity.skill.*;
@@ -93,6 +94,7 @@ public class Player extends Character {
     // Thêm biến hit
     public boolean isHit = false;
     private Animation<TextureRegion> hitUp, hitDown, hitLeft, hitRight;
+    private int collectAllfragments = 0; 
 
     private GameMap gameMap;
 
@@ -683,12 +685,38 @@ public class Player extends Character {
         }
 
         // Nếu không stack được hoặc inventory còn chỗ
-        if (inventory.size() < inventorySize) {
+        if (inventory.size() < inventorySize && !(newItem instanceof Fragment)) {
             inventory.add(newItem);
             newItem.setActive(false);
+        } else if (inventory.size() < inventorySize && newItem instanceof Fragment) {
+			// Nếu là Fragment, thêm vào kho đồ
+			inventory.add(newItem);
+			newItem.setActive(false);
+			collectAllfragments++;
+			// Kiểm tra nếu đã thu thập đủ 3 mảnh ghép
+			if (collectAllfragments == 3) {
+				Fragment frag = new Fragment(bounds.x, bounds.y, bounds.width, "items/fragment/frag4.png", 4);
+				
+				// Xóa tất cả Fragment cũ trong kho đồ
+				Iterator<Item> iterator = inventory.iterator();
+				while (iterator.hasNext()) {
+					Item item = iterator.next();
+					if (item instanceof Fragment) {
+						iterator.remove();
+					}
+				}
+				
+				// Thêm mảnh ghép đã kết hợp vào kho đồ
+				inventory.add(frag);
+			}
         } else {
             // Inventory đầy, có thể thông báo cho người chơi
             System.out.println("Inventory is full!");
         }
+
     }
+    
+    public int getCollectAllFragments() {
+		return collectAllfragments;
+	}
 }

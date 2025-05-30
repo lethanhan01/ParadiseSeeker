@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.paradise_seeker.game.entity.Monster;
@@ -127,9 +128,9 @@ public class GameScreen implements Screen {
             mapManager.update(delta);
 
             Chest chest = mapManager.getCurrentMap().getChest();
-            if (chest != null && player.getBounds().overlaps(chest.getBounds())) {
-                chest.onPlayerCollision(player);
-            }
+            if (chest != null) {
+				handleChest();
+			}
             
             mapManager.getCurrentMap().checkCollisions(player, hud);
 
@@ -211,6 +212,28 @@ public class GameScreen implements Screen {
         }
     }
 
+    private void handleChest() {
+		Chest chest = mapManager.getCurrentMap().getChest();
+		if (chest != null && player.getBounds().overlaps(chest.getBounds())) {
+			if (!chest.isOpened()) 
+				hud.showNotification("Press F to open the chest");
+		
+			
+			if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+				if (!chest.isOpened()) {
+					chest.onPlayerCollision(player);
+					Array<Item> items = chest.getItems();
+
+			        StringBuilder itemListMessage = new StringBuilder("You received:\n");
+			        for (Item item : items) {
+			            itemListMessage.append("- ").append(item.getName()).append("\n");
+			        }
+
+			        hud.showNotification(itemListMessage.toString());
+				}
+			}
+		}
+	}
 
     private void handleDialogue() {
         // Handle F key for dialogue interaction

@@ -13,7 +13,7 @@ public class HUD {
 	
     private String notificationMessage = "";
     private float notificationTimer = 0f;
-    private static final float NOTIFICATION_DISPLAY_TIME = 2.2f; // seconds
+    private static final float NOTIFICATION_DISPLAY_TIME = 3.6f; // seconds
 
     private String mapNotification = "";
     private float mapNotificationTimer = 0f;
@@ -36,6 +36,7 @@ public class HUD {
     private static final float SPACING = 5f;
     private Texture inventoryButton;
     private Texture pauseButton;
+    private Texture[] fragmentTextures;
 
     private float inventoryButtonWidth = 44f;
     private float inventoryButtonHeight = 44f;
@@ -60,6 +61,11 @@ public class HUD {
         }
         inventoryButton = new Texture(Gdx.files.internal("ui/HUD/inventory.png"));
         pauseButton = new Texture(Gdx.files.internal("ui/HUD/pause.png"));
+        fragmentTextures = new Texture[4];
+        for (int i = 0; i < 4; i++) {
+			String filename = String.format("items/fragment/frag%01d.png", i + 1);
+			fragmentTextures[i] = new Texture(Gdx.files.internal(filename));
+		}	
     }
 
     public void showNotification(String message) {
@@ -112,6 +118,25 @@ public class HUD {
                 if (mapNotificationTimer <= 0f) {
                     mapNotification = "";
                     mapNotificationTimer = 0f;
+                }
+            }
+        }
+        // Draw fragment textures
+        if (player.getCollectAllFragments() > 0) {
+            float fragmentSize = screenHeight * 0.05f; // Kích thước mảnh
+            float fragmentX = PADDING;
+            float fragmentY = screenHeight - PADDING - scaledBarHeight * 2.5f;
+
+            if (player.getCollectAllFragments() == 3) {
+                // Vẽ 1 ảnh mới (mảnh đã ghép)
+                spriteBatch.draw(fragmentTextures[3], fragmentX, fragmentY, fragmentSize, fragmentSize);
+                
+            } else {
+                // Vẽ từng mảnh riêng
+                for (int i = 0; i < player.getCollectAllFragments(); i++) {
+                    if (i < fragmentTextures.length) {
+                        spriteBatch.draw(fragmentTextures[i], fragmentX + i * (fragmentSize + SPACING), fragmentY, fragmentSize, fragmentSize);
+                    }
                 }
             }
         }

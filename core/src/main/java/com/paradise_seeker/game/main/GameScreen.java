@@ -127,9 +127,9 @@ public class GameScreen implements Screen {
             mapManager.update(delta);
 
             Chest chest = mapManager.getCurrentMap().getChest();
-            if (chest != null && player.getBounds().overlaps(chest.getBounds())) {
-                chest.onPlayerCollision(player);
-            }
+            if (chest != null) {
+				handleChest();
+			}
             
             mapManager.getCurrentMap().checkCollisions(player, hud);
 
@@ -211,6 +211,22 @@ public class GameScreen implements Screen {
         }
     }
 
+    private void handleChest() {
+		Chest chest = mapManager.getCurrentMap().getChest();
+		if (chest != null && player.getBounds().overlaps(chest.getBounds())) {
+			player.showInteractMessage = true;
+			
+			if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+				if (!chest.isOpened()) {
+					player.showInteractMessage = false;
+					chest.onPlayerCollision(player);
+					hud.showNotification("You opened the chest!");
+				} else {
+					hud.showNotification("The chest is already opened!");
+				}
+			}
+		}
+	}
 
     private void handleDialogue() {
         // Handle F key for dialogue interaction

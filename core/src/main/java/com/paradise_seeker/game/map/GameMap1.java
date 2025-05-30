@@ -9,9 +9,7 @@ public class GameMap1 extends GameMap {
         this.mapName = "Forgotten Ruins";
         // If you have portals, chest, etc, add them here!
         // Example:
-        // this.portal = new Portal(15f, 25f);
-         this.chest = new Chest(13f, 25f);
-         chest.addItem(new Fragment(13f, 25f, 1f, "items/fragment/frag1.png", 1));	
+        // this.portal = new Portal(15f, 25f);	
     }
 
     @Override

@@ -94,7 +94,7 @@ public class Player extends Character {
     // Thêm biến hit
     public boolean isHit = false;
     private Animation<TextureRegion> hitUp, hitDown, hitLeft, hitRight;
-    private int collectAllfragments = 0; 
+    private int collectAllfragments [] = {0, 0, 0}; // Biến để theo dõi số lượng mảnh ghép đã thu thập 
 
     private GameMap gameMap;
 
@@ -690,11 +690,11 @@ public class Player extends Character {
             newItem.setActive(false);
         } else if (inventory.size() < inventorySize && newItem instanceof Fragment) {
 			// Nếu là Fragment, thêm vào kho đồ
-			inventory.add(newItem);
-			newItem.setActive(false);
-			collectAllfragments++;
+        	Fragment newFragment = (Fragment) newItem;
+			inventory.add(newFragment);
+			collectAllfragments[newFragment.getFragmentIndex() - 1] = 1; // Tăng số lượng mảnh ghép đã thu thập
 			// Kiểm tra nếu đã thu thập đủ 3 mảnh ghép
-			if (collectAllfragments == 3) {
+			if (collectAllfragments[0] == 1 && collectAllfragments[1] == 1 && collectAllfragments[2] == 1) {
 				Fragment frag = new Fragment(bounds.x, bounds.y, bounds.width, "items/fragment/frag4.png", 4);
 				
 				// Xóa tất cả Fragment cũ trong kho đồ
@@ -716,7 +716,7 @@ public class Player extends Character {
 
     }
     
-    public int getCollectAllFragments() {
+    public int[] getCollectAllFragments() {
 		return collectAllfragments;
 	}
 }

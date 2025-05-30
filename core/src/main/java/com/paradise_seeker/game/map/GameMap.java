@@ -120,8 +120,8 @@ public abstract class GameMap {
                 	//test chest
                     chest = new Chest(worldX, worldY);
                     chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag1.png", 1));
-     //               chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag2.png", 2));
-     //               chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag3.png", 3));
+      //              chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag2.png", 2));
+                    chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag3.png", 3));
 
                     break;
 

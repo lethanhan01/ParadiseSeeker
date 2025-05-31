@@ -2,7 +2,6 @@ package com.paradise_seeker.game.entity;
 
 import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.entity.monster.boss.*;
-import com.paradise_seeker.game.entity.monster.elite.*;
 import com.paradise_seeker.game.entity.monster.map2.CyanBat;
 import com.paradise_seeker.game.entity.monster.map2.EvilPlant;
 import com.paradise_seeker.game.entity.monster.map2.MinotaurElite;
@@ -62,7 +61,7 @@ public class MonsterFactory {
             // case "MyOtherMonster":
             //     m = new MyOtherMonster(x, y);
             //     break;
-                
+
             default:
                 System.err.println("Unknown monster class: " + className);
         }

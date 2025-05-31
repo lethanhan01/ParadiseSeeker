@@ -2,8 +2,18 @@ package com.paradise_seeker.game.entity;
 
 import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.entity.monster.boss.*;
-import com.paradise_seeker.game.entity.monster.creep.*;
 import com.paradise_seeker.game.entity.monster.elite.*;
+import com.paradise_seeker.game.entity.monster.map2.CyanBat;
+import com.paradise_seeker.game.entity.monster.map2.EvilPlant;
+import com.paradise_seeker.game.entity.monster.map2.MinotaurElite;
+import com.paradise_seeker.game.entity.monster.map2.YellowBat;
+import com.paradise_seeker.game.entity.monster.map3.Boss1;
+import com.paradise_seeker.game.entity.monster.map3.FirewormElite;
+import com.paradise_seeker.game.entity.monster.map3.FlyingDemon;
+import com.paradise_seeker.game.entity.monster.map3.RatCreep;
+import com.paradise_seeker.game.entity.monster.map4.DevilCreep;
+import com.paradise_seeker.game.entity.monster.map4.FlyingCreep;
+import com.paradise_seeker.game.entity.monster.map4.IceElite;
 
 public class MonsterFactory {
 

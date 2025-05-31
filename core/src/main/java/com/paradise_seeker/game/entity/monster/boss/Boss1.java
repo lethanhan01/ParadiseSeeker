@@ -79,6 +79,4 @@ public class Boss1 extends Monster {
     protected float getScaleMultiplier() {
         return 10f;
     }
-
-
 }

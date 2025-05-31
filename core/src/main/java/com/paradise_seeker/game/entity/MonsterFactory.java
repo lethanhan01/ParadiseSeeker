@@ -52,7 +52,7 @@ public class MonsterFactory {
             // case "MyOtherMonster":
             //     m = new MyOtherMonster(x, y);
             //     break;
-                
+
             default:
                 System.err.println("Unknown monster class: " + className);
         }

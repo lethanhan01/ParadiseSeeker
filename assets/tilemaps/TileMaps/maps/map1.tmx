@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="119">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="123">
  <editorsettings>
   <export target="../map1.tmx" format="tmx"/>
  </editorsettings>
@@ -776,16 +776,16 @@
    </properties>
    <point/>
   </object>
-  <object id="116" x="142" y="216">
+  <object id="118" x="101" y="902">
    <properties>
-    <property name="class" value="EvilPlant"/>
-    <property name="type" value="monster"/>
+    <property name="type" value="player"/>
    </properties>
    <point/>
   </object>
-  <object id="118" x="631" y="742">
+  <object id="120" x="174" y="259">
    <properties>
-    <property name="type" value="player"/>
+    <property name="class" value="CyanBat"/>
+    <property name="type" value="monster"/>
    </properties>
    <point/>
   </object>

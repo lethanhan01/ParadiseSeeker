@@ -10,8 +10,8 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.paradise_seeker.game.entity.Collidable;
-import com.paradise_seeker.game.entity.CollisionSystem;
+import com.paradise_seeker.game.collision.Collidable;
+import com.paradise_seeker.game.collision.CollisionSystem;
 import com.paradise_seeker.game.entity.Player;
 import com.paradise_seeker.game.entity.MonsterFactory;
 import com.paradise_seeker.game.entity.Monster;
@@ -120,8 +120,8 @@ public abstract class GameMap {
                 	//test chest
                     chest = new Chest(worldX, worldY);
                     chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag1.png", 1));
-     //               chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag2.png", 2));
-     //               chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag3.png", 3));
+      //              chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag2.png", 2));
+                    chest.addItem(new Fragment(worldX, worldY, 1f, "items/fragment/frag3.png", 3));
 
                     break;
 

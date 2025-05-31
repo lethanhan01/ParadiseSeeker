@@ -1,5 +1,7 @@
 package com.paradise_seeker.game.ui;
 
+import java.util.Arrays;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -122,22 +124,24 @@ public class HUD {
             }
         }
         // Draw fragment textures
-        if (player.getCollectAllFragments() > 0) {
+        int [] fragmentIndices = player.getCollectAllFragments();
+        int [] full =  {1,1,1};
+        if (fragmentIndices != null && fragmentIndices.length > 0) {
             float fragmentSize = screenHeight * 0.05f; // Kích thước mảnh
             float fragmentX = PADDING;
             float fragmentY = screenHeight - PADDING - scaledBarHeight * 2.5f;
 
-            if (player.getCollectAllFragments() == 3) {
+            if (Arrays.equals(fragmentIndices, full)) {
                 // Vẽ 1 ảnh mới (mảnh đã ghép)
                 spriteBatch.draw(fragmentTextures[3], fragmentX, fragmentY, fragmentSize, fragmentSize);
                 
             } else {
                 // Vẽ từng mảnh riêng
-                for (int i = 0; i < player.getCollectAllFragments(); i++) {
-                    if (i < fragmentTextures.length) {
-                        spriteBatch.draw(fragmentTextures[i], fragmentX + i * (fragmentSize + SPACING), fragmentY, fragmentSize, fragmentSize);
-                    }
-                }
+            	for (int i = 0; i < fragmentIndices.length && i < fragmentTextures.length; i++) {
+            	    if (fragmentIndices[i] == 1) {
+            	        spriteBatch.draw(fragmentTextures[i], fragmentX + i * (fragmentSize + SPACING), fragmentY, fragmentSize, fragmentSize);
+            	    }
+            	}
             }
         }
 

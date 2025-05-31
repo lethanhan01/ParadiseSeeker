@@ -1,7 +1,6 @@
-package com.paradise_seeker.game.entity;
+package com.paradise_seeker.game.collision;
 
 import com.paradise_seeker.game.entity.Player;
-import com.paradise_seeker.game.entity.Collidable;
 
 import java.util.List;
 

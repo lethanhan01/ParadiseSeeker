@@ -1,10 +1,14 @@
-package com.paradise_seeker.game.entity;
+package com.paradise_seeker.game.entity.npc;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.paradise_seeker.game.collision.Collidable;
+import com.paradise_seeker.game.entity.Interactable;
+import com.paradise_seeker.game.entity.Player;
+import com.paradise_seeker.game.entity.Renderable;
 
 public class NPC implements Renderable, Collidable, Interactable {
     private Polygon shape;

@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.paradise_seeker.game.collision.Collidable;
 import com.paradise_seeker.game.entity.npc.NPC1;
 import com.paradise_seeker.game.entity.object.item.Fragment;
 import com.paradise_seeker.game.entity.object.item.Item;

@@ -2,6 +2,7 @@ package com.paradise_seeker.game.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.paradise_seeker.game.collision.Collidable;
 import com.paradise_seeker.game.entity.skill.Skill;
 
 public abstract class Character {

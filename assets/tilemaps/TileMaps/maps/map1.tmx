@@ -770,12 +770,6 @@
    </properties>
    <point/>
   </object>
-  <object id="114" x="761" y="792">
-   <properties>
-    <property name="type" value="chest"/>
-   </properties>
-   <point/>
-  </object>
   <object id="115" x="687" y="429">
    <properties>
     <property name="type" value="npc1"/>

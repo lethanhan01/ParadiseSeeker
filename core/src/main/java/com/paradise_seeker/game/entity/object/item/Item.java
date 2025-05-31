@@ -3,7 +3,7 @@ package com.paradise_seeker.game.entity.object.item;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.paradise_seeker.game.entity.Collidable;
+import com.paradise_seeker.game.collision.Collidable;
 import com.paradise_seeker.game.entity.Player;
 
 public abstract class Item implements Collidable {

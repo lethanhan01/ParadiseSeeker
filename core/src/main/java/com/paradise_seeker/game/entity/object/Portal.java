@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.paradise_seeker.game.entity.Collidable;
+import com.paradise_seeker.game.collision.Collidable;
 import com.paradise_seeker.game.entity.Player;
 import com.badlogic.gdx.Gdx;
 

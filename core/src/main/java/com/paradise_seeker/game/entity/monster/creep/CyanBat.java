@@ -1,4 +1,4 @@
-package com.paradise_seeker.game.entity.monster.map2;
+package com.paradise_seeker.game.entity.monster.creep;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

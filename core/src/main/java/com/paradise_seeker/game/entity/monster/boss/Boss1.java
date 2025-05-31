@@ -1,4 +1,4 @@
-package com.paradise_seeker.game.entity.monster.map3;
+package com.paradise_seeker.game.entity.monster.boss;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

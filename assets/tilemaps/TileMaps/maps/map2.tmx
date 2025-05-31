@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="80">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="81">
  <tileset firstgid="1" source="../map2-tilesets/Minifantasy_ForgottenPlainsTiles.tsx"/>
  <tileset firstgid="1588" source="../map2-tilesets/Minifantasy_ForgottenPlainsProps.tsx"/>
  <layer id="1" name="Tile Layer 1" width="50" height="50">
@@ -774,6 +774,12 @@
    <properties>
     <property name="class" value="FirewormElite"/>
     <property name="type" value="monster"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="80" x="240" y="1180">
+   <properties>
+    <property name="type" value="chest"/>
    </properties>
    <point/>
   </object>
